@@ -27,20 +27,27 @@ const SidebarProfile: React.FC = () => {
           </div>
         </div>
 
-        {/* 2. BẢNG HUY HIỆU */}
+        {/* 2. BẢNG HUY HIỆU VỚI TIẾN ĐỘ */}
         <div className="p-4 border-b border-slate-50 bg-slate-50/30">
-          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">Huy hiệu thành viên</p>
+          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">Cấp bậc danh hiệu</p>
           <div className="flex gap-2 justify-between">
-            {BADGES.map(badge => (
-              <div 
-                key={badge.id} 
-                className={`flex-1 aspect-square flex flex-col items-center justify-center rounded-xl text-lg transition-all border ${greenScore >= badge.requirement ? 'bg-white border-emerald-200 text-emerald-600 shadow-sm scale-105' : 'bg-slate-100/50 border-transparent opacity-20 grayscale'}`}
-                title={badge.label}
-              >
-                <span>{badge.icon}</span>
-                <span className="text-[7px] font-bold mt-0.5">{badge.label}</span>
-              </div>
-            ))}
+            {BADGES.map(badge => {
+              const isEarned = greenScore >= badge.requirement;
+              const pointsNeeded = badge.requirement - greenScore;
+              
+              return (
+                <div 
+                  key={badge.id} 
+                  className={`flex-1 flex flex-col items-center justify-center rounded-xl p-1 transition-all border ${isEarned ? 'bg-white border-emerald-200 text-emerald-600 shadow-sm scale-105' : 'bg-slate-100/50 border-transparent opacity-40 grayscale'}`}
+                >
+                  <span className="text-lg">{badge.icon}</span>
+                  <span className="text-[7px] font-black mt-0.5 text-center leading-tight">{badge.label}</span>
+                  {!isEarned && (
+                    <span className="text-[6px] font-bold text-slate-500 mt-1">+{pointsNeeded} GS</span>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
         

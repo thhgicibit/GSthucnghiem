@@ -1,5 +1,6 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { dataService } from './dataService';
 
 interface AppContextType {
   userName: string;
@@ -15,6 +16,8 @@ interface AppContextType {
   setSelectedLogistics: (type: 'standard' | 'green' | 'fast' | null) => void;
   resetFlow: () => void;
   wateringCount: number;
+  leaderboard: any[];
+  refreshLeaderboard: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -27,11 +30,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [currentStep, setCurrentStep] = useState<'login' | 'shop' | 'checkout' | 'success' | 'social'>('login');
   const [selectedLogistics, setSelectedLogistics] = useState<'standard' | 'green' | 'fast' | null>(null);
   const [wateringCount, setWateringCount] = useState(1);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+
+  useEffect(() => {
+    setLeaderboard(dataService.getLeaderboard());
+  }, []);
+
+  const refreshLeaderboard = () => {
+    setLeaderboard(dataService.getLeaderboard());
+  };
 
   const addPoints = (points: number) => {
     if (points <= 0) return;
     setGreenScore(prev => prev + points);
-    // Mỗi lần nhận điểm từ hành vi xanh được tính là 1 lần tưới nước
     setWateringCount(prev => prev + 1);
     setShowPointToast(points);
     setTimeout(() => setShowPointToast(null), 3000);
@@ -57,7 +68,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       selectedLogistics,
       setSelectedLogistics,
       resetFlow,
-      wateringCount
+      wateringCount,
+      leaderboard,
+      refreshLeaderboard
     }}>
       {children}
     </AppContext.Provider>

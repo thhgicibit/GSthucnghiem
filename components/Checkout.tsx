@@ -1,21 +1,52 @@
 
 import React from 'react';
 import { useAppContext } from '../AppContext';
+import { dataService, SurveyRecord } from '../dataService';
 
 const Checkout: React.FC = () => {
-  const { activeProduct, selectedLogistics, setSelectedLogistics, addPoints, setCurrentStep, setActiveProduct } = useAppContext();
+  const { 
+    userName,
+    activeProduct, 
+    selectedLogistics, 
+    setSelectedLogistics, 
+    addPoints, 
+    setCurrentStep, 
+    setActiveProduct,
+    greenScore,
+    refreshLeaderboard
+  } = useAppContext();
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     let totalEarned = 0;
+    const isGreenProd = activeProduct?.isGreen ? 1 : 0;
+    const isGreenLog = selectedLogistics === 'green' ? 1 : 0;
+
     if (activeProduct?.isGreen) totalEarned += activeProduct.greenPoints;
     if (selectedLogistics === 'green') totalEarned += 25;
     
+    const finalScore = greenScore + totalEarned;
+
+    // CHÍNH: Lưu dữ liệu khảo sát phục vụ phân tích hồi quy
+    const record: SurveyRecord = {
+      timestamp: new Date().toISOString(),
+      userId: userName,
+      userName: userName,
+      productId: activeProduct?.id || 'unknown',
+      isGreenProduct: isGreenProd,
+      logisticsType: selectedLogistics || 'unknown',
+      isGreenLogistics: isGreenLog,
+      finalGreenScore: finalScore
+    };
+
+    await dataService.saveChoice(record);
+    
     addPoints(totalEarned);
+    refreshLeaderboard();
     setCurrentStep('success');
   };
 
   const getShippingFee = () => {
-    if (selectedLogistics === 'green') return 15000;
+    if (selectedLogistics === 'green') return 25000; // Tăng giá để tạo trade-off
     if (selectedLogistics === 'standard') return 22000;
     if (selectedLogistics === 'fast') return 35000;
     return 0;
@@ -23,7 +54,7 @@ const Checkout: React.FC = () => {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 animate-slideUp overflow-hidden">
-      {/* Address Section - Simplified for Research */}
+      {/* Address Section */}
       <div className="p-8 border-b border-dashed border-slate-200 bg-slate-50/50">
         <div className="flex items-center text-emerald-600 mb-4">
           <span className="text-xl mr-2">📍</span>
@@ -75,22 +106,38 @@ const Checkout: React.FC = () => {
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-4">
                   <span className="text-3xl">🚲</span>
-                  <div>
+                  <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-1">
-                      <p className="font-black text-slate-800 text-sm">Vận Chuyển Xanh</p>
+                      <p className="font-black text-slate-800 text-sm">Vận Chuyển Xanh (Ưu tiên giảm thải)</p>
                       <span className="bg-emerald-600 text-white text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">+25 GS</span>
                     </div>
-                    <p className="text-xs text-slate-500 leading-snug">Sử dụng phương tiện điện, bao bì giảm thiểu nhựa. Nhận sau 2-3 ngày.</p>
+                    <p className="text-xs text-slate-500 leading-snug">Sử dụng xe điện & bao bì giấy tái chế. <span className="font-bold text-emerald-600">Nhận sau 3-5 ngày</span> (Giao lâu hơn để tối ưu lộ trình xanh).</p>
                   </div>
                 </div>
                 <div className="text-right">
-                   <p className="font-black text-emerald-600">₫15.000</p>
-                   <p className="text-[8px] text-emerald-500 font-bold uppercase line-through opacity-50">₫22.000</p>
+                   <p className="font-black text-emerald-600 text-lg">₫25.000</p>
                 </div>
               </div>
             </div>
 
-            {/* Fast Logistics - NEW */}
+            {/* Standard Logistics */}
+            <div 
+              onClick={() => setSelectedLogistics('standard')}
+              className={`p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'standard' ? 'border-slate-800 bg-slate-50' : 'border-slate-100 bg-white hover:border-slate-200'}`}
+            >
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-4">
+                  <span className="text-3xl">🚚</span>
+                  <div>
+                    <p className="font-black text-slate-800 text-sm mb-1">Giao Hàng Tiêu Chuẩn</p>
+                    <p className="text-xs text-slate-500 leading-snug">Quy trình truyền thống. Nhận sau 1-2 ngày.</p>
+                  </div>
+                </div>
+                <span className="font-black text-slate-800 text-lg">₫22.000</span>
+              </div>
+            </div>
+
+            {/* Fast Logistics */}
             <div 
               onClick={() => setSelectedLogistics('fast')}
               className={`p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'fast' ? 'border-amber-500 bg-amber-50/30 shadow-md' : 'border-slate-100 bg-white hover:border-amber-200'}`}
@@ -99,28 +146,11 @@ const Checkout: React.FC = () => {
                 <div className="flex items-center space-x-4">
                   <span className="text-3xl">⚡</span>
                   <div>
-                    <p className="font-black text-slate-800 text-sm mb-1">Giao Hàng Nhanh (Hỏa Tốc)</p>
-                    <p className="text-xs text-slate-500 leading-snug">Giao hàng siêu tốc trong vòng 24h bằng xe máy.</p>
+                    <p className="font-black text-slate-800 text-sm mb-1">Hỏa Tốc</p>
+                    <p className="text-xs text-slate-500 leading-snug">Giao hàng hỏa tốc trong 24h bằng xe máy.</p>
                   </div>
                 </div>
-                <span className="font-black text-slate-800">₫35.000</span>
-              </div>
-            </div>
-
-            {/* Standard Logistics */}
-            <div 
-              onClick={() => setSelectedLogistics('standard')}
-              className={`p-5 border-2 rounded-2xl cursor-pointer transition-all opacity-60 ${selectedLogistics === 'standard' ? 'border-slate-800 bg-slate-50' : 'border-slate-100 bg-white hover:border-slate-200'}`}
-            >
-              <div className="flex justify-between items-center">
-                <div className="flex items-center space-x-4">
-                  <span className="text-3xl">🚚</span>
-                  <div>
-                    <p className="font-black text-slate-800 text-sm mb-1">Giao Hàng Tiêu Chuẩn</p>
-                    <p className="text-xs text-slate-500 leading-snug">Vận chuyển theo quy trình truyền thống. Nhận sau 1-2 ngày.</p>
-                  </div>
-                </div>
-                <span className="font-black text-slate-800">₫22.000</span>
+                <span className="font-black text-slate-800 text-lg">₫35.000</span>
               </div>
             </div>
           </div>
@@ -130,24 +160,17 @@ const Checkout: React.FC = () => {
       {/* Checkout Footer */}
       <div className="p-10 bg-white border-t border-slate-50 flex flex-col items-end space-y-6">
         <div className="grid grid-cols-2 gap-x-12 gap-y-3 text-sm text-right">
-          <span className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Tổng hàng:</span>
+          <span className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Tổng tiền hàng:</span>
           <span className="text-slate-800 font-bold text-base">₫{activeProduct?.price.toLocaleString()}</span>
           
-          <span className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Vận chuyển:</span>
+          <span className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Phí vận chuyển:</span>
           <span className="text-slate-800 font-bold text-base">₫{getShippingFee().toLocaleString()}</span>
           
-          {selectedLogistics === 'green' && (
-            <>
-              <span className="text-emerald-600 font-black uppercase text-[10px] tracking-widest italic">Ưu đãi Xanh:</span>
-              <span className="text-emerald-600 font-black text-base">-₫7.000</span>
-            </>
-          )}
-
           <div className="col-span-2 border-t border-slate-100 my-2"></div>
           
           <span className="text-slate-800 font-black text-lg uppercase tracking-tighter">Tổng thanh toán:</span>
           <span className="text-3xl text-emerald-600 font-black tracking-tighter">
-            ₫{(activeProduct?.price + getShippingFee() - (selectedLogistics === 'green' ? 7000 : 0)).toLocaleString()}
+            ₫{(activeProduct?.price + getShippingFee()).toLocaleString()}
           </span>
         </div>
         

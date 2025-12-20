@@ -8,6 +8,7 @@ import Checkout from './components/Checkout';
 import Leaderboard from './components/Leaderboard';
 import Badges from './components/Badges';
 import Chat from './components/Chat';
+import { dataService } from './dataService';
 
 const MainContent: React.FC = () => {
   const { 
@@ -149,10 +150,10 @@ const MainContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc]">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col">
       <Header />
       
-      <div className="container-custom py-10 flex space-x-8">
+      <div className="container-custom py-10 flex space-x-8 flex-1">
         <SidebarProfile />
         <div className="flex-1 min-h-[600px]">
           {showPointToast && (
@@ -179,15 +180,14 @@ const MainContent: React.FC = () => {
           🏆
         </button>
       </div>
-    </div>
-  );
-};
 
-const App: React.FC = () => {
-  return (
-    <AppProvider>
-      <AppWrapper />
-    </AppProvider>
+      {/* Researcher Footer - Hidden link to export data */}
+      <footer className="py-2 px-8 text-[8px] text-slate-300 flex justify-end">
+        <button onClick={() => dataService.exportData()} className="hover:text-slate-500 underline uppercase tracking-widest">
+          Export Survey Data (Researcher Only)
+        </button>
+      </footer>
+    </div>
   );
 };
 
@@ -243,6 +243,14 @@ const AppWrapper: React.FC = () => {
   }
 
   return <MainContent />;
+};
+
+const App: React.FC = () => {
+  return (
+    <AppProvider>
+      <AppWrapper />
+    </AppProvider>
+  );
 };
 
 export default App;
