@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { AppProvider, useAppContext } from './AppContext';
 import Header from './components/Header';
@@ -26,7 +25,7 @@ const MainContent: React.FC = () => {
     if (currentStep === 'social') {
       return (
         <div className="space-y-6 animate-slideUp">
-          <div className="flex justify-between items-center border-b border-slate-200 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-4 gap-2">
             <h1 className="text-xl font-bold text-slate-800">Cộng Đồng GreenScore</h1>
             <button 
               onClick={() => setCurrentStep('shop')}
@@ -36,7 +35,7 @@ const MainContent: React.FC = () => {
             </button>
           </div>
           <Leaderboard />
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Badges />
             <Chat />
           </div>
@@ -46,27 +45,27 @@ const MainContent: React.FC = () => {
 
     if (currentStep === 'success') {
       return (
-        <div className="bg-white p-12 rounded-xl shadow-sm border border-slate-100 text-center space-y-6 animate-slideUp">
+        <div className="bg-white p-6 md:p-12 rounded-xl shadow-sm border border-slate-100 text-center space-y-6 animate-slideUp">
           <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-community">
             <span className="text-4xl">💧</span>
           </div>
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Cảm ơn {userName}!</h1>
           <p className="text-slate-500 max-w-sm mx-auto text-sm">Hành động của bạn đã đóng góp giọt nước quý giá cho cây xanh cộng đồng.</p>
           
-          <div className="max-w-md mx-auto bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
-            <div className="flex justify-around py-4">
+          <div className="max-w-md mx-auto bg-emerald-50 p-4 md:p-6 rounded-2xl border border-emerald-100">
+            <div className="flex flex-row justify-around py-4">
               <div className="text-center">
-                <p className="text-3xl font-black text-emerald-600">+{activeProduct?.isGreen ? activeProduct.greenPoints : 0}</p>
-                <p className="text-[10px] text-emerald-700 uppercase font-black tracking-widest mt-1">Từ sản phẩm</p>
+                <p className="text-2xl md:text-3xl font-black text-emerald-600">+{activeProduct?.isGreen ? activeProduct.greenPoints : 0}</p>
+                <p className="text-[9px] text-emerald-700 uppercase font-black tracking-widest mt-1">Sản phẩm</p>
               </div>
-              <div className="text-center border-l border-emerald-200 pl-8">
-                <p className="text-3xl font-black text-emerald-600">+{selectedLogistics === 'green' ? 25 : 0}</p>
-                <p className="text-[10px] text-emerald-700 uppercase font-black tracking-widest mt-1">Từ Logistics</p>
+              <div className="text-center border-l border-emerald-200 pl-4 md:pl-8">
+                <p className="text-2xl md:text-3xl font-black text-emerald-600">+{selectedLogistics === 'green' ? 25 : 0}</p>
+                <p className="text-[9px] text-emerald-700 uppercase font-black tracking-widest mt-1">Logistics</p>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-center space-x-4 pt-6">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
             <button 
               onClick={resetFlow}
               className="px-8 py-3 bg-white border border-slate-200 text-slate-600 font-bold rounded-lg hover:bg-slate-50 transition-colors text-sm"
@@ -94,12 +93,12 @@ const MainContent: React.FC = () => {
            <button onClick={() => setActiveProduct(null)} className="mb-4 text-emerald-600 text-sm font-bold flex items-center hover:translate-x-[-4px] transition-transform">
             ← Quay lại danh sách
            </button>
-           <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-100">
-              <div className="flex space-x-12">
-                <div className="w-1/2">
+           <div className="bg-white p-4 md:p-8 rounded-xl shadow-sm border border-slate-100">
+              <div className="flex flex-col md:flex-row gap-6 md:gap-12">
+                <div className="w-full md:w-1/2">
                   <img src={activeProduct.image} className="w-full aspect-square object-cover rounded-xl shadow-inner border border-slate-100" />
                 </div>
-                <div className="w-1/2 space-y-6">
+                <div className="w-full md:w-1/2 space-y-6">
                   <div className="flex items-center space-x-3">
                     {activeProduct.isGreenShop ? (
                       <span className="bg-emerald-100 text-emerald-700 text-[9px] font-black px-2 py-1 rounded uppercase tracking-widest">☘️ Shop Xanh</span>
@@ -111,8 +110,8 @@ const MainContent: React.FC = () => {
 
                   <h1 className="text-2xl font-bold text-slate-800 leading-tight">{activeProduct.name}</h1>
                   
-                  <div className="bg-slate-50 p-6 rounded-xl flex items-center justify-between">
-                     <span className="text-slate-800 text-3xl font-black">₫{activeProduct.price.toLocaleString()}</span>
+                  <div className="bg-slate-50 p-4 md:p-6 rounded-xl flex items-center justify-between">
+                     <span className="text-slate-800 text-2xl md:text-3xl font-black">₫{activeProduct.price.toLocaleString()}</span>
                      {activeProduct.isGreen && (
                         <div className="text-right">
                            <p className="text-emerald-600 font-black text-xl">+{activeProduct.greenPoints} GS</p>
@@ -153,16 +152,16 @@ const MainContent: React.FC = () => {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col">
       <Header />
       
-      <div className="container-custom py-10 flex space-x-8 flex-1">
+      <div className="container-custom py-4 md:py-10 flex flex-col md:flex-row md:space-x-8 flex-1">
         <SidebarProfile />
-        <div className="flex-1 min-h-[600px]">
+        <div className="flex-1 min-h-[400px] mt-8 md:mt-0">
           {showPointToast && (
-            <div className="fixed top-24 right-10 bg-emerald-600 text-white px-6 py-4 rounded-2xl shadow-2xl z-[100] animate-bounce border-2 border-white/20">
+            <div className="fixed top-24 right-4 md:right-10 bg-emerald-600 text-white px-6 py-4 rounded-2xl shadow-2xl z-[100] animate-bounce border-2 border-white/20">
                <div className="flex items-center space-x-4">
                  <span className="text-2xl">💧</span>
                  <div>
-                   <p className="font-black text-sm">+{showPointToast} Green Score!</p>
-                   <p className="text-[9px] opacity-80 uppercase font-black">Bạn đã đóng đóng góp 1 giọt nước</p>
+                   <p className="font-black text-sm">+{showPointToast} GS!</p>
+                   <p className="text-[9px] opacity-80 uppercase font-black">Bạn đã đóng góp 1 giọt nước</p>
                  </div>
                </div>
             </div>
@@ -171,20 +170,20 @@ const MainContent: React.FC = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-8 right-8 z-50">
+      <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50">
         <button 
           onClick={() => setCurrentStep('social')}
-          className={`w-14 h-14 rounded-2xl shadow-xl flex items-center justify-center text-2xl transition-all hover:scale-110 active:scale-90 ${currentStep === 'social' ? 'bg-emerald-600 text-white ring-4 ring-emerald-100' : 'bg-white text-emerald-600 border border-slate-100'}`}
+          className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-xl flex items-center justify-center text-xl md:text-2xl transition-all hover:scale-110 active:scale-90 ${currentStep === 'social' ? 'bg-emerald-600 text-white ring-4 ring-emerald-100' : 'bg-white text-emerald-600 border border-slate-100'}`}
           title="Xem BXH & Cộng đồng"
         >
           🏆
         </button>
       </div>
 
-      {/* Researcher Footer - Hidden link to export data */}
-      <footer className="py-2 px-8 text-[8px] text-slate-300 flex justify-end">
+      {/* Researcher Footer */}
+      <footer className="py-2 px-4 md:px-8 text-[8px] text-slate-300 flex justify-end">
         <button onClick={() => dataService.exportData()} className="hover:text-slate-500 underline uppercase tracking-widest">
-          Export Survey Data (Researcher Only)
+          Export Survey Data
         </button>
       </footer>
     </div>
@@ -212,10 +211,10 @@ const AppWrapper: React.FC = () => {
           <div className="absolute bottom-[-10%] right-[-10%] w-80 h-80 bg-white rounded-full blur-3xl"></div>
         </div>
         
-        <div className="bg-white p-12 rounded-[2.5rem] shadow-2xl w-full max-w-md animate-slideUp relative z-10">
+        <div className="bg-white p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl w-full max-w-md animate-slideUp relative z-10">
           <div className="text-5xl mb-6">🌿</div>
-          <h1 className="text-4xl font-black text-emerald-600 mb-2 tracking-tighter">GreenScore</h1>
-          <p className="text-slate-400 mb-10 text-sm leading-relaxed font-medium">
+          <h1 className="text-3xl md:text-4xl font-black text-emerald-600 mb-2 tracking-tighter">GreenScore</h1>
+          <p className="text-slate-400 mb-10 text-xs md:text-sm leading-relaxed font-medium">
             Nghiên cứu khoa học về tác động của Game hóa lên tiêu dùng.
           </p>
           
@@ -227,12 +226,12 @@ const AppWrapper: React.FC = () => {
                 value={localName}
                 onChange={(e) => setLocalName(e.target.value)}
                 placeholder="Nhập mã số của bạn..." 
-                className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-xl font-bold"
+                className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-lg md:text-xl font-bold"
               />
             </div>
             <button 
               onClick={handleStart}
-              className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all text-xs tracking-[0.3em] uppercase mt-2"
+              className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all text-[10px] md:text-xs tracking-[0.3em] uppercase mt-2"
             >
               Bắt đầu tham gia
             </button>

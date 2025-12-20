@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAppContext } from '../AppContext';
 import { BADGES } from '../constants';
@@ -10,7 +9,7 @@ const SidebarProfile: React.FC = () => {
   const communityMemberCount = 245;
 
   return (
-    <div className="w-[280px] flex-shrink-0 space-y-4">
+    <div className="w-full md:w-[280px] flex-shrink-0 space-y-4">
       {/* 1. Hồ sơ & Điểm số */}
       <div className="bg-white rounded-3xl shadow-sm overflow-hidden border border-slate-100">
         <div className="bg-emerald-600 p-6 text-center">
@@ -29,7 +28,7 @@ const SidebarProfile: React.FC = () => {
 
         {/* 2. BẢNG HUY HIỆU VỚI TIẾN ĐỘ */}
         <div className="p-4 border-b border-slate-50 bg-slate-50/30">
-          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">Cấp bậc danh hiệu</p>
+          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1 text-center md:text-left">Cấp bậc danh hiệu</p>
           <div className="flex gap-2 justify-between">
             {BADGES.map(badge => {
               const isEarned = greenScore >= badge.requirement;
@@ -40,8 +39,8 @@ const SidebarProfile: React.FC = () => {
                   key={badge.id} 
                   className={`flex-1 flex flex-col items-center justify-center rounded-xl p-1 transition-all border ${isEarned ? 'bg-white border-emerald-200 text-emerald-600 shadow-sm scale-105' : 'bg-slate-100/50 border-transparent opacity-40 grayscale'}`}
                 >
-                  <span className="text-lg">{badge.icon}</span>
-                  <span className="text-[7px] font-black mt-0.5 text-center leading-tight">{badge.label}</span>
+                  <span className="text-lg md:text-xl">{badge.icon}</span>
+                  <span className="text-[7px] md:text-[8px] font-black mt-0.5 text-center leading-tight">{badge.label}</span>
                   {!isEarned && (
                     <span className="text-[6px] font-bold text-slate-500 mt-1">+{pointsNeeded} GS</span>
                   )}
@@ -51,14 +50,14 @@ const SidebarProfile: React.FC = () => {
           </div>
         </div>
         
-        <div className="p-6 bg-white space-y-4">
+        <div className="p-4 md:p-6 bg-white space-y-4">
           {/* 3. DỰ ÁN CỘNG ĐỒNG */}
-          <div className="bg-emerald-50 p-5 rounded-2xl space-y-4">
+          <div className="bg-emerald-50 p-4 md:p-5 rounded-2xl space-y-4">
             <div className="flex items-center space-x-3">
-              <span className="text-3xl animate-community">🌳</span>
+              <span className="text-2xl md:text-3xl animate-community">🌳</span>
               <div className="flex-1">
                 <p className="text-[10px] font-black text-emerald-800 uppercase tracking-tight leading-none">Cây Cộng Đồng</p>
-                <p className="text-[10px] text-emerald-600 mt-1 font-medium italic">Bạn và {communityMemberCount} người khác đang chung tay nuôi dưỡng cây xanh</p>
+                <p className="text-[9px] md:text-[10px] text-emerald-600 mt-1 font-medium italic">Bạn và {communityMemberCount} người khác đang nuôi dưỡng cây xanh</p>
               </div>
             </div>
             
@@ -79,7 +78,7 @@ const SidebarProfile: React.FC = () => {
       </div>
 
       {/* 4. BẢNG XẾP HẠNG MINI */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+      <div className="bg-white p-4 md:p-6 rounded-3xl shadow-sm border border-slate-100">
         <div className="flex justify-between items-center mb-5">
           <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">BXH Cộng Đồng</h4>
         </div>
@@ -96,7 +95,7 @@ const SidebarProfile: React.FC = () => {
                 </span>
                 <span className="max-w-[110px] truncate">{user.name}</span>
               </div>
-              <span className="font-black tracking-tighter">{user.score} GS</span>
+              <span className="font-black tracking-tighter whitespace-nowrap">{user.score} GS</span>
             </div>
           ))}
         </div>
