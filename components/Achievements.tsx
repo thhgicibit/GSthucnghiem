@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAppContext } from '../AppContext';
 import { MEDALS } from '../constants';
@@ -24,7 +23,7 @@ const Achievements: React.FC = () => {
               </p>
               {!isAchieved && (
                 <span className="text-[8px] font-bold bg-slate-100 px-1.5 py-0.5 rounded-full text-slate-400">
-                  {medal.requirement} GS
+                  {medal.requirement} 💧
                 </span>
               )}
             </div>

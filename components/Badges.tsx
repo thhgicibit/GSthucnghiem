@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAppContext } from '../AppContext';
 import { BADGES } from '../constants';
@@ -31,7 +30,7 @@ const Badges: React.FC = () => {
               ) : (
                 <div className="mt-2 pt-2 border-t border-slate-50">
                   <p className="text-[8px] font-black text-emerald-600 uppercase">
-                    Cần thêm {pointsNeeded} GS
+                    Cần thêm {pointsNeeded} 💧
                   </p>
                   <p className="text-[7px] text-slate-400 mt-1 italic">
                     Mua hàng xanh để thăng hạng

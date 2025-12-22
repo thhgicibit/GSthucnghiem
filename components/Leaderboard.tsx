@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAppContext } from '../AppContext';
 
@@ -8,7 +7,7 @@ const Leaderboard: React.FC = () => {
   return (
     <section className="space-y-3">
       <div className="flex justify-between items-center">
-        <h3 className="font-bold text-slate-800 text-sm uppercase tracking-tight">XẾP HẠNG ECO REWARDS CỘNG ĐỒNG</h3>
+        <h3 className="font-bold text-slate-800 text-sm uppercase tracking-tight">XẾP HẠNG CỘNG ĐỒNG</h3>
       </div>
       
       <div className="bg-white rounded-sm shadow-sm overflow-hidden border border-slate-100">
@@ -30,8 +29,8 @@ const Leaderboard: React.FC = () => {
               </span>
             </div>
             <div className="text-right">
-              <p className="font-bold text-slate-800 text-sm">{user.score}</p>
-              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Green Score</p>
+              <p className="font-bold text-slate-800 text-sm">{user.score} 💧</p>
+              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Điểm Xanh</p>
             </div>
           </div>
         ))}

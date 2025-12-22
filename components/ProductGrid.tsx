@@ -18,10 +18,10 @@ const ProductGrid: React.FC = () => {
             <div className="relative aspect-square bg-slate-50 overflow-hidden">
               <img src={product.image} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
               
-              {/* Thưởng Green Score */}
+              {/* Thưởng Điểm Xanh */}
               {product.isGreen && (
                 <div className="absolute top-3 right-3 md:top-4 md:right-4 bg-emerald-600 text-white text-[9px] md:text-[10px] px-2 md:px-3 py-1 font-black rounded-full shadow-lg z-10">
-                   +{product.greenPoints} GS
+                   +{product.greenPoints} 💧
                 </div>
               )}
 

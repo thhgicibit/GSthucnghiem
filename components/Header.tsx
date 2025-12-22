@@ -14,7 +14,7 @@ const Header: React.FC = () => {
         >
           <div className="flex items-center">
              <span className="text-2xl md:text-3xl mr-2">🌿</span>
-             <span className="text-xl md:text-2xl font-black tracking-tighter text-emerald-600">GreenScore</span>
+             <span className="text-xl md:text-2xl font-black tracking-tighter text-emerald-600">ĐIỂM XANH</span>
           </div>
         </div>
 

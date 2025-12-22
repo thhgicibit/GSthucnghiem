@@ -50,6 +50,16 @@ const Checkout: React.FC = () => {
     return 0;
   };
 
+  // Helper to format price with dots as thousand separators and Dong symbol
+  const formatPrice = (amount: number) => {
+    return (
+      <>
+        <span className="underline decoration-1 underline-offset-2 decoration-current">₫</span>
+        {amount.toLocaleString('vi-VN')}
+      </>
+    );
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 animate-slideUp overflow-hidden">
       {/* Address Section */}
@@ -90,19 +100,19 @@ const Checkout: React.FC = () => {
           
           <div className="flex w-full md:col-span-6 justify-between items-center md:contents">
             <div className="md:hidden text-[10px] font-black uppercase text-slate-400">Giá:</div>
-            <div className="md:col-span-2 md:text-center font-bold text-slate-700 text-sm">₫{activeProduct?.price.toLocaleString()}</div>
+            <div className="md:col-span-2 md:text-center font-bold text-slate-700 text-sm">{formatPrice(activeProduct?.price || 0)}</div>
             
             <div className="md:hidden text-[10px] font-black uppercase text-slate-400 ml-auto md:ml-0 mr-2">SL:</div>
             <div className="md:col-span-2 md:text-center font-bold text-slate-700 text-sm">1</div>
             
-            <div className="md:col-span-2 text-right font-black text-slate-800 text-base md:text-lg">₫{activeProduct?.price.toLocaleString()}</div>
+            <div className="md:col-span-2 text-right font-black text-slate-800 text-base md:text-lg">{formatPrice(activeProduct?.price || 0)}</div>
           </div>
         </div>
       </div>
 
       {/* Logistics Selection */}
       <div className="bg-[#fafdff] p-4 md:p-8 border-y border-slate-100">
-        <h3 className="font-black text-[10px] uppercase tracking-widest text-slate-400 mb-4">Đơn vị vận chuyển</h3>
+        <h3 className="font-black text-[10px] uppercase tracking-widest text-slate-400 mb-4">Hình thức vận chuyển</h3>
         <div className="space-y-4">
           {/* Green Logistics */}
           <div 
@@ -114,13 +124,13 @@ const Checkout: React.FC = () => {
                 <span className="text-2xl md:text-3xl">🚲</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <p className="font-black text-slate-800 text-xs md:text-sm">Vận Chuyển Xanh</p>
-                    <span className="bg-emerald-600 text-white text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">+25 GS</span>
+                    <p className="font-black text-slate-800 text-xs md:text-sm">Vận chuyển xanh</p>
+                    <span className="bg-emerald-600 text-white text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">+25 💧</span>
                   </div>
-                  <p className="text-[10px] md:text-xs text-slate-500 leading-snug">Xe điện & bao bì giấy. <span className="font-bold text-emerald-600">3-5 ngày</span>.</p>
+                  <p className="text-[10px] md:text-xs text-slate-500 leading-snug">Sử dụng phương tiện chạy điện. Thời gian: 3-5 ngày.</p>
                 </div>
               </div>
-              <p className="font-black text-emerald-600 text-base md:text-lg ml-2">₫25k</p>
+              <p className="font-black text-emerald-600 text-base md:text-lg ml-2">{formatPrice(25000)}</p>
             </div>
           </div>
 
@@ -133,11 +143,11 @@ const Checkout: React.FC = () => {
               <div className="flex items-center space-x-3 md:space-x-4">
                 <span className="text-2xl md:text-3xl">🚚</span>
                 <div>
-                  <p className="font-black text-slate-800 text-xs md:text-sm mb-1">Tiêu Chuẩn</p>
-                  <p className="text-[10px] md:text-xs text-slate-500">1-2 ngày.</p>
+                  <p className="font-black text-slate-800 text-xs md:text-sm mb-1">Giao hàng Tiêu chuẩn</p>
+                  <p className="text-[10px] md:text-xs text-slate-500">Dịch vụ giao hàng truyền thống. Thời gian: 2-3 ngày.</p>
                 </div>
               </div>
-              <span className="font-black text-slate-800 text-base md:text-lg">₫22k</span>
+              <span className="font-black text-slate-800 text-base md:text-lg">{formatPrice(22000)}</span>
             </div>
           </div>
 
@@ -150,11 +160,11 @@ const Checkout: React.FC = () => {
               <div className="flex items-center space-x-3 md:space-x-4">
                 <span className="text-2xl md:text-3xl">⚡</span>
                 <div>
-                  <p className="font-black text-slate-800 text-xs md:text-sm mb-1">Hỏa Tốc</p>
-                  <p className="text-[10px] md:text-xs text-slate-500">Giao nhanh trong 24h.</p>
+                  <p className="font-black text-slate-800 text-xs md:text-sm mb-1">Giao hàng Hỏa tốc</p>
+                  <p className="text-[10px] md:text-xs text-slate-500">Dịch vụ giao ngay trong ngày. Thời gian: 2-4 giờ.</p>
                 </div>
               </div>
-              <span className="font-black text-slate-800 text-base md:text-lg">₫35k</span>
+              <span className="font-black text-slate-800 text-base md:text-lg">{formatPrice(35000)}</span>
             </div>
           </div>
         </div>
@@ -164,16 +174,16 @@ const Checkout: React.FC = () => {
       <div className="p-6 md:p-10 bg-white border-t border-slate-50 flex flex-col items-center md:items-end space-y-6">
         <div className="w-full md:w-auto grid grid-cols-2 gap-x-4 md:gap-x-12 gap-y-2 md:gap-y-3 text-xs md:text-sm text-right">
           <span className="text-slate-400 font-bold uppercase text-[9px] md:text-[10px] tracking-widest self-center">Tiền hàng:</span>
-          <span className="text-slate-800 font-bold">₫{activeProduct?.price.toLocaleString()}</span>
+          <span className="text-slate-800 font-bold">{formatPrice(activeProduct?.price || 0)}</span>
           
           <span className="text-slate-400 font-bold uppercase text-[9px] md:text-[10px] tracking-widest self-center">Phí ship:</span>
-          <span className="text-slate-800 font-bold">₫{getShippingFee().toLocaleString()}</span>
+          <span className="text-slate-800 font-bold">{formatPrice(getShippingFee())}</span>
           
           <div className="col-span-2 border-t border-slate-100 my-1 md:my-2"></div>
           
           <span className="text-slate-800 font-black text-base md:text-lg uppercase tracking-tighter self-center">Tổng:</span>
           <span className="text-2xl md:text-3xl text-emerald-600 font-black tracking-tighter">
-            ₫{(activeProduct?.price + getShippingFee()).toLocaleString()}
+            {formatPrice((activeProduct?.price || 0) + getShippingFee())}
           </span>
         </div>
         

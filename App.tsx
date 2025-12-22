@@ -26,7 +26,7 @@ const MainContent: React.FC = () => {
       return (
         <div className="space-y-6 animate-slideUp">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-4 gap-2">
-            <h1 className="text-xl font-bold text-slate-800">Cộng Đồng GreenScore</h1>
+            <h1 className="text-xl font-bold text-slate-800">Cộng Đồng ĐIỂM XANH</h1>
             <button 
               onClick={() => setCurrentStep('shop')}
               className="text-emerald-600 font-bold text-sm hover:underline"
@@ -55,11 +55,11 @@ const MainContent: React.FC = () => {
           <div className="max-w-md mx-auto bg-emerald-50 p-4 md:p-6 rounded-2xl border border-emerald-100">
             <div className="flex flex-row justify-around py-4">
               <div className="text-center">
-                <p className="text-2xl md:text-3xl font-black text-emerald-600">+{activeProduct?.isGreen ? activeProduct.greenPoints : 0}</p>
+                <p className="text-2xl md:text-3xl font-black text-emerald-600">+{activeProduct?.isGreen ? activeProduct.greenPoints : 0} 💧</p>
                 <p className="text-[9px] text-emerald-700 uppercase font-black tracking-widest mt-1">Sản phẩm</p>
               </div>
               <div className="text-center border-l border-emerald-200 pl-4 md:pl-8">
-                <p className="text-2xl md:text-3xl font-black text-emerald-600">+{selectedLogistics === 'green' ? 25 : 0}</p>
+                <p className="text-2xl md:text-3xl font-black text-emerald-600">+{selectedLogistics === 'green' ? 25 : 0} 💧</p>
                 <p className="text-[9px] text-emerald-700 uppercase font-black tracking-widest mt-1">Logistics</p>
               </div>
             </div>
@@ -111,10 +111,10 @@ const MainContent: React.FC = () => {
                   <h1 className="text-2xl font-bold text-slate-800 leading-tight">{activeProduct.name}</h1>
                   
                   <div className="bg-slate-50 p-4 md:p-6 rounded-xl flex items-center justify-between">
-                     <span className="text-slate-800 text-2xl md:text-3xl font-black">₫{activeProduct.price.toLocaleString()}</span>
+                     <span className="text-slate-800 text-2xl md:text-3xl font-black">₫{activeProduct.price.toLocaleString('vi-VN')}</span>
                      {activeProduct.isGreen && (
                         <div className="text-right">
-                           <p className="text-emerald-600 font-black text-xl">+{activeProduct.greenPoints} GS</p>
+                           <p className="text-emerald-600 font-black text-xl">+{activeProduct.greenPoints} 💧</p>
                            <p className="text-[9px] text-emerald-700 uppercase font-black tracking-tighter">Thưởng lựa chọn xanh</p>
                         </div>
                      )}
@@ -160,7 +160,7 @@ const MainContent: React.FC = () => {
                <div className="flex items-center space-x-4">
                  <span className="text-2xl">💧</span>
                  <div>
-                   <p className="font-black text-sm">+{showPointToast} GS!</p>
+                   <p className="font-black text-sm">+{showPointToast} 💧!</p>
                    <p className="text-[9px] opacity-80 uppercase font-black">Bạn đã đóng góp 1 giọt nước</p>
                  </div>
                </div>
@@ -213,9 +213,9 @@ const AppWrapper: React.FC = () => {
         
         <div className="bg-white p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl w-full max-w-md animate-slideUp relative z-10">
           <div className="text-5xl mb-6">🌿</div>
-          <h1 className="text-3xl md:text-4xl font-black text-emerald-600 mb-2 tracking-tighter">GreenScore</h1>
+          <h1 className="text-3xl md:text-4xl font-black text-emerald-600 mb-2 tracking-tighter">ĐIỂM XANH</h1>
           <p className="text-slate-500 mb-10 text-sm md:text-base leading-relaxed font-medium">
-            Nghiên cứu khoa học về tác động của Game hóa lên tiêu dùng.
+            Nền tảng mua sắm trực tuyến mô phỏng
           </p>
           
           <div className="space-y-6 text-left">
@@ -225,7 +225,7 @@ const AppWrapper: React.FC = () => {
                 type="text" 
                 value={localName}
                 onChange={(e) => setLocalName(e.target.value)}
-                placeholder="Nickname của bạn..." 
+                placeholder="nickname của bạn..." 
                 className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-xl md:text-2xl font-bold"
               />
             </div>

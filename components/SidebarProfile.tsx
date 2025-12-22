@@ -21,8 +21,8 @@ const SidebarProfile: React.FC = () => {
           </div>
           <h3 className="font-bold text-white tracking-tight truncate px-2">{userName || 'Người tham gia'}</h3>
           <div className="mt-2 text-center">
-            <p className="text-[9px] font-black text-white/60 uppercase tracking-widest mb-1">Điểm Green Score</p>
-            <h1 className="text-4xl font-black text-white tracking-tighter">{greenScore}</h1>
+            <p className="text-[9px] font-black text-white/60 uppercase tracking-widest mb-1">Điểm Xanh</p>
+            <h1 className="text-4xl font-black text-white tracking-tighter">{greenScore} 💧</h1>
           </div>
         </div>
 
@@ -42,7 +42,7 @@ const SidebarProfile: React.FC = () => {
                   <span className="text-lg md:text-xl">{badge.icon}</span>
                   <span className="text-[7px] md:text-[8px] font-black mt-0.5 text-center leading-tight">{badge.label}</span>
                   {!isEarned && (
-                    <span className="text-[6px] font-bold text-slate-500 mt-1">+{pointsNeeded} GS</span>
+                    <span className="text-[6px] font-bold text-slate-500 mt-1">+{pointsNeeded} 💧</span>
                   )}
                 </div>
               );
@@ -95,7 +95,7 @@ const SidebarProfile: React.FC = () => {
                 </span>
                 <span className="max-w-[110px] truncate">{user.name}</span>
               </div>
-              <span className="font-black tracking-tighter whitespace-nowrap">{user.score} GS</span>
+              <span className="font-black tracking-tighter whitespace-nowrap">{user.score} 💧</span>
             </div>
           ))}
         </div>
