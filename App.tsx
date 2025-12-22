@@ -196,7 +196,7 @@ const AppWrapper: React.FC = () => {
 
   const handleStart = () => {
     if (localName.trim().length < 2) {
-      alert('Vui lòng nhập định danh để bắt đầu.');
+      alert('Vui lòng nhập tên người dùng để bắt đầu.');
       return;
     }
     context.setUserName(localName);
@@ -214,24 +214,24 @@ const AppWrapper: React.FC = () => {
         <div className="bg-white p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl w-full max-w-md animate-slideUp relative z-10">
           <div className="text-5xl mb-6">🌿</div>
           <h1 className="text-3xl md:text-4xl font-black text-emerald-600 mb-2 tracking-tighter">GreenScore</h1>
-          <p className="text-slate-400 mb-10 text-xs md:text-sm leading-relaxed font-medium">
+          <p className="text-slate-500 mb-10 text-sm md:text-base leading-relaxed font-medium">
             Nghiên cứu khoa học về tác động của Game hóa lên tiêu dùng.
           </p>
           
           <div className="space-y-6 text-left">
             <div>
-              <label className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] block mb-3 ml-1">Định danh người tham gia</label>
+              <label className="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-3 ml-1">Tên người dùng</label>
               <input 
                 type="text" 
                 value={localName}
                 onChange={(e) => setLocalName(e.target.value)}
-                placeholder="Nhập mã số của bạn..." 
-                className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-lg md:text-xl font-bold"
+                placeholder="Nickname của bạn..." 
+                className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-xl md:text-2xl font-bold"
               />
             </div>
             <button 
               onClick={handleStart}
-              className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all text-[10px] md:text-xs tracking-[0.3em] uppercase mt-2"
+              className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all text-[12px] md:text-sm tracking-[0.3em] uppercase mt-2"
             >
               Bắt đầu tham gia
             </button>
