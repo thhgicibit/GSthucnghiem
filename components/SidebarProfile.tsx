@@ -5,7 +5,11 @@ import { BADGES } from '../constants';
 const SidebarProfile: React.FC = () => {
   const { greenScore, userName, wateringCount } = useAppContext();
   
+  // 50 cây xanh, giả định mỗi cây cần 500 giọt nước
+  const communityGoal = 25000; 
   const totalCommunityWater = 12450 + wateringCount;
+  const remainingDrops = Math.max(0, communityGoal - totalCommunityWater);
+  const progressPercent = ((totalCommunityWater / communityGoal) * 100).toFixed(1);
   const communityMemberCount = 245;
 
   return (
@@ -26,24 +30,24 @@ const SidebarProfile: React.FC = () => {
           </div>
         </div>
 
-        {/* 2. BẢNG HUY HIỆU VỚI TIẾN ĐỘ */}
+        {/* 2. BẢNG DANH HIỆU (Core Drive 2 - Hiển thị tỷ lệ điểm) */}
         <div className="p-4 border-b border-slate-50 bg-slate-50/30">
           <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1 text-center md:text-left">Cấp bậc danh hiệu</p>
           <div className="flex gap-2 justify-between">
             {BADGES.map(badge => {
               const isEarned = greenScore >= badge.requirement;
-              const pointsNeeded = badge.requirement - greenScore;
               
               return (
                 <div 
                   key={badge.id} 
-                  className={`flex-1 flex flex-col items-center justify-center rounded-xl p-1 transition-all border ${isEarned ? 'bg-white border-emerald-200 text-emerald-600 shadow-sm scale-105' : 'bg-slate-100/50 border-transparent opacity-40 grayscale'}`}
+                  className={`flex-1 flex flex-col items-center justify-center rounded-xl p-1 transition-all border ${isEarned ? 'bg-white border-emerald-200 text-emerald-600 shadow-sm' : 'bg-slate-100/50 border-transparent opacity-40 grayscale'}`}
                 >
                   <span className="text-lg md:text-xl">{badge.icon}</span>
-                  <span className="text-[7px] md:text-[8px] font-black mt-0.5 text-center leading-tight">{badge.label}</span>
-                  {!isEarned && (
-                    <span className="text-[6px] font-bold text-slate-500 mt-1">+{pointsNeeded} 💧</span>
-                  )}
+                  <span className="text-[7px] font-black mt-0.5 text-center leading-tight">{badge.label}</span>
+                  {/* Hiển thị tỷ lệ điểm (current/required) như yêu cầu */}
+                  <span className={`text-[6.5px] font-bold mt-1 ${isEarned ? 'text-emerald-500' : 'text-slate-400'}`}>
+                    {greenScore}/{badge.requirement}
+                  </span>
                 </div>
               );
             })}
@@ -51,27 +55,34 @@ const SidebarProfile: React.FC = () => {
         </div>
         
         <div className="p-4 md:p-6 bg-white space-y-4">
-          {/* 3. DỰ ÁN CỘNG ĐỒNG */}
+          {/* 3. DỰ ÁN CỘNG ĐỒNG (Core Drive 1 - Trực quan hóa sứ mệnh) */}
           <div className="bg-emerald-50 p-4 md:p-5 rounded-2xl space-y-4">
             <div className="flex items-center space-x-3">
               <span className="text-2xl md:text-3xl animate-community">🌳</span>
               <div className="flex-1">
-                <p className="text-[10px] font-black text-emerald-800 uppercase tracking-tight leading-none">Cây Cộng Đồng</p>
-                <p className="text-[9px] md:text-[10px] text-emerald-600 mt-1 font-medium italic">Bạn và {communityMemberCount} người khác đang nuôi dưỡng cây xanh</p>
+                <p className="text-[10px] font-black text-emerald-800 uppercase tracking-tight leading-none">Dự án Cần Giờ</p>
+                <p className="text-[9px] text-emerald-600 mt-1 font-bold">Mục tiêu: Trồng 50 cây xanh</p>
               </div>
             </div>
             
+            <p className="text-[9px] text-emerald-700 mt-1 font-medium italic leading-snug">
+              Bạn và {communityMemberCount} người khác đang chung tay trồng cây xanh.
+            </p>
+
             <div className="space-y-2">
                <div className="h-1.5 w-full bg-emerald-200/50 rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-emerald-600 transition-all duration-1000"
-                    style={{ width: `${(totalCommunityWater % 1000)/10}%` }}
+                    style={{ width: `${progressPercent}%` }}
                   ></div>
                </div>
-               <div className="flex justify-between text-[8px] font-black text-emerald-700 uppercase">
-                  <span>Tiến độ</span>
-                  <span>{((totalCommunityWater % 1000)/10).toFixed(1)}%</span>
+               <div className="flex justify-between text-[8px] font-black text-emerald-700 uppercase tracking-tighter">
+                  <span>Tiến độ: {progressPercent}%</span>
+                  <span>Thiếu {remainingDrops.toLocaleString()} 💧</span>
                </div>
+               <p className="text-[7.5px] text-emerald-600 font-bold text-center mt-1">
+                  Chỉ còn {remainingDrops.toLocaleString()} giọt nước nữa để hoàn thành 50 cây xanh tại Cần Giờ!
+               </p>
             </div>
           </div>
         </div>

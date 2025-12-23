@@ -44,13 +44,24 @@ const MainContent: React.FC = () => {
     }
 
     if (currentStep === 'success') {
+      const plasticSaved = (activeProduct?.isGreen ? 0.5 : 0) + (selectedLogistics === 'green' ? 0.2 : 0);
+      const totalEarned = (activeProduct?.isGreen ? activeProduct.greenPoints : 0) + (selectedLogistics === 'green' ? 25 : 0);
+
       return (
         <div className="bg-white p-6 md:p-12 rounded-xl shadow-sm border border-slate-100 text-center space-y-6 animate-slideUp">
           <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-community">
             <span className="text-4xl">💧</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Cảm ơn {userName}!</h1>
-          <p className="text-slate-500 max-w-sm mx-auto text-sm">Hành động của bạn đã đóng góp giọt nước quý giá cho cây xanh cộng đồng.</p>
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Chúc mừng bạn!</h1>
+          <div className="space-y-2">
+            <p className="text-emerald-600 font-black text-lg">
+              Bạn đã góp phần giảm được {plasticSaved.toFixed(1)}kg rác thải nhựa!
+            </p>
+            <p className="text-slate-500 max-w-sm mx-auto text-sm leading-relaxed">
+              Hành động này đã mang về cho bạn <span className="font-bold text-emerald-600">{totalEarned} giọt nước</span>. 
+              Hãy tiếp tục tích lũy để thăng hạng và đóng góp cho cộng đồng!
+            </p>
+          </div>
           
           <div className="max-w-md mx-auto bg-emerald-50 p-4 md:p-6 rounded-2xl border border-emerald-100">
             <div className="flex flex-row justify-around py-4">
@@ -70,7 +81,7 @@ const MainContent: React.FC = () => {
               onClick={resetFlow}
               className="px-8 py-3 bg-white border border-slate-200 text-slate-600 font-bold rounded-lg hover:bg-slate-50 transition-colors text-sm"
             >
-              Tiếp tục trải nghiệm
+              Tiếp tục mua sắm
             </button>
             <button 
               onClick={() => setCurrentStep('social')}
