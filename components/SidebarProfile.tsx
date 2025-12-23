@@ -44,7 +44,7 @@ const SidebarProfile: React.FC = () => {
                 >
                   <span className="text-lg md:text-xl">{badge.icon}</span>
                   <span className="text-[7px] font-black mt-0.5 text-center leading-tight">{badge.label}</span>
-                  {/* Hiển thị tỷ lệ điểm (current/required) như yêu cầu */}
+                  {/* Hiển thị tỷ lệ điểm (current/required) */}
                   <span className={`text-[6.5px] font-bold mt-1 ${isEarned ? 'text-emerald-500' : 'text-slate-400'}`}>
                     {greenScore}/{badge.requirement}
                   </span>

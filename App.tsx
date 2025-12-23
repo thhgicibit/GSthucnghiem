@@ -216,36 +216,65 @@ const AppWrapper: React.FC = () => {
 
   if (context.currentStep === 'login') {
     return (
-      <div className="min-h-screen bg-emerald-600 flex flex-col items-center justify-center p-6 text-center text-white relative overflow-hidden">
+      <div className="min-h-screen bg-emerald-600 flex flex-col items-center justify-center p-4 md:p-6 text-center text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
           <div className="absolute top-[-10%] left-[-10%] w-80 h-80 bg-white rounded-full blur-3xl"></div>
           <div className="absolute bottom-[-10%] right-[-10%] w-80 h-80 bg-white rounded-full blur-3xl"></div>
         </div>
         
-        <div className="bg-white p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl w-full max-w-md animate-slideUp relative z-10">
-          <div className="text-5xl mb-6">🌿</div>
-          <h1 className="text-3xl md:text-4xl font-black text-emerald-600 mb-2 tracking-tighter">ĐIỂM XANH</h1>
-          <p className="text-slate-500 mb-10 text-sm md:text-base leading-relaxed font-medium">
-            Nền tảng mua sắm trực tuyến mô phỏng
-          </p>
+        <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl w-full max-w-xl animate-slideUp relative z-10 flex flex-col">
+          <div className="text-5xl mb-4">🌿</div>
+          <h1 className="text-3xl md:text-4xl font-black text-emerald-600 mb-2 tracking-tighter uppercase">ĐIỂM XANH</h1>
+          
+          {/* Lời chào mô phỏng (Neutral Onboarding Header) */}
+          <div className="bg-emerald-50 p-4 md:p-6 rounded-2xl mb-8 border border-emerald-100">
+            <p className="text-emerald-800 text-sm md:text-base leading-relaxed font-bold italic">
+              "Chào mừng bạn đến với mô phỏng hệ thống Điểm Xanh. Hệ thống cung cấp thông tin chi tiết về đặc tính sản phẩm và các tùy chọn vận chuyển. Sau khi hoàn tất chọn mặt hàng, hãy tiến hành xác nhận đặt hàng để kết thúc trải nghiệm. Hãy mua sắm như cách bạn vẫn thực hiện trên các sàn thương mại điện tử thông thường."
+            </p>
+          </div>
+
+          {/* Hướng dẫn quy trình 3 bước (Shopping Process Guide) */}
+          <div className="grid grid-cols-3 gap-3 md:gap-4 mb-10 text-left">
+            <div className="flex flex-col items-center text-center space-y-2">
+              <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 font-black text-xs shadow-sm">01</div>
+              <p className="text-[10px] font-black uppercase text-slate-500 tracking-tighter">Chọn sản phẩm</p>
+              <p className="text-[8px] text-slate-400 leading-tight">Tìm kiếm và xem chi tiết đặc tính các món hàng</p>
+            </div>
+            <div className="flex flex-col items-center text-center space-y-2 border-x border-slate-100 px-2">
+              <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 font-black text-xs shadow-sm">02</div>
+              <p className="text-[10px] font-black uppercase text-slate-500 tracking-tighter">Vận chuyển</p>
+              <p className="text-[8px] text-slate-400 leading-tight">Lựa chọn đơn vị vận chuyển phù hợp với nhu cầu</p>
+            </div>
+            <div className="flex flex-col items-center text-center space-y-2">
+              <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 font-black text-xs shadow-sm">03</div>
+              <p className="text-[10px] font-black uppercase text-slate-500 tracking-tighter">Thanh toán</p>
+              <p className="text-[8px] text-slate-400 leading-tight">Xác nhận đơn hàng để hoàn tất quy trình mua sắm</p>
+            </div>
+          </div>
           
           <div className="space-y-6 text-left">
             <div>
-              <label className="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-3 ml-1">Tên người dùng</label>
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-3 ml-1 text-center md:text-left">Tên hoặc Nickname của bạn</label>
               <input 
                 type="text" 
                 value={localName}
                 onChange={(e) => setLocalName(e.target.value)}
-                placeholder="nickname của bạn..." 
+                placeholder="Ví dụ: Green99..." 
                 className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-xl md:text-2xl font-bold"
               />
             </div>
-            <button 
-              onClick={handleStart}
-              className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all text-[12px] md:text-sm tracking-[0.3em] uppercase mt-2"
-            >
-              Bắt đầu tham gia
-            </button>
+            <div className="flex flex-col space-y-4">
+              <button 
+                onClick={handleStart}
+                className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all text-[12px] md:text-sm tracking-[0.3em] uppercase"
+              >
+                Bắt đầu mua sắm
+              </button>
+              {/* Chú thích nhẹ nhàng về hệ thống điểm thưởng để không gây spoil */}
+              <p className="text-center text-[9px] md:text-[10px] text-slate-400 font-medium leading-relaxed">
+                Hệ thống ghi nhận các lựa chọn có trách nhiệm bằng <span className="text-emerald-600 font-bold">'Giọt nước' (💧)</span> để vinh danh những nỗ lực vì cộng đồng trên bảng xếp hạng chung.
+              </p>
+            </div>
           </div>
         </div>
       </div>
