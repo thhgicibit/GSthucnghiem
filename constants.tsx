@@ -16,97 +16,90 @@ export const MEDALS: Medal[] = [
 
 export interface ExtendedProduct extends Product {
   shopName: string;
-  isGreenShop: boolean;
   material: string;
   category: string;
 }
 
 export const PRODUCTS: ExtendedProduct[] = [
-  // Cặp 1: Bình nước
+  // Cặp 1: Bình nước (Đối chứng tuyệt đối: Giống hệt tên và mô tả)
   {
     id: '1a',
-    name: 'Bình nước giữ nhiệt làm từ bã mía tái chế CupNatural',
-    price: 125000,
-    image: 'https://bamboovietbac.com/wp-content/uploads/2023/12/z4859258551102_cc2e37c6f60c2161f577b0d544c8f3b0.jpg',
+    name: 'Bình nước giữ nhiệt 500ml',
+    price: 135000,
+    image: 'https://th.bing.com/th/id/R.d865c7fa82657b20d900379ef5135948?rik=zGZc9d2mwLppkQ&riu=http%3a%2f%2fwww.sieuthinhua.vn%2fmedia%2fproduct%2f11203_0_binh_the_thao_500ml_2_scaled.jpg&ehk=KAM0%2biEd35tOtlxd3AKRwgUNMReUTi96X4nbD7CgxfI%3d&risl=&pid=ImgRaw&r=0',
     isGreen: true,
     sellerRating: 4.9,
     greenPoints: 30,
-    description: 'Chất liệu bã mía tự nhiên, phân hủy sinh học hoàn toàn.',
+    description: 'Bình nước giữ nhiệt cao cấp dung tích 500ml, thiết kế tối giản, giữ nhiệt lên đến 12 giờ. Phù hợp cho mọi nhu cầu sử dụng hàng ngày.',
     shopName: 'Gia Dụng Anh Minh',
-    isGreenShop: true,
-    material: 'Bã mía tái chế',
+    material: 'Nhựa bảo vệ môi trường',
     category: 'Bình nước'
   },
   {
     id: '1b',
-    name: 'Bình nước nhựa thể thao Durable Plastic 500ml',
-    price: 115000,
+    name: 'Bình nước giữ nhiệt 500ml',
+    price: 125000,
     image: 'https://th.bing.com/th/id/R.d865c7fa82657b20d900379ef5135948?rik=zGZc9d2mwLppkQ&riu=http%3a%2f%2fwww.sieuthinhua.vn%2fmedia%2fproduct%2f11203_0_binh_the_thao_500ml_2_scaled.jpg&ehk=KAM0%2biEd35tOtlxd3AKRwgUNMReUTi96X4nbD7CgxfI%3d&risl=&pid=ImgRaw&r=0',
     isGreen: false,
-    sellerRating: 4.7,
+    sellerRating: 4.9,
     greenPoints: 0,
-    description: 'Nhựa PET truyền thống, độ bền cao.',
-    shopName: 'Bách Hóa Tổng Hợp',
-    isGreenShop: false,
-    material: 'Nhựa PET',
+    description: 'Bình nước giữ nhiệt cao cấp dung tích 500ml, thiết kế tối giản, giữ nhiệt lên đến 12 giờ. Phù hợp cho mọi nhu cầu sử dụng hàng ngày.',
+    shopName: 'Gia Dụng Anh Minh',
+    material: 'Nhựa ABS',
     category: 'Bình nước'
   },
   // Cặp 2: Sổ tay
   {
     id: '2a',
-    name: 'Sổ tay bìa tre tự nhiên - Giấy tái chế không tẩy trắng',
-    price: 85000,
-    image: 'https://image.dhgate.com/0x0/f2/albu/g6/M00/8F/A1/rBVaR1u9XNqAM66lAADWgs1TeZo289.jpg',
+    name: 'Sổ tay ghi chép',
+    price: 95000,
+    image: 'https://image.made-in-china.com/2f0j00ulRYpIkqqLbW/PP-Cover-Spiral-Notebook-with-Custom-Logo.jpg',
     isGreen: true,
     sellerRating: 4.8,
     greenPoints: 20,
-    description: 'Bìa làm từ tre thật, giấy thân thiện môi trường.',
+    description: 'Sổ tay khổ A5, 160 trang giấy định lượng 80gsm. Bìa cứng chắc chắn, phong cách cổ điển, phù hợp cho ghi chép công việc và học tập.',
     shopName: 'Văn Phòng Phẩm Hà Nội',
-    isGreenShop: true,
-    material: 'Tre & Giấy tái chế',
+    material: 'Giấy tái chế',
     category: 'Sổ tay'
   },
   {
     id: '2b',
-    name: 'Sổ tay bìa da PU cao cấp - Giấy trắng chống lóa',
-    price: 89000,
-    image: 'https://cf.shopee.vn/file/vn-11134207-7r98o-lleeugp916eu61',
+    name: 'Sổ tay ghi chép',
+    price: 85000,
+    image: 'https://image.made-in-china.com/2f0j00ulRYpIkqqLbW/PP-Cover-Spiral-Notebook-with-Custom-Logo.jpg',
     isGreen: false,
     sellerRating: 4.8,
     greenPoints: 0,
-    description: 'Bìa da công nghiệp, sang trọng hiện đại.',
-    shopName: 'Phụ Kiện Văn Phòng',
-    isGreenShop: false,
-    material: 'Da PU & Giấy trắng',
+    description: 'Sổ tay khổ A5, 160 trang giấy định lượng 80gsm. Bìa cứng chắc chắn, phong cách cổ điển, phù hợp cho ghi chép công việc và học tập.',
+    shopName: 'Văn Phòng Phẩm Hà Nội',
+    material: 'Giấy trắng',
     category: 'Sổ tay'
   },
   // Cặp 3: Túi xách
   {
     id: '3a',
-    name: 'Túi vải Canvas tự nhiên - Sợi bông mộc',
-    price: 45000,
-    image: 'https://thoppiaupload.s3.amazonaws.com/wp-content/uploads/2022/03/textura_cotton_tote_bag_beige_grey_1-620x644.jpg',
+    name: 'Túi Tote Basic',
+    price: 55000,
+    image: 'https://goudainc.com/wp-content/uploads/2019/08/6oz-Cotton-Tote-with-Gusset-Natural-jpg.webp',
     isGreen: true,
     sellerRating: 4.9,
     greenPoints: 15,
-    description: 'Vải cotton 100% không nhuộm hóa chất.',
+    description: 'Túi vải Canvas kích thước 35x40cm, quai đeo chắc chắn. Thiết kế đơn giản, thời trang, tiện lợi khi đi học, đi chơi hoặc mua sắm.',
     shopName: 'Cửa Hàng Gia Đình',
-    isGreenShop: true,
     material: 'Vải Canvas',
     category: 'Túi'
   },
   {
     id: '3b',
-    name: 'Túi nilon quai xách siêu bền (Set 50 túi)',
-    price: 35000,
-    image: 'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lsy1qqqd8hqcc1',
+    name: 'Túi Tote Basic',
+    price: 45000,
+    image: 'https://goudainc.com/wp-content/uploads/2019/08/6oz-Cotton-Tote-with-Gusset-Natural-jpg.webp',
     isGreen: false,
-    sellerRating: 4.5,
+    sellerRating: 4.9,
     greenPoints: 0,
-    description: 'Túi nilon tiện dụng cho mọi nhu cầu.',
-    shopName: 'Tạp Hóa Tiện Lợi',
-    isGreenShop: false,
-    material: 'Nilon',
+    description: 'Túi vải Canvas kích thước 35x40cm, quai đeo chắc chắn. Thiết kế đơn giản, thời trang, tiện lợi khi đi học, đi chơi hoặc mua sắm.',
+    shopName: 'Cửa Hàng Gia Đình',
+    material: 'Vải Dù',
     category: 'Túi'
   }
 ];

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { AppProvider, useAppContext } from './AppContext';
 import Header from './components/Header';
@@ -7,6 +8,7 @@ import Checkout from './components/Checkout';
 import Leaderboard from './components/Leaderboard';
 import Badges from './components/Badges';
 import Chat from './components/Chat';
+import RedeemStore from './components/RedeemStore';
 import { dataService } from './dataService';
 
 const MainContent: React.FC = () => {
@@ -17,6 +19,8 @@ const MainContent: React.FC = () => {
     setActiveProduct, 
     setCurrentStep, 
     selectedLogistics,
+    selectedPackaging,
+    setSelectedPackaging,
     resetFlow,
     userName
   } = useAppContext();
@@ -43,9 +47,66 @@ const MainContent: React.FC = () => {
       );
     }
 
+    if (currentStep === 'redeem') {
+      return <RedeemStore />;
+    }
+
+    if (currentStep === 'packaging') {
+      return (
+        <div className="bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-slate-100 animate-slideUp">
+          <button onClick={() => setCurrentStep('shop')} className="mb-6 text-emerald-600 text-sm font-bold flex items-center hover:translate-x-[-4px] transition-all">
+            ← Trở lại sản phẩm
+          </button>
+          
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Chọn Hình Thức Đóng Gói</h2>
+            <p className="text-sm text-slate-400 mt-2">Góp phần bảo vệ môi trường từ bước đóng gói</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            {/* Eco Packaging */}
+            <div 
+              onClick={() => setSelectedPackaging('green')}
+              className={`p-6 border-2 rounded-3xl cursor-pointer transition-all flex flex-col items-center text-center space-y-4 ${selectedPackaging === 'green' ? 'border-emerald-500 bg-emerald-50 shadow-lg scale-105' : 'border-slate-100 hover:border-emerald-200 bg-white'}`}
+            >
+              <div className="text-5xl">📦🍃</div>
+              <div>
+                <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest">Bao bì xanh</h3>
+                <span className="inline-block bg-emerald-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase mt-2 shadow-sm">+10 💧</span>
+              </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed">Sử dụng hộp giấy tái chế và băng keo sinh học. Hạn chế tối đa rác thải nhựa.</p>
+            </div>
+
+            {/* Standard Packaging */}
+            <div 
+              onClick={() => setSelectedPackaging('standard')}
+              className={`p-6 border-2 rounded-3xl cursor-pointer transition-all flex flex-col items-center text-center space-y-4 ${selectedPackaging === 'standard' ? 'border-slate-800 bg-slate-50 shadow-lg scale-105' : 'border-slate-100 hover:border-slate-200 bg-white'}`}
+            >
+              <div className="text-5xl">📦</div>
+              <div>
+                <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest">Đóng gói tiêu chuẩn</h3>
+                <span className="inline-block bg-slate-200 text-slate-500 text-[9px] font-black px-3 py-1 rounded-full uppercase mt-2">0 💧</span>
+              </div>
+              <p className="text-[11px] text-slate-500 leading-relaxed">Đóng gói theo quy trình thông thường bằng hộp carton và màng bọc plastic.</p>
+            </div>
+          </div>
+
+          <div className="mt-12 flex justify-center">
+            <button 
+              onClick={() => setCurrentStep('checkout')}
+              disabled={!selectedPackaging}
+              className={`px-16 py-4 rounded-xl font-black uppercase text-xs tracking-[0.2em] shadow-xl transition-all ${selectedPackaging ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}
+            >
+              Tiếp tục thanh toán
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     if (currentStep === 'success') {
-      const plasticSaved = (activeProduct?.isGreen ? 0.5 : 0) + (selectedLogistics === 'green' ? 0.2 : 0);
-      const totalEarned = (activeProduct?.isGreen ? activeProduct.greenPoints : 0) + (selectedLogistics === 'green' ? 25 : 0);
+      const plasticSaved = (activeProduct?.isGreen ? 0.5 : 0) + (selectedLogistics === 'green' ? 0.2 : 0) + (selectedPackaging === 'green' ? 0.1 : 0);
+      const totalEarned = (activeProduct?.isGreen ? activeProduct.greenPoints : 0) + (selectedLogistics === 'green' ? 25 : 0) + (selectedPackaging === 'green' ? 10 : 0);
 
       return (
         <div className="bg-white p-6 md:p-12 rounded-xl shadow-sm border border-slate-100 text-center space-y-6 animate-slideUp">
@@ -64,13 +125,17 @@ const MainContent: React.FC = () => {
           </div>
           
           <div className="max-w-md mx-auto bg-emerald-50 p-4 md:p-6 rounded-2xl border border-emerald-100">
-            <div className="flex flex-row justify-around py-4">
+            <div className="flex flex-row justify-around py-4 flex-wrap gap-4">
               <div className="text-center">
-                <p className="text-2xl md:text-3xl font-black text-emerald-600">+{activeProduct?.isGreen ? activeProduct.greenPoints : 0} 💧</p>
+                <p className="text-xl md:text-2xl font-black text-emerald-600">+{activeProduct?.isGreen ? activeProduct.greenPoints : 0} 💧</p>
                 <p className="text-[9px] text-emerald-700 uppercase font-black tracking-widest mt-1">Sản phẩm</p>
               </div>
-              <div className="text-center border-l border-emerald-200 pl-4 md:pl-8">
-                <p className="text-2xl md:text-3xl font-black text-emerald-600">+{selectedLogistics === 'green' ? 25 : 0} 💧</p>
+              <div className="text-center border-l border-emerald-200 pl-4">
+                <p className="text-xl md:text-2xl font-black text-emerald-600">+{selectedPackaging === 'green' ? 10 : 0} 💧</p>
+                <p className="text-[9px] text-emerald-700 uppercase font-black tracking-widest mt-1">Đóng gói</p>
+              </div>
+              <div className="text-center border-l border-emerald-200 pl-4">
+                <p className="text-xl md:text-2xl font-black text-emerald-600">+{selectedLogistics === 'green' ? 25 : 0} 💧</p>
                 <p className="text-[9px] text-emerald-700 uppercase font-black tracking-widest mt-1">Logistics</p>
               </div>
             </div>
@@ -111,11 +176,6 @@ const MainContent: React.FC = () => {
                 </div>
                 <div className="w-full md:w-1/2 space-y-6">
                   <div className="flex items-center space-x-3">
-                    {activeProduct.isGreenShop ? (
-                      <span className="bg-emerald-100 text-emerald-700 text-[9px] font-black px-2 py-1 rounded uppercase tracking-widest">☘️ Shop Xanh</span>
-                    ) : (
-                      <span className="bg-slate-100 text-slate-500 text-[9px] font-black px-2 py-1 rounded uppercase tracking-widest">Shop Tiêu Chuẩn</span>
-                    )}
                     <span className="text-sm font-bold text-slate-400">{activeProduct.shopName}</span>
                   </div>
 
@@ -142,7 +202,7 @@ const MainContent: React.FC = () => {
 
                     <div className="flex space-x-4 pt-6">
                       <button 
-                        onClick={() => setCurrentStep('checkout')}
+                        onClick={() => setCurrentStep('packaging')}
                         className="flex-1 bg-emerald-600 text-white py-4 font-bold rounded-xl shadow-lg hover:bg-emerald-700 active:scale-95 transition-all uppercase text-xs tracking-widest"
                       >
                         Mua Ngay
@@ -185,13 +245,12 @@ const MainContent: React.FC = () => {
         <button 
           onClick={() => setCurrentStep('social')}
           className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-xl flex items-center justify-center text-xl md:text-2xl transition-all hover:scale-110 active:scale-90 ${currentStep === 'social' ? 'bg-emerald-600 text-white ring-4 ring-emerald-100' : 'bg-white text-emerald-600 border border-slate-100'}`}
-          title="Xem BXH & Cộng đồng"
+          title="Xem Bảng xếp hạng"
         >
           🏆
         </button>
       </div>
 
-      {/* Researcher Footer */}
       <footer className="py-2 px-4 md:px-8 text-[8px] text-slate-300 flex justify-end">
         <button onClick={() => dataService.exportData()} className="hover:text-slate-500 underline uppercase tracking-widest">
           Export Survey Data
@@ -222,57 +281,43 @@ const AppWrapper: React.FC = () => {
           <div className="absolute bottom-[-10%] right-[-10%] w-80 h-80 bg-white rounded-full blur-3xl"></div>
         </div>
         
-        <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl w-full max-w-xl animate-slideUp relative z-10 flex flex-col">
+        <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl w-full max-w-2xl animate-slideUp relative z-10 flex flex-col">
           <div className="text-5xl mb-4">🌿</div>
-          <h1 className="text-3xl md:text-4xl font-black text-emerald-600 mb-2 tracking-tighter uppercase">ĐIỂM XANH</h1>
+          <h1 className="text-3xl md:text-4xl font-black text-emerald-600 mb-8 tracking-tighter uppercase">ĐIỂM XANH</h1>
           
-          {/* Lời chào mô phỏng (Neutral Onboarding Header) */}
-          <div className="bg-emerald-50 p-4 md:p-6 rounded-2xl mb-8 border border-emerald-100">
-            <p className="text-emerald-800 text-sm md:text-base leading-relaxed font-bold italic">
-              "Chào mừng bạn đến với mô phỏng hệ thống Điểm Xanh. Hệ thống cung cấp thông tin chi tiết về đặc tính sản phẩm và các tùy chọn vận chuyển. Sau khi hoàn tất chọn mặt hàng, hãy tiến hành xác nhận đặt hàng để kết thúc trải nghiệm. Hãy mua sắm như cách bạn vẫn thực hiện trên các sàn thương mại điện tử thông thường."
-            </p>
-          </div>
-
-          {/* Hướng dẫn quy trình 3 bước (Shopping Process Guide) */}
-          <div className="grid grid-cols-3 gap-3 md:gap-4 mb-10 text-left">
-            <div className="flex flex-col items-center text-center space-y-2">
-              <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 font-black text-xs shadow-sm">01</div>
-              <p className="text-[10px] font-black uppercase text-slate-500 tracking-tighter">Chọn sản phẩm</p>
-              <p className="text-[8px] text-slate-400 leading-tight">Tìm kiếm và xem chi tiết đặc tính các món hàng</p>
-            </div>
-            <div className="flex flex-col items-center text-center space-y-2 border-x border-slate-100 px-2">
-              <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 font-black text-xs shadow-sm">02</div>
-              <p className="text-[10px] font-black uppercase text-slate-500 tracking-tighter">Vận chuyển</p>
-              <p className="text-[8px] text-slate-400 leading-tight">Lựa chọn đơn vị vận chuyển phù hợp với nhu cầu</p>
-            </div>
-            <div className="flex flex-col items-center text-center space-y-2">
-              <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 font-black text-xs shadow-sm">03</div>
-              <p className="text-[10px] font-black uppercase text-slate-500 tracking-tighter">Thanh toán</p>
-              <p className="text-[8px] text-slate-400 leading-tight">Xác nhận đơn hàng để hoàn tất quy trình mua sắm</p>
+          <div className="space-y-6 text-left mb-10">
+            <div className="bg-emerald-50 p-6 md:p-8 rounded-3xl border border-emerald-100 shadow-inner">
+              <h3 className="text-emerald-800 font-black text-sm md:text-base uppercase tracking-widest mb-4 flex items-center">
+                <span className="mr-2">💡</span> Giới thiệu về hệ thống
+              </h3>
+              <p className="text-emerald-900 text-[13px] md:text-sm leading-relaxed font-medium">
+                Điểm xanh là hệ thống trò chơi hóa mô phỏng do nhóm nghiên cứu thực hiện. Khi khách hàng mua sắm sản phẩm thân thiện với môi trường, sử dụng bao bì tái chế, giao hàng bằng xe điện... sẽ nhận được điểm tương ứng.
+                <br/><br/>
+                Hệ thống giúp đo lường mức độ đóng góp của bạn vào việc giảm thiểu rác thải nhựa và dấu chân carbon. Điểm tích lũy có thể dùng để đổi quà hoặc quyên góp cho các dự án cộng đồng.
+              </p>
             </div>
           </div>
           
           <div className="space-y-6 text-left">
-            <div>
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-3 ml-1 text-center md:text-left">Tên hoặc Nickname của bạn</label>
+            <div className="max-w-md mx-auto w-full">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-3 ml-1 text-center">Tên hoặc Nickname của bạn</label>
               <input 
                 type="text" 
                 value={localName}
                 onChange={(e) => setLocalName(e.target.value)}
-                placeholder="Ví dụ: Green99..." 
+                placeholder="Nhập tên để tham gia khảo sát..." 
                 className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-xl md:text-2xl font-bold"
               />
             </div>
-            <div className="flex flex-col space-y-4">
+            <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
               <button 
                 onClick={handleStart}
                 className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all text-[12px] md:text-sm tracking-[0.3em] uppercase"
               >
-                Bắt đầu mua sắm
+                Bắt đầu trải nghiệm
               </button>
-              {/* Chú thích nhẹ nhàng về hệ thống điểm thưởng để không gây spoil */}
-              <p className="text-center text-[9px] md:text-[10px] text-slate-400 font-medium leading-relaxed">
-                Hệ thống ghi nhận các lựa chọn có trách nhiệm bằng <span className="text-emerald-600 font-bold">'Giọt nước' (💧)</span> để vinh danh những nỗ lực vì cộng đồng trên bảng xếp hạng chung.
+              <p className="text-center text-[10px] text-slate-400 font-medium">
+                Dữ liệu khảo sát sẽ được sử dụng cho mục đích nghiên cứu học thuật.
               </p>
             </div>
           </div>

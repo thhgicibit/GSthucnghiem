@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAppContext } from '../AppContext';
 import { dataService, SurveyRecord } from '../dataService';
@@ -7,7 +8,8 @@ const Checkout: React.FC = () => {
     userName,
     activeProduct, 
     selectedLogistics, 
-    setSelectedLogistics, 
+    setSelectedLogistics,
+    selectedPackaging,
     addPoints, 
     setCurrentStep, 
     setActiveProduct,
@@ -18,9 +20,11 @@ const Checkout: React.FC = () => {
   const handlePlaceOrder = async () => {
     let totalEarned = 0;
     const isGreenProd = activeProduct?.isGreen ? 1 : 0;
+    const isGreenPkg = selectedPackaging === 'green' ? 1 : 0;
     const isGreenLog = selectedLogistics === 'green' ? 1 : 0;
 
     if (activeProduct?.isGreen) totalEarned += activeProduct.greenPoints;
+    if (selectedPackaging === 'green') totalEarned += 10;
     if (selectedLogistics === 'green') totalEarned += 25;
     
     const finalScore = greenScore + totalEarned;
@@ -31,6 +35,8 @@ const Checkout: React.FC = () => {
       userName: userName,
       productId: activeProduct?.id || 'unknown',
       isGreenProduct: isGreenProd,
+      packagingType: selectedPackaging || 'unknown',
+      isGreenPackaging: isGreenPkg,
       logisticsType: selectedLogistics || 'unknown',
       isGreenLogistics: isGreenLog,
       finalGreenScore: finalScore
@@ -50,7 +56,6 @@ const Checkout: React.FC = () => {
     return 0;
   };
 
-  // Helper to format price with dots as thousand separators and Dong symbol
   const formatPrice = (amount: number) => {
     return (
       <>
@@ -62,7 +67,6 @@ const Checkout: React.FC = () => {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 animate-slideUp overflow-hidden">
-      {/* Address Section */}
       <div className="p-4 md:p-8 border-b border-dashed border-slate-200 bg-slate-50/50">
         <div className="flex items-center text-emerald-600 mb-3 md:mb-4">
           <span className="text-xl mr-2">📍</span>
@@ -70,30 +74,23 @@ const Checkout: React.FC = () => {
         </div>
         <div className="flex flex-col md:flex-row font-bold text-slate-800 gap-2 items-start md:items-baseline">
           <span className="text-slate-500 font-medium text-xs md:text-sm leading-relaxed">
-            Thông tin mặc định theo kịch bản khảo sát.
+            Nguyễn Văn A | 090 123 4567 | 123 Đường X, Quận Y, TP. Hồ Chí Minh
           </span>
           <span className="text-emerald-600 font-bold text-[10px] md:text-xs cursor-not-allowed md:ml-auto opacity-40 uppercase tracking-widest">Thay Đổi</span>
         </div>
       </div>
 
-      {/* Product Summary */}
       <div className="p-4 md:p-8">
-        {/* Desktop Header Hidden on Mobile */}
-        <div className="hidden md:grid grid-cols-12 gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6 border-b pb-3">
-          <div className="col-span-6">Sản phẩm</div>
-          <div className="col-span-2 text-center">Đơn giá</div>
-          <div className="col-span-2 text-center">Số lượng</div>
-          <div className="col-span-2 text-right">Thành tiền</div>
-        </div>
-        
         <div className="flex flex-col md:grid md:grid-cols-12 gap-4 items-start md:items-center">
           <div className="w-full md:col-span-6 flex items-center space-x-4 md:space-x-5">
             <img src={activeProduct?.image} className="w-16 h-16 md:w-20 md:h-20 border border-slate-100 rounded-xl object-cover shadow-sm flex-shrink-0" />
             <div className="min-w-0">
               <p className="text-slate-800 font-bold text-xs md:text-sm leading-tight mb-2 truncate">{activeProduct?.name}</p>
-              <div className="flex items-center space-x-2">
-                <span className="text-[8px] font-black uppercase tracking-tighter text-slate-400">Phân loại:</span>
-                <span className="text-[8px] font-black uppercase tracking-tighter text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 truncate">{activeProduct?.material}</span>
+              <div className="flex flex-wrap gap-2">
+                <span className="text-[8px] font-black uppercase tracking-tighter text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">{activeProduct?.material}</span>
+                <span className={`text-[8px] font-black uppercase tracking-tighter px-2 py-0.5 rounded border ${selectedPackaging === 'green' ? 'text-emerald-600 bg-emerald-50 border-emerald-100' : 'text-slate-400 bg-slate-50 border-slate-100'}`}>
+                  Đóng gói: {selectedPackaging === 'green' ? 'Eco (+10💧)' : 'Tiêu chuẩn'}
+                </span>
               </div>
             </div>
           </div>
@@ -110,11 +107,9 @@ const Checkout: React.FC = () => {
         </div>
       </div>
 
-      {/* Logistics Selection */}
       <div className="bg-[#fafdff] p-4 md:p-8 border-y border-slate-100">
         <h3 className="font-black text-[10px] uppercase tracking-widest text-slate-400 mb-4">Hình thức vận chuyển</h3>
         <div className="space-y-4">
-          {/* Green Logistics */}
           <div 
             onClick={() => setSelectedLogistics('green')}
             className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'green' ? 'border-emerald-500 bg-emerald-50/50 shadow-md' : 'border-slate-100 bg-white hover:border-emerald-200'}`}
@@ -134,7 +129,6 @@ const Checkout: React.FC = () => {
             </div>
           </div>
 
-          {/* Standard Logistics */}
           <div 
             onClick={() => setSelectedLogistics('standard')}
             className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'standard' ? 'border-slate-800 bg-slate-50' : 'border-slate-100 bg-white hover:border-slate-200'}`}
@@ -151,7 +145,6 @@ const Checkout: React.FC = () => {
             </div>
           </div>
 
-          {/* Fast Logistics */}
           <div 
             onClick={() => setSelectedLogistics('fast')}
             className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'fast' ? 'border-amber-500 bg-amber-50/30 shadow-md' : 'border-slate-100 bg-white hover:border-amber-200'}`}
@@ -170,7 +163,6 @@ const Checkout: React.FC = () => {
         </div>
       </div>
 
-      {/* Checkout Footer */}
       <div className="p-6 md:p-10 bg-white border-t border-slate-50 flex flex-col items-center md:items-end space-y-6">
         <div className="w-full md:w-auto grid grid-cols-2 gap-x-4 md:gap-x-12 gap-y-2 md:gap-y-3 text-xs md:text-sm text-right">
           <span className="text-slate-400 font-bold uppercase text-[9px] md:text-[10px] tracking-widest self-center">Tiền hàng:</span>

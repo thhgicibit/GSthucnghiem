@@ -7,13 +7,16 @@ interface AppContextType {
   setUserName: (name: string) => void;
   greenScore: number;
   addPoints: (points: number) => void;
+  subtractPoints: (points: number) => void;
   activeProduct: any | null;
   setActiveProduct: (product: any | null) => void;
   showPointToast: number | null;
-  currentStep: 'login' | 'shop' | 'checkout' | 'success' | 'social';
-  setCurrentStep: (step: 'login' | 'shop' | 'checkout' | 'success' | 'social') => void;
+  currentStep: 'login' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem';
+  setCurrentStep: (step: 'login' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem') => void;
   selectedLogistics: 'standard' | 'green' | 'fast' | null;
   setSelectedLogistics: (type: 'standard' | 'green' | 'fast' | null) => void;
+  selectedPackaging: 'standard' | 'green' | null;
+  setSelectedPackaging: (type: 'standard' | 'green' | null) => void;
   resetFlow: () => void;
   wateringCount: number;
   leaderboard: any[];
@@ -24,11 +27,12 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [userName, setUserName] = useState('');
-  const [greenScore, setGreenScore] = useState(25);
+  const [greenScore, setGreenScore] = useState(0);
   const [activeProduct, setActiveProduct] = useState<any | null>(null);
   const [showPointToast, setShowPointToast] = useState<number | null>(null);
-  const [currentStep, setCurrentStep] = useState<'login' | 'shop' | 'checkout' | 'success' | 'social'>('login');
+  const [currentStep, setCurrentStep] = useState<'login' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem'>('login');
   const [selectedLogistics, setSelectedLogistics] = useState<'standard' | 'green' | 'fast' | null>(null);
+  const [selectedPackaging, setSelectedPackaging] = useState<'standard' | 'green' | null>(null);
   const [wateringCount, setWateringCount] = useState(1);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
 
@@ -48,9 +52,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setTimeout(() => setShowPointToast(null), 3000);
   };
 
+  const subtractPoints = (points: number) => {
+    setGreenScore(prev => Math.max(0, prev - points));
+  };
+
   const resetFlow = () => {
     setActiveProduct(null);
     setSelectedLogistics(null);
+    setSelectedPackaging(null);
     setCurrentStep('shop');
   };
 
@@ -60,6 +69,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setUserName,
       greenScore, 
       addPoints, 
+      subtractPoints,
       activeProduct,
       setActiveProduct,
       showPointToast,
@@ -67,6 +77,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setCurrentStep,
       selectedLogistics,
       setSelectedLogistics,
+      selectedPackaging,
+      setSelectedPackaging,
       resetFlow,
       wateringCount,
       leaderboard,

@@ -1,12 +1,15 @@
 
 import { MOCK_LEADERBOARD } from './constants';
 
+// Fix: Add missing packaging fields to match the implementation in Checkout.tsx and the definition in types.ts
 export interface SurveyRecord {
   timestamp: string;
   userId: string;
   userName: string;
   productId: string;
   isGreenProduct: number; // 1 = Green, 0 = Standard
+  packagingType: string;
+  isGreenPackaging: number;
   logisticsType: string;
   isGreenLogistics: number; // 1 = Green, 0 = Standard
   finalGreenScore: number;

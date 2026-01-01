@@ -42,3 +42,16 @@ export interface Medal {
   color: string;
   requirement: number;
 }
+
+export interface SurveyRecord {
+  timestamp: string;
+  userId: string;
+  userName: string;
+  productId: string;
+  isGreenProduct: number; // 1 = Green, 0 = Standard
+  packagingType: string;
+  isGreenPackaging: number;
+  logisticsType: string;
+  isGreenLogistics: number; // 1 = Green, 0 = Standard
+  finalGreenScore: number;
+}
