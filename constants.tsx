@@ -30,7 +30,7 @@ export const PRODUCTS: ExtendedProduct[] = [
     isGreen: true,
     sellerRating: 4.9,
     greenPoints: 30,
-    description: 'Bình nước giữ nhiệt cao cấp dung tích 500ml, thiết kế tối giản, giữ nhiệt lên đến 12 giờ. Phù hợp cho mọi nhu cầu sử dụng hàng ngày.',
+    description: 'Sản phẩm đáp ứng tiêu chuẩn bền vững, ưu tiên nguyên liệu tái chế và giảm thiểu rác thải.',
     shopName: 'Gia Dụng Anh Minh',
     material: 'Nhựa bảo vệ môi trường',
     category: 'Bình nước'

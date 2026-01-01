@@ -74,7 +74,7 @@ const Checkout: React.FC = () => {
         </div>
         <div className="flex flex-col md:flex-row font-bold text-slate-800 gap-2 items-start md:items-baseline">
           <span className="text-slate-500 font-medium text-xs md:text-sm leading-relaxed">
-            Nguyễn Văn A | 090 123 4567 | 123 Đường X, Quận Y, TP. Hồ Chí Minh
+            
           </span>
           <span className="text-emerald-600 font-bold text-[10px] md:text-xs cursor-not-allowed md:ml-auto opacity-40 uppercase tracking-widest">Thay Đổi</span>
         </div>
