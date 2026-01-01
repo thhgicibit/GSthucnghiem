@@ -14,19 +14,19 @@ export interface SurveyRecord {
 const STORAGE_KEY_RECORDS = 'greenscore_survey_records';
 const STORAGE_KEY_LEADERBOARD = 'greenscore_leaderboard';
 
-// URL Google Apps Script Web App
+// URL Google Apps Script Web App của bạn
 const GOOGLE_SHEET_WEBAPP_URL: string = 'https://script.google.com/macros/s/AKfycbx8McQYpPVelk9PqA7DZ5_NncLY91JJFWmXlncNItmxAXmMGVfTxvZN4FA3Q5eijnMtQg/exec'; 
 
 export const dataService = {
   saveChoice: async (record: SurveyRecord, finalScore: number) => {
-    console.log("Đang gửi dữ liệu tối giản:", record);
+    console.log("Đang gửi dữ liệu tối giản sang Google Sheet:", record);
     
-    // Lưu cục bộ (kèm timestamp để quản lý)
+    // 1. Lưu cục bộ (LocalStorage) để dự phòng
     const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || '[]');
     existing.push({ ...record, timestamp: new Date().toISOString(), finalScore });
     localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(existing));
     
-    // Gửi lên Google Sheet
+    // 2. Gửi lên Google Sheet qua Apps Script
     if (GOOGLE_SHEET_WEBAPP_URL && !GOOGLE_SHEET_WEBAPP_URL.includes('DÁN_LINK')) {
       try {
         await fetch(GOOGLE_SHEET_WEBAPP_URL, {
@@ -42,6 +42,7 @@ export const dataService = {
       }
     }
 
+    // 3. Cập nhật bảng xếp hạng
     dataService.updateGlobalLeaderboard(record.userEmail, finalScore);
   },
 

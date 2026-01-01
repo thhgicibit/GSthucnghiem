@@ -18,14 +18,14 @@ const Checkout: React.FC = () => {
   } = useAppContext();
 
   const handlePlaceOrder = async () => {
-    // Tính toán điểm để hiển thị trên UI thành công
+    // 1. Tính toán điểm để hiển thị trên UI thành công
     const prodPoints = activeProduct?.isGreen ? activeProduct.greenPoints : 0;
     const packPoints = selectedPackaging === 'green' ? 10 : 0;
     const logiPoints = selectedLogistics === 'green' ? 25 : 0;
     const totalEarned = prodPoints + packPoints + logiPoints;
     const finalScore = greenScore + totalEarned;
 
-    // Tạo record tối giản quy đổi 0/1
+    // 2. Tạo record tối giản quy đổi 0/1 cho Google Sheet
     const record: SurveyRecord = {
       userEmail: userEmail,
       productId: activeProduct?.id || 'unknown',
@@ -36,9 +36,10 @@ const Checkout: React.FC = () => {
       isGreenPackaging: selectedPackaging === 'green' ? 1 : 0
     };
 
-    // Gửi dữ liệu đi
+    // 3. Gửi dữ liệu đi
     await dataService.saveChoice(record, finalScore);
     
+    // 4. Chuyển sang màn hình thành công
     addPoints(totalEarned);
     refreshLeaderboard();
     setCurrentStep('success');
@@ -94,10 +95,8 @@ const Checkout: React.FC = () => {
           <div className="flex w-full md:col-span-6 justify-between items-center md:contents">
             <div className="md:hidden text-[10px] font-black uppercase text-slate-400">Giá:</div>
             <div className="md:col-span-2 md:text-center font-bold text-slate-700 text-sm">{formatPrice(activeProduct?.price || 0)}</div>
-            
             <div className="md:hidden text-[10px] font-black uppercase text-slate-400 ml-auto md:ml-0 mr-2">SL:</div>
             <div className="md:col-span-2 md:text-center font-bold text-slate-700 text-sm">1</div>
-            
             <div className="md:col-span-2 text-right font-black text-slate-800 text-base md:text-lg">{formatPrice(activeProduct?.price || 0)}</div>
           </div>
         </div>
@@ -106,10 +105,7 @@ const Checkout: React.FC = () => {
       <div className="bg-[#fafdff] p-4 md:p-8 border-y border-slate-100">
         <h3 className="font-black text-[10px] uppercase tracking-widest text-slate-400 mb-4">Hình thức vận chuyển</h3>
         <div className="space-y-4">
-          <div 
-            onClick={() => setSelectedLogistics('green')}
-            className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'green' ? 'border-emerald-500 bg-emerald-50/50 shadow-md' : 'border-slate-100 bg-white hover:border-emerald-200'}`}
-          >
+          <div onClick={() => setSelectedLogistics('green')} className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'green' ? 'border-emerald-500 bg-emerald-50/50 shadow-md' : 'border-slate-100 bg-white hover:border-emerald-200'}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 md:space-x-4">
                 <span className="text-2xl md:text-3xl">🚲</span>
@@ -125,10 +121,7 @@ const Checkout: React.FC = () => {
             </div>
           </div>
 
-          <div 
-            onClick={() => setSelectedLogistics('standard')}
-            className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'standard' ? 'border-slate-800 bg-slate-50' : 'border-slate-100 bg-white hover:border-slate-200'}`}
-          >
+          <div onClick={() => setSelectedLogistics('standard')} className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'standard' ? 'border-slate-800 bg-slate-50' : 'border-slate-100 bg-white hover:border-slate-200'}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 md:space-x-4">
                 <span className="text-2xl md:text-3xl">🚚</span>
@@ -141,10 +134,7 @@ const Checkout: React.FC = () => {
             </div>
           </div>
 
-          <div 
-            onClick={() => setSelectedLogistics('fast')}
-            className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'fast' ? 'border-amber-500 bg-amber-50/30 shadow-md' : 'border-slate-100 bg-white hover:border-amber-200'}`}
-          >
+          <div onClick={() => setSelectedLogistics('fast')} className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'fast' ? 'border-amber-500 bg-amber-50/30 shadow-md' : 'border-slate-100 bg-white hover:border-amber-200'}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 md:space-x-4">
                 <span className="text-2xl md:text-3xl">⚡</span>
@@ -163,32 +153,16 @@ const Checkout: React.FC = () => {
         <div className="w-full md:w-auto grid grid-cols-2 gap-x-4 md:gap-x-12 gap-y-2 md:gap-y-3 text-xs md:text-sm text-right">
           <span className="text-slate-400 font-bold uppercase text-[9px] md:text-[10px] tracking-widest self-center">Tiền hàng:</span>
           <span className="text-slate-800 font-bold">{formatPrice(activeProduct?.price || 0)}</span>
-          
           <span className="text-slate-400 font-bold uppercase text-[9px] md:text-[10px] tracking-widest self-center">Phí ship:</span>
           <span className="text-slate-800 font-bold">{formatPrice(getShippingFee())}</span>
-          
           <div className="col-span-2 border-t border-slate-100 my-1 md:my-2"></div>
-          
           <span className="text-slate-800 font-black text-base md:text-lg uppercase tracking-tighter self-center">Tổng:</span>
-          <span className="text-2xl md:text-3xl text-emerald-600 font-black tracking-tighter">
-            {formatPrice((activeProduct?.price || 0) + getShippingFee())}
-          </span>
+          <span className="text-2xl md:text-3xl text-emerald-600 font-black tracking-tighter">{formatPrice((activeProduct?.price || 0) + getShippingFee())}</span>
         </div>
         
         <div className="flex flex-row space-x-4 w-full justify-center md:justify-end">
-          <button 
-            onClick={() => { setActiveProduct(null); setCurrentStep('shop'); }}
-            className="px-4 md:px-8 py-4 text-slate-400 font-black uppercase text-[9px] md:text-[10px] tracking-widest hover:text-slate-600"
-          >
-            Hủy
-          </button>
-          <button 
-            onClick={handlePlaceOrder}
-            disabled={!selectedLogistics}
-            className={`flex-1 md:flex-none px-8 md:px-16 py-4 rounded-xl font-black uppercase text-[10px] md:text-xs tracking-[0.2em] text-white shadow-xl transition-all ${selectedLogistics ? 'bg-emerald-600 hover:bg-emerald-700 active:scale-95' : 'bg-slate-200 cursor-not-allowed'}`}
-          >
-            Đặt hàng
-          </button>
+          <button onClick={() => { setActiveProduct(null); setCurrentStep('shop'); }} className="px-4 md:px-8 py-4 text-slate-400 font-black uppercase text-[9px] md:text-[10px] tracking-widest hover:text-slate-600">Hủy</button>
+          <button onClick={handlePlaceOrder} disabled={!selectedLogistics} className={`flex-1 md:flex-none px-8 md:px-16 py-4 rounded-xl font-black uppercase text-[10px] md:text-xs tracking-[0.2em] text-white shadow-xl transition-all ${selectedLogistics ? 'bg-emerald-600 hover:bg-emerald-700 active:scale-95' : 'bg-slate-200 cursor-not-allowed'}`}>Đặt hàng</button>
         </div>
       </div>
     </div>
