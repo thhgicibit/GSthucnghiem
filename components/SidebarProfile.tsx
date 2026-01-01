@@ -1,9 +1,10 @@
+
 import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 import { BADGES } from '../constants';
 
 const SidebarProfile: React.FC = () => {
-  const { greenScore, userName, setCurrentStep } = useAppContext();
+  const { greenScore, userEmail, setCurrentStep } = useAppContext();
 
   return (
     <div className="w-full md:w-[280px] flex-shrink-0 space-y-4 relative">
@@ -12,18 +13,18 @@ const SidebarProfile: React.FC = () => {
         <div className="bg-emerald-600 p-8 text-center">
           <div className="relative inline-block mb-3">
             <img 
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(userName || 'User')}&background=ffffff&color=059669&bold=true`} 
+              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(userEmail || 'User')}&background=ffffff&color=059669&bold=true`} 
               className="w-16 h-16 rounded-2xl border-2 border-white/20 shadow-lg mx-auto" 
             />
           </div>
-          <h3 className="font-bold text-white tracking-tight truncate px-2 text-lg">{userName || 'Người tham gia'}</h3>
+          <h3 className="font-bold text-white tracking-tight truncate px-2 text-sm">{userEmail || 'Người tham gia'}</h3>
           <div className="mt-3 text-center">
             <p className="text-[10px] font-black text-white/60 uppercase tracking-widest mb-1">Điểm Xanh Hiện Có</p>
             <h1 className="text-5xl font-black text-white tracking-tighter">{greenScore} 💧</h1>
           </div>
         </div>
 
-        {/* 2. HỆ THỐNG CẤP ĐỘ & DANH HIỆU (LÀM RÕ LEVEL) */}
+        {/* 2. HỆ THỐNG CẤP ĐỘ & DANH HIỆU */}
         <div className="p-6 border-b border-slate-50 bg-slate-50/50">
           <div className="mb-5 px-1">
             <p className="text-[11px] font-black text-emerald-800 uppercase tracking-widest flex items-center">
@@ -91,9 +92,9 @@ const SidebarProfile: React.FC = () => {
           {[
             { name: 'Minh Tuấn', score: 450 },
             { name: 'Thanh Hà', score: 320 },
-            { name: userName || 'Bạn', score: greenScore, isMe: true }
+            { name: userEmail || 'Bạn', score: greenScore, isMe: true }
           ].sort((a,b) => b.score - a.score).map((user, idx) => (
-            <div key={user.name} className={`flex justify-between items-center text-xs ${user.isMe ? 'bg-emerald-50 -mx-4 px-4 py-2 rounded-xl text-emerald-700 font-bold' : 'text-slate-600'}`}>
+            <div key={user.name} className={`flex justify-between items-center text-[10px] ${user.isMe ? 'bg-emerald-50 -mx-4 px-4 py-2 rounded-xl text-emerald-700 font-bold' : 'text-slate-600'}`}>
               <div className="flex items-center space-x-3">
                 <span className={`w-4 font-black text-[10px] ${idx === 0 ? 'text-emerald-600' : 'text-slate-300'}`}>0{idx + 1}</span>
                 <span className="max-w-[100px] truncate">{user.name}</span>

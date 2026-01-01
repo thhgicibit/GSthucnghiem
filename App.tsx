@@ -22,7 +22,7 @@ const MainContent: React.FC = () => {
     selectedPackaging,
     setSelectedPackaging,
     resetFlow,
-    userName
+    userEmail
   } = useAppContext();
 
   const renderContent = () => {
@@ -262,14 +262,22 @@ const MainContent: React.FC = () => {
 
 const AppWrapper: React.FC = () => {
   const context = useAppContext();
-  const [localName, setLocalName] = useState('');
+  const [localEmail, setLocalEmail] = useState('');
 
   const handleStart = () => {
-    if (localName.trim().length < 2) {
-      alert('Vui lòng nhập tên người dùng để bắt đầu.');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(localEmail)) {
+      alert('Vui lòng nhập một địa chỉ email hợp lệ để bắt đầu.');
       return;
     }
-    context.setUserName(localName);
+    context.setUserEmail(localEmail);
+    context.setCurrentStep('shop');
+  };
+
+  const handleAnonymousStart = () => {
+    // Tạo ID ngẫu nhiên định dạng email để thỏa mãn các hệ thống cũ
+    const randomId = `participant_${Math.floor(Math.random() * 9000) + 1000}@survey.internal`;
+    context.setUserEmail(randomId);
     context.setCurrentStep('shop');
   };
 
@@ -293,48 +301,4 @@ const AppWrapper: React.FC = () => {
               <p className="text-emerald-900 text-[13px] md:text-sm leading-relaxed font-medium">
                 Điểm xanh là hệ thống trò chơi hóa mô phỏng do nhóm nghiên cứu thực hiện. Khi khách hàng mua sắm sản phẩm thân thiện với môi trường, sử dụng bao bì tái chế, giao hàng bằng xe điện... sẽ nhận được điểm tương ứng.
                 <br/><br/>
-                Hệ thống giúp đo lường mức độ đóng góp của bạn vào việc giảm thiểu rác thải nhựa và dấu chân carbon. Điểm tích lũy có thể dùng để đổi quà hoặc quyên góp cho các dự án cộng đồng.
-              </p>
-            </div>
-          </div>
-          
-          <div className="space-y-6 text-left">
-            <div className="max-w-md mx-auto w-full">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-3 ml-1 text-center">Tên hoặc Nickname của bạn</label>
-              <input 
-                type="text" 
-                value={localName}
-                onChange={(e) => setLocalName(e.target.value)}
-                placeholder="Nhập tên để tham gia khảo sát..." 
-                className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-xl md:text-2xl font-bold"
-              />
-            </div>
-            <div className="flex flex-col space-y-4 max-w-md mx-auto w-full">
-              <button 
-                onClick={handleStart}
-                className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all text-[12px] md:text-sm tracking-[0.3em] uppercase"
-              >
-                Bắt đầu trải nghiệm
-              </button>
-              <p className="text-center text-[10px] text-slate-400 font-medium">
-                Dữ liệu khảo sát sẽ được sử dụng cho mục đích nghiên cứu học thuật.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return <MainContent />;
-};
-
-const App: React.FC = () => {
-  return (
-    <AppProvider>
-      <AppWrapper />
-    </AppProvider>
-  );
-};
-
-export default App;
+                Hệ thống giúp đo lường mức độ đóng góp của bạn vào việc giảm thiểu rác

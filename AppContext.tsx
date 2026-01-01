@@ -3,8 +3,8 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 import { dataService } from './dataService';
 
 interface AppContextType {
-  userName: string;
-  setUserName: (name: string) => void;
+  userEmail: string;
+  setUserEmail: (email: string) => void;
   greenScore: number;
   addPoints: (points: number) => void;
   subtractPoints: (points: number) => void;
@@ -26,7 +26,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const [greenScore, setGreenScore] = useState(0);
   const [activeProduct, setActiveProduct] = useState<any | null>(null);
   const [showPointToast, setShowPointToast] = useState<number | null>(null);
@@ -65,8 +65,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   return (
     <AppContext.Provider value={{ 
-      userName,
-      setUserName,
+      userEmail,
+      setUserEmail,
       greenScore, 
       addPoints, 
       subtractPoints,

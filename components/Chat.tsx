@@ -3,15 +3,16 @@ import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 
 const Chat: React.FC = () => {
+  const { userEmail } = useAppContext();
   const [messages, setMessages] = useState([
-    { id: '1', name: 'Minh Tuấn', text: 'Mua vận chuyển xanh được tặng nhiều điểm GS lắm mọi người ơi!', time: '10:30' },
-    { id: '2', name: 'Thanh Hà', text: 'Badge Đại Sứ Xanh nhìn xịn thật sự.', time: '11:05' }
+    { id: '1', name: 'minh.tuan@email.com', text: 'Mua vận chuyển xanh được tặng nhiều điểm GS lắm mọi người ơi!', time: '10:30' },
+    { id: '2', name: 'thanh.ha@email.com', text: 'Badge Đại Sứ Xanh nhìn xịn thật sự.', time: '11:05' }
   ]);
   const [input, setInput] = useState('');
 
   const sendMessage = () => {
     if (!input.trim()) return;
-    setMessages([...messages, { id: Date.now().toString(), name: 'Bạn', text: input, time: 'Vừa xong' }]);
+    setMessages([...messages, { id: Date.now().toString(), name: userEmail, text: input, time: 'Vừa xong' }]);
     setInput('');
   };
 
@@ -21,9 +22,9 @@ const Chat: React.FC = () => {
       <div className="bg-white rounded-sm shadow-sm flex flex-col h-64 border border-slate-50">
         <div className="flex-1 p-3 overflow-y-auto space-y-3 bg-slate-50/30">
           {messages.map(msg => (
-            <div key={msg.id} className={`flex flex-col ${msg.name === 'Bạn' ? 'items-end' : 'items-start'}`}>
-              <span className="text-[9px] font-bold text-slate-400 mb-1">{msg.name}</span>
-              <div className={`max-w-[85%] px-3 py-2 rounded-lg text-[12px] leading-snug shadow-sm ${msg.name === 'Bạn' ? 'bg-shopee-orange text-white' : 'bg-white text-slate-700 border border-slate-100'}`}>
+            <div key={msg.id} className={`flex flex-col ${msg.name === userEmail ? 'items-end' : 'items-start'}`}>
+              <span className="text-[8px] font-bold text-slate-400 mb-1 truncate max-w-[150px]">{msg.name === userEmail ? 'Bạn' : msg.name}</span>
+              <div className={`max-w-[85%] px-3 py-2 rounded-lg text-[11px] leading-snug shadow-sm ${msg.name === userEmail ? 'bg-emerald-600 text-white' : 'bg-white text-slate-700 border border-slate-100'}`}>
                 {msg.text}
               </div>
             </div>
@@ -37,7 +38,7 @@ const Chat: React.FC = () => {
             placeholder="Nhập nội dung chat..." 
             className="flex-1 bg-slate-50 rounded-sm px-3 py-2 text-[12px] focus:outline-none focus:bg-slate-100 transition-colors"
           />
-          <button onClick={sendMessage} className="text-shopee-orange px-2 text-lg">➤</button>
+          <button onClick={sendMessage} className="text-emerald-600 px-2 text-lg">➤</button>
         </div>
       </div>
     </section>

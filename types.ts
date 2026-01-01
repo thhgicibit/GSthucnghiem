@@ -46,7 +46,7 @@ export interface Medal {
 export interface SurveyRecord {
   timestamp: string;
   userId: string;
-  userName: string;
+  userEmail: string;
   productId: string;
   isGreenProduct: number; // 1 = Green, 0 = Standard
   packagingType: string;
