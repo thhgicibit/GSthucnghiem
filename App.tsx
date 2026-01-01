@@ -24,8 +24,7 @@ const MainContent: React.FC = () => {
     selectedLogistics,
     selectedPackaging,
     setSelectedPackaging,
-    resetFlow,
-    userEmail
+    resetFlow
   } = useAppContext();
 
   const renderContent = () => {
@@ -256,21 +255,39 @@ const AppWrapper: React.FC = () => {
           <div className="space-y-6 text-left mb-10">
             <div className="bg-emerald-50 p-6 md:p-8 rounded-3xl border border-emerald-100 shadow-inner">
               <h3 className="text-emerald-800 font-black text-sm md:text-base uppercase tracking-widest mb-4 flex items-center"><span>💡</span> Giới thiệu</h3>
-              <p className="text-emerald-900 text-[13px] md:text-sm leading-relaxed font-medium">
-                Điểm xanh là hệ thống trò chơi hóa mô phỏng do nhóm nghiên cứu thực hiện, khi khách hàng mua sắm sản phẩm thân thiện với môi trường, sử dụng bao bì giấy, giao hàng bằng xe điện,... Khách hàng sẽ nhận được điểm xanh tương ứng với mức độ đóng góp vào việc cải thiện môi trường. 
-              <p>
-                Điểm xanh này được tính toán dựa trên lượng giảm rác thải của sản phẩm và dấu chân carbon đều được sàn TMĐT kiểm định. Ứng với mỗi số điểm xanh nhận được, quý khách hàng có thể sử dụng để đổi sản phẩm, dịch vụ miễn phí. Ngoài ra điểm xanh còn thể hiện sự tham gia về đóng góp môi trường của khách hàng.
-              </p>
+              <div className="text-emerald-900 text-[13px] md:text-sm leading-relaxed font-medium space-y-4">
+                <p>
+                  Điểm xanh là hệ thống trò chơi hóa mô phỏng do nhóm nghiên cứu thực hiện, khi khách hàng mua sắm sản phẩm thân thiện với môi trường, sử dụng bao bì giấy, giao hàng bằng xe điện,... Khách hàng sẽ nhận được điểm xanh tương ứng với mức độ đóng góp vào việc cải thiện môi trường.
+                </p>
+                <p>
+                  Điểm xanh này được tính toán dựa trên lượng giảm rác thải của sản phẩm và dấu chân carbon đều được sàn TMĐT kiểm định. Ứng với mỗi số điểm xanh nhận được, quý khách hàng có thể sử dụng để đổi sản phẩm, dịch vụ miễn phí. Ngoài ra điểm xanh còn thể hiện sự tham gia về đóng góp môi trường của khách hàng.
+                </p>
+              </div>
             </div>
           </div>
           <div className="space-y-6 text-left max-w-md mx-auto w-full">
             <div className="flex justify-center mb-8"><div className="g_id_signin" data-type="standard"></div></div>
-            <div className="flex items-center space-x-4 mb-6"><div className="h-px flex-1 bg-slate-100"></div><span className="text-[10px] text-slate-400 font-black uppercase">Đăng nhập bằng Google hoặc nhập email</span><div className="h-px flex-1 bg-slate-100"></div></div>
+            <div className="flex items-center space-x-4 mb-6"><div className="h-px flex-1 bg-slate-100"></div><span className="text-[10px] text-slate-400 font-black uppercase whitespace-nowrap">Đăng nhập bằng Google hoặc nhập email</span><div className="h-px flex-1 bg-slate-100"></div></div>
             <div className="relative" ref={suggestionRef}>
-              <input type="email" value={localEmail} onFocus={() => setShowSuggestions(true)} onChange={(e) => { setLocalEmail(e.target.value); setShowSuggestions(true); }} placeholder="Vui lòng nhập email vào ô này" className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-lg font-bold mb-4" />
+              <input 
+                type="email" 
+                value={localEmail} 
+                onFocus={() => setShowSuggestions(true)} 
+                onChange={(e) => { setLocalEmail(e.target.value); setShowSuggestions(true); }} 
+                placeholder="Vui lòng nhập email vào ô này" 
+                className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-lg font-bold mb-4" 
+              />
               {showSuggestions && filteredEmails.length > 0 && (
                 <div className="absolute top-[85%] left-0 right-0 bg-white border border-slate-200 rounded-2xl shadow-2xl z-50 overflow-hidden py-1">
-                  {filteredEmails.map((email, idx) => ( <div key={idx} onClick={() => { setLocalEmail(email); setShowSuggestions(false); }} className="px-6 py-4 hover:bg-emerald-50 cursor-pointer text-slate-700 font-bold border-b border-slate-50 last:border-0">{email}</div> ))}
+                  {filteredEmails.map((email, idx) => ( 
+                    <div 
+                      key={idx} 
+                      onClick={() => { setLocalEmail(email); setShowSuggestions(false); }} 
+                      className="px-6 py-4 hover:bg-emerald-50 cursor-pointer text-slate-700 font-bold border-b border-slate-50 last:border-0"
+                    >
+                      {email}
+                    </div> 
+                  ))}
                 </div>
               )}
             </div>
