@@ -18,31 +18,26 @@ const Checkout: React.FC = () => {
   } = useAppContext();
 
   const handlePlaceOrder = async () => {
-    let totalEarned = 0;
-    const isGreenProd = activeProduct?.isGreen ? 1 : 0;
-    const isGreenPkg = selectedPackaging === 'green' ? 1 : 0;
-    const isGreenLog = selectedLogistics === 'green' ? 1 : 0;
-
-    if (activeProduct?.isGreen) totalEarned += activeProduct.greenPoints;
-    if (selectedPackaging === 'green') totalEarned += 10;
-    if (selectedLogistics === 'green') totalEarned += 25;
-    
+    // Tính toán điểm để hiển thị trên UI thành công
+    const prodPoints = activeProduct?.isGreen ? activeProduct.greenPoints : 0;
+    const packPoints = selectedPackaging === 'green' ? 10 : 0;
+    const logiPoints = selectedLogistics === 'green' ? 25 : 0;
+    const totalEarned = prodPoints + packPoints + logiPoints;
     const finalScore = greenScore + totalEarned;
 
+    // Tạo record tối giản quy đổi 0/1
     const record: SurveyRecord = {
-      timestamp: new Date().toISOString(),
-      userId: userEmail,
       userEmail: userEmail,
       productId: activeProduct?.id || 'unknown',
-      isGreenProduct: isGreenProd,
-      packagingType: selectedPackaging || 'unknown',
-      isGreenPackaging: isGreenPkg,
-      logisticsType: selectedLogistics || 'unknown',
-      isGreenLogistics: isGreenLog,
-      finalGreenScore: finalScore
+      isGreenProduct: activeProduct?.isGreen ? 1 : 0,
+      logisticsType: selectedLogistics || 'standard',
+      isGreenLogistics: selectedLogistics === 'green' ? 1 : 0,
+      packagingType: selectedPackaging || 'standard',
+      isGreenPackaging: selectedPackaging === 'green' ? 1 : 0
     };
 
-    await dataService.saveChoice(record);
+    // Gửi dữ liệu đi
+    await dataService.saveChoice(record, finalScore);
     
     addPoints(totalEarned);
     refreshLeaderboard();
@@ -74,7 +69,8 @@ const Checkout: React.FC = () => {
         </div>
         <div className="flex flex-col md:flex-row font-bold text-slate-800 gap-2 items-start md:items-baseline">
           <span className="text-slate-500 font-medium text-xs md:text-sm leading-relaxed">
-           
+            Nguyễn Văn A | 090 123 4567 <br/>
+            123 Đường X, Quận Y, TP. Hồ Chí Minh
           </span>
           <span className="text-emerald-600 font-bold text-[10px] md:text-xs cursor-not-allowed md:ml-auto opacity-40 uppercase tracking-widest">Thay Đổi</span>
         </div>

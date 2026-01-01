@@ -44,14 +44,11 @@ export interface Medal {
 }
 
 export interface SurveyRecord {
-  timestamp: string;
-  userId: string;
   userEmail: string;
   productId: string;
-  isGreenProduct: number; // 1 = Green, 0 = Standard
-  packagingType: string;
-  isGreenPackaging: number;
+  isGreenProduct: number; // 1 = Xanh, 0 = Thường
   logisticsType: string;
-  isGreenLogistics: number; // 1 = Green, 0 = Standard
-  finalGreenScore: number;
+  isGreenLogistics: number; // 1 = Xanh, 0 = Thường
+  packagingType: string;
+  isGreenPackaging: number; // 1 = Xanh, 0 = Thường
 }
