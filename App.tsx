@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AppProvider, useAppContext } from './AppContext';
 import Header from './components/Header';
 import SidebarProfile from './components/SidebarProfile';
@@ -11,12 +11,8 @@ import Chat from './components/Chat';
 import RedeemStore from './components/RedeemStore';
 import { dataService } from './dataService';
 
-// CẤU HÌNH LINK GOOGLE FORM CỦA BẠN TẠI ĐÂY
-const GOOGLE_FORM_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc_YOUR_FORM_ID/viewform";
-const GOOGLE_FORM_EMAIL_ENTRY_ID = "entry.123456789"; 
-
-// BẠN CẦN LẤY CLIENT ID TỪ GOOGLE CLOUD CONSOLE
 const GOOGLE_CLIENT_ID = "755280134148-069vea3i8un2a33neau4gu67dnbrkpln.apps.googleusercontent.com";
+const RECENT_EMAILS_KEY = 'eco_recent_emails';
 
 const MainContent: React.FC = () => {
   const { 
@@ -31,12 +27,6 @@ const MainContent: React.FC = () => {
     resetFlow,
     userEmail
   } = useAppContext();
-
-  const handleGoToSurvey = () => {
-    if (!userEmail) return;
-    const surveyUrl = `${GOOGLE_FORM_BASE_URL}?${GOOGLE_FORM_EMAIL_ENTRY_ID}=${encodeURIComponent(userEmail)}`;
-    window.open(surveyUrl, '_blank');
-  };
 
   const renderContent = () => {
     if (currentStep === 'social') {
@@ -117,42 +107,60 @@ const MainContent: React.FC = () => {
 
     if (currentStep === 'success') {
       const plasticSaved = (activeProduct?.isGreen ? 0.5 : 0) + (selectedLogistics === 'green' ? 0.2 : 0) + (selectedPackaging === 'green' ? 0.1 : 0);
-      const totalEarned = (activeProduct?.isGreen ? activeProduct.greenPoints : 0) + (selectedLogistics === 'green' ? 25 : 0) + (selectedPackaging === 'green' ? 10 : 0);
+      const prodPoints = activeProduct?.isGreen ? activeProduct.greenPoints : 0;
+      const logiPoints = selectedLogistics === 'green' ? 25 : 0;
+      const packPoints = selectedPackaging === 'green' ? 10 : 0;
+      const totalEarned = prodPoints + logiPoints + packPoints;
 
       return (
-        <div className="bg-white p-6 md:p-12 rounded-xl shadow-sm border border-slate-100 text-center space-y-6 animate-slideUp">
-          <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-community">
-            <span className="text-4xl">💧</span>
-          </div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Cảm ơn bạn đã tham gia!</h1>
-          <div className="space-y-2">
-            <p className="text-emerald-600 font-black text-lg">
-              Bạn đã góp phần giảm được {plasticSaved.toFixed(1)}kg rác thải nhựa!
-            </p>
-            <p className="text-slate-500 max-w-sm mx-auto text-sm leading-relaxed">
-              Bạn nhận được <span className="font-bold text-emerald-600">{totalEarned} giọt nước</span>. 
-              Dữ liệu lựa chọn của bạn đã được ghi nhận cho nghiên cứu.
-            </p>
+        <div className="bg-white p-6 md:p-12 rounded-[3rem] text-center space-y-8 animate-slideUp max-w-2xl mx-auto mt-4">
+          {/* Top Drop Icon */}
+          <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto shadow-inner">
+            <span className="text-5xl">💧</span>
           </div>
           
-          <div className="max-w-md mx-auto bg-emerald-50 p-4 md:p-6 rounded-2xl border border-emerald-100">
-             <p className="text-[10px] font-black text-emerald-800 uppercase tracking-widest mb-4">Bước cuối cùng để hoàn thành khảo sát</p>
-             <button 
-              onClick={handleGoToSurvey}
-              className="w-full bg-emerald-600 text-white py-4 rounded-xl font-black uppercase text-xs tracking-[0.2em] shadow-lg hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center space-x-2"
-            >
-              <span>📝</span>
-              <span>Hoàn thành Form Khảo sát</span>
-            </button>
-            <p className="text-[9px] text-emerald-600/60 mt-2 font-bold italic">Email {userEmail} sẽ được điền tự động vào Form</p>
+          {/* Main Titles */}
+          <div className="space-y-4">
+            <h1 className="text-3xl font-black text-slate-800 tracking-tight">Chúc mừng bạn!</h1>
+            <p className="text-emerald-600 font-black text-xl px-4">
+              Bạn đã góp phần giảm được {plasticSaved.toFixed(1)}kg rác thải nhựa!
+            </p>
+            <p className="text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
+              Hành động này đã mang về cho bạn <span className="font-black text-emerald-600">{totalEarned} giọt nước</span>. Hãy tiếp tục tích lũy để thăng hạng và đóng góp cho cộng đồng!
+            </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+          {/* Points Breakdown Box */}
+          <div className="bg-emerald-50/50 border border-emerald-100 rounded-[2.5rem] p-8 md:p-10">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="flex flex-col items-center space-y-2 border-r border-emerald-100/50">
+                <p className="text-2xl font-black text-emerald-600">+{prodPoints} <span className="text-xl">💧</span></p>
+                <p className="text-[9px] font-black text-emerald-800 uppercase tracking-widest">SẢN PHẨM</p>
+              </div>
+              <div className="flex flex-col items-center space-y-2 border-r border-emerald-100/50">
+                <p className="text-2xl font-black text-emerald-600">+{packPoints} <span className="text-xl">💧</span></p>
+                <p className="text-[9px] font-black text-emerald-800 uppercase tracking-widest">ĐÓNG GÓI</p>
+              </div>
+              <div className="flex flex-col items-center space-y-2">
+                <p className="text-2xl font-black text-emerald-600">+{logiPoints} <span className="text-xl">💧</span></p>
+                <p className="text-[9px] font-black text-emerald-800 uppercase tracking-widest">LOGISTICS</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="pt-6 flex flex-col md:flex-row items-center justify-center gap-4">
             <button 
               onClick={resetFlow}
-              className="text-slate-400 font-bold text-xs hover:text-slate-600 transition-colors"
+              className="w-full md:w-auto px-10 py-4 bg-white border border-slate-200 text-slate-700 rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-slate-50 active:scale-95 transition-all shadow-sm"
             >
-              Quay lại trang chủ Prototype
+              Tiếp tục mua sắm
+            </button>
+            <button 
+              onClick={() => setCurrentStep('social')}
+              className="w-full md:w-auto px-10 py-4 bg-emerald-600 text-white rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-emerald-700 active:scale-95 transition-all shadow-lg shadow-emerald-100"
+            >
+              BXH & Cộng đồng
             </button>
           </div>
         </div>
@@ -263,8 +271,29 @@ const MainContent: React.FC = () => {
 const AppWrapper: React.FC = () => {
   const context = useAppContext();
   const [localEmail, setLocalEmail] = useState('');
+  const [recentEmails, setRecentEmails] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestionRef = useRef<HTMLDivElement>(null);
 
-  // TÍCH HỢP GOOGLE ONE TAP VÀ XỬ LÝ LỖI FEDCM
+  useEffect(() => {
+    const saved = localStorage.getItem(RECENT_EMAILS_KEY);
+    if (saved) {
+      try {
+        setRecentEmails(JSON.parse(saved));
+      } catch (e) {
+        console.error("Lỗi đọc email gần đây");
+      }
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   useEffect(() => {
     /* global google */
     const handleCredentialResponse = (response: any) => {
@@ -276,8 +305,7 @@ const AppWrapper: React.FC = () => {
         }).join(''));
 
         const profile = JSON.parse(jsonPayload);
-        console.log("Đã nhận diện từ Google:", profile.email);
-        
+        saveEmailToRecent(profile.email);
         context.setUserEmail(profile.email);
         context.setCurrentStep('shop');
       } catch (err) {
@@ -294,12 +322,7 @@ const AppWrapper: React.FC = () => {
             auto_select: false,
             use_fedcm_for_prompt: false
           });
-          
-          (window as any).google.accounts.id.prompt((notification: any) => {
-             if (notification.isNotDisplayed()) {
-               console.log("One Tap không hiển thị:", notification.getNotDisplayedReason());
-             }
-          });
+          (window as any).google.accounts.id.prompt();
         } catch (e) {
           console.warn("Không thể khởi tạo Google Identity Services:", e);
         }
@@ -314,15 +337,28 @@ const AppWrapper: React.FC = () => {
     }
   }, []);
 
+  const saveEmailToRecent = (email: string) => {
+    const saved = localStorage.getItem(RECENT_EMAILS_KEY);
+    let list: string[] = saved ? JSON.parse(saved) : [];
+    if (!list.includes(email)) {
+      list = [email, ...list].slice(0, 5);
+      localStorage.setItem(RECENT_EMAILS_KEY, JSON.stringify(list));
+      setRecentEmails(list);
+    }
+  };
+
   const handleStart = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(localEmail)) {
-      alert('Vui lòng cung cấp email chính xác để tham gia khảo sát.');
+      alert('Vui lòng cung cấp email chính xác để tham gia trải nghiệm.');
       return;
     }
+    saveEmailToRecent(localEmail);
     context.setUserEmail(localEmail);
     context.setCurrentStep('shop');
   };
+
+  const filteredEmails = recentEmails.filter(e => e.toLowerCase().includes(localEmail.toLowerCase()));
 
   if (context.currentStep === 'login') {
     return (
@@ -342,9 +378,10 @@ const AppWrapper: React.FC = () => {
                 <span className="mr-2">💡</span> Giới thiệu về hệ thống
               </h3>
               <p className="text-emerald-900 text-[13px] md:text-sm leading-relaxed font-medium">
-                Điểm xanh là hệ thống trò chơi hóa mô phỏng do nhóm nghiên cứu thực hiện. Khi khách hàng mua sắm sản phẩm thân thiện với môi trường, sử dụng bao bì tái chế, giao hàng bằng xe điện... sẽ nhận được điểm tương ứng.
+                Điểm xanh là hệ thống trò chơi hóa mô phỏng do nhóm nghiên cứu thực hiện. 
+                Khi khách hàng mua sắm sản phẩm thân thiện với môi trường sẽ nhận được điểm tương ứng.
                 <br/><br/>
-                Hệ thống giúp đo lường mức độ đóng góp của bạn vào việc giảm thiểu rác thải nhựa và dấu chân carbon. Điểm tích lũy có thể dùng để đổi quà hoặc quyên góp cho các dự án cộng đồng.
+                Hệ thống giúp đo lường mức độ đóng góp của bạn vào việc bảo vệ môi trường. Dữ liệu được sử dụng cho mục đích nghiên cứu học thuật.
               </p>
             </div>
           </div>
@@ -370,16 +407,41 @@ const AppWrapper: React.FC = () => {
                 <div className="h-px flex-1 bg-slate-100"></div>
               </div>
 
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-3 ml-1 text-center italic">Email là bắt buộc để ghi nhận kết quả khảo sát</label>
-              <input 
-                type="email" 
-                value={localEmail}
-                onChange={(e) => setLocalEmail(e.target.value)}
-                placeholder="Ví dụ: example@gmail.com" 
-                className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-xl md:text-lg font-bold mb-4"
-              />
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-3 ml-1 text-center italic">Email là bắt buộc để ghi nhận kết quả trải nghiệm</label>
               
-              <div className="flex flex-col space-y-4">
+              <div className="relative" ref={suggestionRef}>
+                <input 
+                  type="email" 
+                  value={localEmail}
+                  onFocus={() => setShowSuggestions(true)}
+                  onChange={(e) => {
+                    setLocalEmail(e.target.value);
+                    setShowSuggestions(true);
+                  }}
+                  placeholder="Vui lòng nhập email vào đây" 
+                  className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-xl md:text-lg font-bold mb-4"
+                />
+                
+                {showSuggestions && filteredEmails.length > 0 && (
+                  <div className="absolute top-[85%] left-0 right-0 bg-white border border-slate-200 rounded-2xl shadow-2xl z-50 overflow-hidden animate-slideUp py-1">
+                    {filteredEmails.map((email, idx) => (
+                      <div 
+                        key={idx}
+                        onClick={() => {
+                          setLocalEmail(email);
+                          setShowSuggestions(false);
+                        }}
+                        className="px-6 py-4 text-left hover:bg-emerald-50 cursor-pointer text-slate-700 font-bold border-b border-slate-50 last:border-0 flex items-center justify-between group"
+                      >
+                        <span className="text-sm">{email}</span>
+                        <span className="text-[10px] text-emerald-600 opacity-0 group-hover:opacity-100 font-black">CHỌN</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex flex-col space-y-4 mt-2">
                 <button 
                   onClick={handleStart}
                   className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all text-[12px] md:text-sm tracking-[0.3em] uppercase"
@@ -387,8 +449,8 @@ const AppWrapper: React.FC = () => {
                   Tiếp tục trải nghiệm
                 </button>
               </div>
-              <p className="text-center text-[10px] text-slate-400 font-medium mt-6">
-                * Chúng tôi cam kết bảo mật thông tin và chỉ sử dụng cho mục đích nghiên cứu học thuật.
+              <p className="text-center text-[10px] text-slate-400 font-medium mt-6 italic">
+                * Chúng tôi cam kết bảo mật thông tin và chỉ sử dụng cho mục đích khoa học.
               </p>
             </div>
           </div>
