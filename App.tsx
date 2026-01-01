@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppProvider, useAppContext } from './AppContext';
 import Header from './components/Header';
 import SidebarProfile from './components/SidebarProfile';
@@ -10,6 +10,13 @@ import Badges from './components/Badges';
 import Chat from './components/Chat';
 import RedeemStore from './components/RedeemStore';
 import { dataService } from './dataService';
+
+// CẤU HÌNH LINK GOOGLE FORM CỦA BẠN TẠI ĐÂY
+const GOOGLE_FORM_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc_YOUR_FORM_ID/viewform";
+const GOOGLE_FORM_EMAIL_ENTRY_ID = "entry.123456789"; 
+
+// BẠN CẦN LẤY CLIENT ID TỪ GOOGLE CLOUD CONSOLE
+const GOOGLE_CLIENT_ID = "755280134148-069vea3i8un2a33neau4gu67dnbrkpln.apps.googleusercontent.com";
 
 const MainContent: React.FC = () => {
   const { 
@@ -24,6 +31,12 @@ const MainContent: React.FC = () => {
     resetFlow,
     userEmail
   } = useAppContext();
+
+  const handleGoToSurvey = () => {
+    if (!userEmail) return;
+    const surveyUrl = `${GOOGLE_FORM_BASE_URL}?${GOOGLE_FORM_EMAIL_ENTRY_ID}=${encodeURIComponent(userEmail)}`;
+    window.open(surveyUrl, '_blank');
+  };
 
   const renderContent = () => {
     if (currentStep === 'social') {
@@ -64,7 +77,6 @@ const MainContent: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            {/* Eco Packaging */}
             <div 
               onClick={() => setSelectedPackaging('green')}
               className={`p-6 border-2 rounded-3xl cursor-pointer transition-all flex flex-col items-center text-center space-y-4 ${selectedPackaging === 'green' ? 'border-emerald-500 bg-emerald-50 shadow-lg scale-105' : 'border-slate-100 hover:border-emerald-200 bg-white'}`}
@@ -77,7 +89,6 @@ const MainContent: React.FC = () => {
               <p className="text-[11px] text-slate-500 leading-relaxed">Sử dụng hộp giấy tái chế và băng keo sinh học. Hạn chế tối đa rác thải nhựa.</p>
             </div>
 
-            {/* Standard Packaging */}
             <div 
               onClick={() => setSelectedPackaging('standard')}
               className={`p-6 border-2 rounded-3xl cursor-pointer transition-all flex flex-col items-center text-center space-y-4 ${selectedPackaging === 'standard' ? 'border-slate-800 bg-slate-50 shadow-lg scale-105' : 'border-slate-100 hover:border-slate-200 bg-white'}`}
@@ -113,46 +124,35 @@ const MainContent: React.FC = () => {
           <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-community">
             <span className="text-4xl">💧</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Chúc mừng bạn!</h1>
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Cảm ơn bạn đã tham gia!</h1>
           <div className="space-y-2">
             <p className="text-emerald-600 font-black text-lg">
               Bạn đã góp phần giảm được {plasticSaved.toFixed(1)}kg rác thải nhựa!
             </p>
             <p className="text-slate-500 max-w-sm mx-auto text-sm leading-relaxed">
-              Hành động này đã mang về cho bạn <span className="font-bold text-emerald-600">{totalEarned} giọt nước</span>. 
-              Hãy tiếp tục tích lũy để thăng hạng và đóng góp cho cộng đồng!
+              Bạn nhận được <span className="font-bold text-emerald-600">{totalEarned} giọt nước</span>. 
+              Dữ liệu lựa chọn của bạn đã được ghi nhận cho nghiên cứu.
             </p>
           </div>
           
           <div className="max-w-md mx-auto bg-emerald-50 p-4 md:p-6 rounded-2xl border border-emerald-100">
-            <div className="flex flex-row justify-around py-4 flex-wrap gap-4">
-              <div className="text-center">
-                <p className="text-xl md:text-2xl font-black text-emerald-600">+{activeProduct?.isGreen ? activeProduct.greenPoints : 0} 💧</p>
-                <p className="text-[9px] text-emerald-700 uppercase font-black tracking-widest mt-1">Sản phẩm</p>
-              </div>
-              <div className="text-center border-l border-emerald-200 pl-4">
-                <p className="text-xl md:text-2xl font-black text-emerald-600">+{selectedPackaging === 'green' ? 10 : 0} 💧</p>
-                <p className="text-[9px] text-emerald-700 uppercase font-black tracking-widest mt-1">Đóng gói</p>
-              </div>
-              <div className="text-center border-l border-emerald-200 pl-4">
-                <p className="text-xl md:text-2xl font-black text-emerald-600">+{selectedLogistics === 'green' ? 25 : 0} 💧</p>
-                <p className="text-[9px] text-emerald-700 uppercase font-black tracking-widest mt-1">Logistics</p>
-              </div>
-            </div>
+             <p className="text-[10px] font-black text-emerald-800 uppercase tracking-widest mb-4">Bước cuối cùng để hoàn thành khảo sát</p>
+             <button 
+              onClick={handleGoToSurvey}
+              className="w-full bg-emerald-600 text-white py-4 rounded-xl font-black uppercase text-xs tracking-[0.2em] shadow-lg hover:bg-emerald-700 active:scale-95 transition-all flex items-center justify-center space-x-2"
+            >
+              <span>📝</span>
+              <span>Hoàn thành Form Khảo sát</span>
+            </button>
+            <p className="text-[9px] text-emerald-600/60 mt-2 font-bold italic">Email {userEmail} sẽ được điền tự động vào Form</p>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
             <button 
               onClick={resetFlow}
-              className="px-8 py-3 bg-white border border-slate-200 text-slate-600 font-bold rounded-lg hover:bg-slate-50 transition-colors text-sm"
+              className="text-slate-400 font-bold text-xs hover:text-slate-600 transition-colors"
             >
-              Tiếp tục mua sắm
-            </button>
-            <button 
-              onClick={() => setCurrentStep('social')}
-              className="px-8 py-3 bg-emerald-600 text-white font-bold rounded-lg shadow-lg hover:bg-emerald-700 active:scale-95 transition-all text-sm"
-            >
-              BXH & Cộng đồng
+              Quay lại trang chủ Prototype
             </button>
           </div>
         </div>
@@ -264,20 +264,63 @@ const AppWrapper: React.FC = () => {
   const context = useAppContext();
   const [localEmail, setLocalEmail] = useState('');
 
+  // TÍCH HỢP GOOGLE ONE TAP VÀ XỬ LÝ LỖI FEDCM
+  useEffect(() => {
+    /* global google */
+    const handleCredentialResponse = (response: any) => {
+      try {
+        const base64Url = response.credential.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        const profile = JSON.parse(jsonPayload);
+        console.log("Đã nhận diện từ Google:", profile.email);
+        
+        context.setUserEmail(profile.email);
+        context.setCurrentStep('shop');
+      } catch (err) {
+        console.error("Lỗi khi xử lý token Google:", err);
+      }
+    };
+
+    const initializeGSI = () => {
+      if (typeof (window as any).google !== 'undefined') {
+        try {
+          (window as any).google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleCredentialResponse,
+            auto_select: false,
+            use_fedcm_for_prompt: false
+          });
+          
+          (window as any).google.accounts.id.prompt((notification: any) => {
+             if (notification.isNotDisplayed()) {
+               console.log("One Tap không hiển thị:", notification.getNotDisplayedReason());
+             }
+          });
+        } catch (e) {
+          console.warn("Không thể khởi tạo Google Identity Services:", e);
+        }
+      }
+    };
+
+    if (document.readyState === 'complete') {
+      initializeGSI();
+    } else {
+      window.addEventListener('load', initializeGSI);
+      return () => window.removeEventListener('load', initializeGSI);
+    }
+  }, []);
+
   const handleStart = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(localEmail)) {
-      alert('Vui lòng nhập một địa chỉ email hợp lệ để bắt đầu.');
+      alert('Vui lòng cung cấp email chính xác để tham gia khảo sát.');
       return;
     }
     context.setUserEmail(localEmail);
-    context.setCurrentStep('shop');
-  };
-
-  const handleAnonymousStart = () => {
-    // Tạo ID ngẫu nhiên định dạng email để thỏa mãn các hệ thống cũ
-    const randomId = `participant_${Math.floor(Math.random() * 9000) + 1000}@survey.internal`;
-    context.setUserEmail(randomId);
     context.setCurrentStep('shop');
   };
 
@@ -301,4 +344,68 @@ const AppWrapper: React.FC = () => {
               <p className="text-emerald-900 text-[13px] md:text-sm leading-relaxed font-medium">
                 Điểm xanh là hệ thống trò chơi hóa mô phỏng do nhóm nghiên cứu thực hiện. Khi khách hàng mua sắm sản phẩm thân thiện với môi trường, sử dụng bao bì tái chế, giao hàng bằng xe điện... sẽ nhận được điểm tương ứng.
                 <br/><br/>
-                Hệ thống giúp đo lường mức độ đóng góp của bạn vào việc giảm thiểu rác
+                Hệ thống giúp đo lường mức độ đóng góp của bạn vào việc giảm thiểu rác thải nhựa và dấu chân carbon. Điểm tích lũy có thể dùng để đổi quà hoặc quyên góp cho các dự án cộng đồng.
+              </p>
+            </div>
+          </div>
+          
+          <div className="space-y-6 text-left">
+            <div className="max-w-md mx-auto w-full">
+              <div className="flex justify-center mb-8">
+                 <div 
+                    className="g_id_signin" 
+                    data-type="standard" 
+                    data-shape="pill" 
+                    data-theme="outline" 
+                    data-text="signin_with" 
+                    data-size="large" 
+                    data-logo_alignment="left"
+                    data-use_fedcm_for_prompt="false"
+                 ></div>
+              </div>
+
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="h-px flex-1 bg-slate-100"></div>
+                <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Hoặc nhập email thủ công</span>
+                <div className="h-px flex-1 bg-slate-100"></div>
+              </div>
+
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-3 ml-1 text-center italic">Email là bắt buộc để ghi nhận kết quả khảo sát</label>
+              <input 
+                type="email" 
+                value={localEmail}
+                onChange={(e) => setLocalEmail(e.target.value)}
+                placeholder="Ví dụ: example@gmail.com" 
+                className="w-full px-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-slate-800 outline-none focus:ring-4 focus:ring-emerald-50 transition-all text-center text-xl md:text-lg font-bold mb-4"
+              />
+              
+              <div className="flex flex-col space-y-4">
+                <button 
+                  onClick={handleStart}
+                  className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all text-[12px] md:text-sm tracking-[0.3em] uppercase"
+                >
+                  Tiếp tục trải nghiệm
+                </button>
+              </div>
+              <p className="text-center text-[10px] text-slate-400 font-medium mt-6">
+                * Chúng tôi cam kết bảo mật thông tin và chỉ sử dụng cho mục đích nghiên cứu học thuật.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return <MainContent />;
+};
+
+const App: React.FC = () => {
+  return (
+    <AppProvider>
+      <AppWrapper />
+    </AppProvider>
+  );
+};
+
+export default App;
