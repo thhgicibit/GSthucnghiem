@@ -270,7 +270,7 @@ const AppWrapper: React.FC = () => {
           </div>
           <div className="space-y-6 text-left max-w-md mx-auto w-full">
             <div className="flex justify-center mb-8"><div className="g_id_signin" data-type="standard"></div></div>
-            <div className="flex items-center space-x-4 mb-6"><div className="h-px flex-1 bg-slate-100"></div><span className="text-[10px] text-slate-400 font-black uppercase whitespace-nowrap">Đăng nhập bằng Google hoặc nhập email</span><div className="h-px flex-1 bg-slate-100"></div></div>
+            <div className="flex items-center space-x-4 mb-6"><div className="h-px flex-1 bg-slate-100"></div><span className="text-[10px] text-slate-400 font-black uppercase whitespace-nowrap">NHẬP EMAIL CỦA BẠN ĐỂ BẮT ĐẦU</span><div className="h-px flex-1 bg-slate-100"></div></div>
             <div className="relative" ref={suggestionRef}>
               <input 
                 type="email" 
