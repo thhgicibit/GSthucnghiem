@@ -120,8 +120,6 @@ const ShoppingScenario: React.FC = () => {
             <span>📍</span>
             <div className="text-sm">
               <p className="font-bold text-slate-800">Địa chỉ nhận hàng</p>
-              <p className="text-slate-500">Nguyễn Văn A | 090 123 4567</p>
-              <p className="text-slate-500 text-xs">123 Đường X, Quận Y, TP. Hồ Chí Minh</p>
             </div>
           </div>
         </div>
