@@ -35,9 +35,6 @@ const Checkout: React.FC = () => {
       packagingType: selectedPackaging || 'standard',
       isGreenPackaging: selectedPackaging === 'green' ? 1 : 0
     };
-
-    // 3. Gửi dữ liệu đi
-    await dataService.saveChoice(record, finalScore);
     
     // 4. Chuyển sang màn hình thành công
     addPoints(totalEarned);
@@ -45,6 +42,9 @@ const Checkout: React.FC = () => {
     setCurrentStep('success');
   };
 
+      // 3. Gửi dữ liệu đi
+    await dataService.saveChoice(record, finalScore);
+  
   const getShippingFee = () => {
     if (selectedLogistics === 'green') return 25000;
     if (selectedLogistics === 'standard') return 22000;
