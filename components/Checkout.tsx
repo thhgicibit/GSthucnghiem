@@ -1,23 +1,8 @@
-
 import React from 'react';
 import { useAppContext } from '../AppContext';
 import { dataService, SurveyRecord } from '../dataService';
 
 const Checkout: React.FC = () => {
-  const { 
-    userEmail,
-    activeProduct, 
-    selectedLogistics, 
-    setSelectedLogistics,
-    selectedPackaging,
-    addPoints, 
-    setCurrentStep, 
-    setActiveProduct,
-    greenScore,
-    refreshLeaderboard
-  } = useAppContext();
-
-  const Checkout: React.FC = () => {
   const { 
     userEmail,
     activeProduct, 
