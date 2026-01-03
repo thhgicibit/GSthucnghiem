@@ -17,6 +17,20 @@ const Checkout: React.FC = () => {
     refreshLeaderboard
   } = useAppContext();
 
+  const Checkout: React.FC = () => {
+  const { 
+    userEmail,
+    activeProduct, 
+    selectedLogistics, 
+    setSelectedLogistics,
+    selectedPackaging,
+    addPoints, 
+    setCurrentStep, 
+    setActiveProduct,
+    greenScore,
+    refreshLeaderboard
+  } = useAppContext();
+  
   const handlePlaceOrder = async () => {
     // 1. Tính toán điểm để hiển thị trên UI thành công
     const prodPoints = activeProduct?.isGreen ? activeProduct.greenPoints : 0;
@@ -24,7 +38,7 @@ const Checkout: React.FC = () => {
     const logiPoints = selectedLogistics === 'green' ? 25 : 0;
     const totalEarned = prodPoints + packPoints + logiPoints;
     const finalScore = greenScore + totalEarned;
-
+    
     // 2. Tạo record tối giản quy đổi 0/1 cho Google Sheet
     const record: SurveyRecord = {
       userEmail: userEmail,
@@ -36,14 +50,14 @@ const Checkout: React.FC = () => {
       isGreenPackaging: selectedPackaging === 'green' ? 1 : 0
     };
     
-    // 4. Chuyển sang màn hình thành công
+    // 3. Chuyển sang màn hình thành công
     addPoints(totalEarned);
     refreshLeaderboard();
     setCurrentStep('success');
-  };
-
-      // 3. Gửi dữ liệu đi
+    
+    // 4. Gửi dữ liệu đi
     await dataService.saveChoice(record, finalScore);
+  };
   
   const getShippingFee = () => {
     if (selectedLogistics === 'green') return 25000;
