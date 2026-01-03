@@ -257,7 +257,7 @@ const AppWrapper: React.FC = () => {
               <h3 className="text-emerald-800 font-black text-sm md:text-base uppercase tracking-widest mb-4 flex items-center"><span>💡</span> Giới thiệu</h3>
               <div className="text-emerald-900 text-[13px] md:text-sm leading-relaxed font-medium space-y-4">
                 <p>
-                  Điểm xanh là hệ thống trò chơi hóa mô phỏng do nhóm nghiên cứu thực hiện, khi khách hàng mua sắm sản phẩm thân thiện với môi trường, sử dụng bao bì giấy, giao hàng bằng xe điện,... Khách hàng sẽ nhận được điểm xanh tương ứng với mức độ đóng góp vào việc cải thiện môi trường.
+                  Điểm xanh là hệ thống trò chơi hóa mô phỏng do nhóm nghiên cứu thực hiện, khi khách hàng mua sắm sản phẩm thân thiện với môi trường, đóng gói bằng bao bì thân thiện với môi trường, giao hàng bằng xe điện,... Khách hàng sẽ nhận được điểm xanh tương ứng với mức độ đóng góp vào việc cải thiện môi trường.
                 </p>
                 <p>
                   Điểm xanh này được tính toán dựa trên lượng giảm rác thải của sản phẩm và dấu chân carbon đều được sàn TMĐT kiểm định. Ứng với mỗi số điểm xanh nhận được, quý khách hàng có thể sử dụng để đổi sản phẩm, dịch vụ miễn phí. Ngoài ra điểm xanh còn thể hiện sự tham gia về đóng góp môi trường của khách hàng.
