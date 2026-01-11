@@ -113,7 +113,7 @@ const MainContent: React.FC = () => {
                 {selectedPackaging === 'green' && (
                   <li className="flex items-center space-x-2">
                     <span className="text-emerald-500">✔</span>
-                    <span>Giảm <span className="text-emerald-600 font-bold">{packagingWasteSaved}g nhựa</span> từ bao bì thân thiện môi trường.</span>
+                    <span>Giảm <span className="text-emerald-600 font-bold">{packagingWasteSaved}g rác thải</span> từ bao bì thân thiện môi trường.</span>
                   </li>
                 )}
                 {fuelSaved > 0 && (
