@@ -121,7 +121,7 @@ const Checkout: React.FC = () => {
                     <p className="font-black text-slate-800 text-xs md:text-sm">Vận chuyển xanh</p>
                     <span className="bg-[#00AFB9] text-white text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">+25 💧</span>
                   </div>
-                  <p className="text-[10px] md:text-xs text-slate-500 leading-snug">sử dụng phương tiện ít gây ô nhiễm, hợp lý hoá tuyến đường để giảm phác thải và năng lượng. Thời gian: 2-4 ngày.</p>
+                  <p className="text-[10px] md:text-xs text-slate-500 leading-snug">Sử dụng phương tiện ít gây ô nhiễm, hợp lý hoá tuyến đường để giảm phác thải và năng lượng.</p>
                 </div>
               </div>
               <p className="font-black text-[#00AFB9] text-base md:text-lg ml-2">{formatPrice(25000)}</p>
@@ -137,7 +137,7 @@ const Checkout: React.FC = () => {
                 </div>
                 <div>
                   <p className="font-black text-slate-800 text-xs md:text-sm mb-1">Giao hàng thường</p>
-                  <p className="text-[10px] md:text-xs text-slate-500">Dịch vụ giao hàng truyền thống. Thời gian: 2-4 ngày.</p>
+                  <p className="text-[10px] md:text-xs text-slate-500">Dịch vụ giao hàng truyền thống.</p>
                 </div>
               </div>
               <span className="font-black text-slate-800 text-base md:text-lg">{formatPrice(22000)}</span>
@@ -153,7 +153,7 @@ const Checkout: React.FC = () => {
                 </div>
                 <div>
                   <p className="font-black text-slate-800 text-xs md:text-sm mb-1">Giao hàng hỏa tốc</p>
-                  <p className="text-[10px] md:text-xs text-slate-500">Dịch vụ giao ngay trong ngày. Thời gian: 2-4 giờ.</p>
+                  <p className="text-[10px] md:text-xs text-slate-500">Dịch vụ giao ngay trong ngày.</p>
                 </div>
               </div>
               <span className="font-black text-slate-800 text-base md:text-lg">{formatPrice(35000)}</span>
