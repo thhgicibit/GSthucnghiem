@@ -1,7 +1,30 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 import { dataService, SurveyRecord } from '../dataService';
+
+// Component con để xử lý việc load ảnh mượt mà
+const ShipperImage: React.FC<{ src: string, alt: string }> = ({ src, alt }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden bg-emerald-50 flex-shrink-0">
+      {/* Skeleton Loading State */}
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-emerald-100 animate-pulse flex items-center justify-center">
+          <span className="text-xs text-emerald-300 font-black uppercase tracking-tighter">Loading</span>
+        </div>
+      )}
+      <img 
+        src={src} 
+        alt={alt} 
+        onLoad={() => setIsLoaded(true)}
+        loading="eager"
+        className={`w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+      />
+    </div>
+  );
+};
 
 const Checkout: React.FC = () => {
   const { 
@@ -17,15 +40,9 @@ const Checkout: React.FC = () => {
     refreshLeaderboard
   } = useAppContext();
   
-  /**
-   * HƯỚNG DẪN THAY ẢNH:
-   * 1. Lên trang imgbb.com để upload ảnh từ máy tính.
-   * 2. Chọn "Direct Link" để lấy link có đuôi .png hoặc .jpg.
-   * 3. Thay thế các link bên dưới bằng link bạn vừa lấy được.
-   */
-  const GREEN_SHIPPER_IMG = "https://i.ibb.co/WvJdKyD6/Thi-t-k-ch-a-c-t-n-2.png"; // Thay link ảnh Xanh SM vào đây
-  const STANDARD_SHIPPER_IMG = "https://i.ibb.co/rKNpqtqm/Thi-t-k-ch-a-c-t-n-4.png"; // Thay link ảnh Tiêu chuẩn vào đây
-  const FAST_SHIPPER_IMG = "https://i.ibb.co/Df0hhqmM/Thi-t-k-ch-a-c-t-n-3.png"; // Thay link ảnh Hỏa tốc vào đây
+  const GREEN_SHIPPER_IMG = "https://i.ibb.co/WvJdKyD6/Thi-t-k-ch-a-c-t-n-2.png"; 
+  const STANDARD_SHIPPER_IMG = "https://i.ibb.co/rKNpqtqm/Thi-t-k-ch-a-c-t-n-4.png"; 
+  const FAST_SHIPPER_IMG = "https://i.ibb.co/Df0hhqmM/Thi-t-k-ch-a-c-t-n-3.png"; 
 
   const handlePlaceOrder = async () => {
     const prodPoints = activeProduct?.isGreen ? activeProduct.greenPoints : 0;
@@ -85,7 +102,9 @@ const Checkout: React.FC = () => {
       <div className="p-4 md:p-8">
         <div className="flex flex-col md:grid md:grid-cols-12 gap-4 items-start md:items-center">
           <div className="w-full md:col-span-6 flex items-center space-x-4 md:space-x-5">
-            <img src={activeProduct?.image} className="w-16 h-16 md:w-20 md:h-20 border border-slate-100 rounded-xl object-cover shadow-sm flex-shrink-0" alt={activeProduct?.name} />
+            <div className="w-16 h-16 md:w-20 md:h-20 border border-slate-100 rounded-xl overflow-hidden shadow-sm flex-shrink-0">
+               <img src={activeProduct?.image} className="w-full h-full object-cover" alt={activeProduct?.name} />
+            </div>
             <div className="min-w-0">
               <p className="text-slate-800 font-bold text-xs md:text-sm leading-tight mb-2 truncate">{activeProduct?.name}</p>
               <div className="flex flex-wrap gap-2">
@@ -109,19 +128,17 @@ const Checkout: React.FC = () => {
       <div className="bg-[#fafdff] p-4 md:p-8 border-y border-slate-100">
         <h3 className="font-black text-[10px] uppercase tracking-widest text-slate-400 mb-4">Hình thức vận chuyển</h3>
         <div className="space-y-4">
-          {/* Xanh SM */}
+          {/* Vận chuyển xanh */}
           <div onClick={() => setSelectedLogistics('green')} className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'green' ? 'border-[#00AFB9] bg-[#00AFB9]/10 shadow-md' : 'border-slate-100 bg-white hover:border-[#00AFB9]/30'}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 md:space-x-4">
-                <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-[#00AFB9]/10 overflow-hidden">
-                  <img src={GREEN_SHIPPER_IMG} alt="Shipper Xanh SM" className="w-full h-full object-cover" />
-                </div>
+                <ShipperImage src={GREEN_SHIPPER_IMG} alt="Vận chuyển xanh" />
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
                     <p className="font-black text-slate-800 text-xs md:text-sm">Vận chuyển xanh</p>
                     <span className="bg-[#00AFB9] text-white text-[8px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter">+25 💧</span>
                   </div>
-                  <p className="text-[10px] md:text-xs text-slate-500 leading-snug">Sử dụng phương tiện ít gây ô nhiễm, hợp lý hoá tuyến đường để giảm phác thải và năng lượng.</p>
+                  <p className="text-[10px] md:text-xs text-slate-500 leading-snug">Sử dụng phương tiện ít gây ô nhiễm, hợp lý hoá tuyến đường để giảm phát thải và năng lượng</p>
                 </div>
               </div>
               <p className="font-black text-[#00AFB9] text-base md:text-lg ml-2">{formatPrice(25000)}</p>
@@ -132,12 +149,10 @@ const Checkout: React.FC = () => {
           <div onClick={() => setSelectedLogistics('standard')} className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'standard' ? 'border-yellow-500 bg-yellow-50 shadow-md' : 'border-slate-100 bg-white hover:border-yellow-200'}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 md:space-x-4">
-                <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-yellow-50 overflow-hidden">
-                  <img src={STANDARD_SHIPPER_IMG} alt="Shipper Standard" className="w-full h-full object-cover" />
-                </div>
-                <div>
+                <ShipperImage src={STANDARD_SHIPPER_IMG} alt="Shipper Standard" />
+                <div className="flex-1 min-w-0">
                   <p className="font-black text-slate-800 text-xs md:text-sm mb-1">Giao hàng thường</p>
-                  <p className="text-[10px] md:text-xs text-slate-500">Dịch vụ giao hàng truyền thống.</p>
+                  <p className="text-[10px] md:text-xs text-slate-500">Dịch vụ giao hàng truyền thống bằng xe xăng.</p>
                 </div>
               </div>
               <span className="font-black text-slate-800 text-base md:text-lg">{formatPrice(22000)}</span>
@@ -148,12 +163,10 @@ const Checkout: React.FC = () => {
           <div onClick={() => setSelectedLogistics('fast')} className={`p-4 md:p-5 border-2 rounded-2xl cursor-pointer transition-all ${selectedLogistics === 'fast' ? 'border-red-500 bg-red-50 shadow-md' : 'border-slate-100 bg-white hover:border-red-100'}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 md:space-x-4">
-                <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-red-50 overflow-hidden">
-                  <img src={FAST_SHIPPER_IMG} alt="Shipper Fast" className="w-full h-full object-cover" />
-                </div>
-                <div>
+                <ShipperImage src={FAST_SHIPPER_IMG} alt="Shipper Fast" />
+                <div className="flex-1 min-w-0">
                   <p className="font-black text-slate-800 text-xs md:text-sm mb-1">Giao hàng hỏa tốc</p>
-                  <p className="text-[10px] md:text-xs text-slate-500">Dịch vụ giao ngay trong ngày.</p>
+                  <p className="text-[10px] md:text-xs text-slate-500">Giao ngay trong ngày, ưu tiên tốc độ.</p>
                 </div>
               </div>
               <span className="font-black text-slate-800 text-base md:text-lg">{formatPrice(35000)}</span>
