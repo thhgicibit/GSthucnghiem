@@ -37,7 +37,7 @@ const ProductGrid: React.FC = () => {
                     </div>
                   ) : (
                     <div className="absolute top-4 right-4 bg-slate-800 text-white text-[10px] px-3 py-1.5 font-black rounded-full shadow-lg z-10">
-                       TIÊU CHUẨN
+                       SẢN PHẨM THƯỜNG
                     </div>
                   )}
                 </div>
