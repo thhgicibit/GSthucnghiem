@@ -10,6 +10,7 @@ import Badges from './components/Badges';
 import Chat from './components/Chat';
 import RedeemStore from './components/RedeemStore';
 import Survey from './components/Survey';
+import SimulationIntro from './components/SimulationIntro';
 import { dataService } from './dataService';
 
 const GOOGLE_CLIENT_ID = "755280134148-069vea3i8un2a33neau4gu67dnbrkpln.apps.googleusercontent.com";
@@ -29,8 +30,9 @@ const MainContent: React.FC = () => {
   } = useAppContext();
 
   const renderContent = () => {
-    if (currentStep === 'survey') {
-      return null; // Survey handled separately to cover whole screen
+    // These steps occupy the whole screen and are handled separately below
+    if (currentStep === 'survey' || currentStep === 'instruction') {
+      return null;
     }
 
     if (currentStep === 'social') {
@@ -198,6 +200,10 @@ const MainContent: React.FC = () => {
     return <Survey />;
   }
 
+  if (currentStep === 'instruction') {
+    return <SimulationIntro />;
+  }
+
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col">
       <Header />
@@ -233,6 +239,7 @@ const AppWrapper: React.FC = () => {
   const [localEmail, setLocalEmail] = useState('');
   const [recentEmails, setRecentEmails] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isIdentityLoading, setIsIdentityLoading] = useState(true);
   const suggestionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -255,14 +262,23 @@ const AppWrapper: React.FC = () => {
         context.setCurrentStep('survey');
       } catch (err) { console.error("Lỗi Google Sign-in:", err); }
     };
-    if (typeof (window as any).google !== 'undefined') {
-      (window as any).google.accounts.id.initialize({ 
-        client_id: GOOGLE_CLIENT_ID, 
-        callback: handleCredentialResponse,
-        use_fedcm_for_prompt: false // Added to prevent identity-credentials-get NotAllowedError
-      });
-      (window as any).google.accounts.id.prompt();
-    }
+
+    const initGoogleIdentity = () => {
+      if (typeof (window as any).google !== 'undefined') {
+        (window as any).google.accounts.id.initialize({ 
+          client_id: GOOGLE_CLIENT_ID, 
+          callback: handleCredentialResponse,
+          use_fedcm_for_prompt: false
+        });
+        (window as any).google.accounts.id.prompt();
+        setIsIdentityLoading(false);
+      } else {
+        // Retry a few times if the script isn't loaded yet
+        setTimeout(initGoogleIdentity, 500);
+      }
+    };
+
+    initGoogleIdentity();
   }, [context]);
 
   const saveEmailToRecent = (email: string) => {
@@ -314,7 +330,9 @@ const AppWrapper: React.FC = () => {
             </div>
           </div>
           <div className="space-y-6 text-left max-w-md mx-auto w-full">
-            <div className="flex justify-center mb-8"><div className="g_id_signin" data-type="standard"></div></div>
+            <div className="flex justify-center mb-8 h-10">
+               <div id="google_signin_container" className="g_id_signin" data-type="standard"></div>
+            </div>
             <div className="flex items-center space-x-4 mb-6"><div className="h-px flex-1 bg-slate-100"></div><span className="text-[10px] text-slate-400 font-black uppercase whitespace-nowrap">NHẬP EMAIL CỦA BẠN ĐỂ BẮT ĐẦU</span><div className="h-px flex-1 bg-slate-100"></div></div>
             <div className="relative" ref={suggestionRef}>
               <input 

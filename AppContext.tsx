@@ -14,8 +14,8 @@ interface AppContextType {
   activeProduct: any | null;
   setActiveProduct: (product: any | null) => void;
   showPointToast: number | null;
-  currentStep: 'login' | 'survey' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem';
-  setCurrentStep: (step: 'login' | 'survey' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem') => void;
+  currentStep: 'login' | 'survey' | 'instruction' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem';
+  setCurrentStep: (step: 'login' | 'survey' | 'instruction' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem') => void;
   selectedLogistics: 'standard' | 'green' | 'fast' | null;
   setSelectedLogistics: (type: 'standard' | 'green' | 'fast' | null) => void;
   selectedPackaging: 'standard' | 'green' | null;
@@ -34,7 +34,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [greenScore, setGreenScore] = useState(0);
   const [activeProduct, setActiveProduct] = useState<any | null>(null);
   const [showPointToast, setShowPointToast] = useState<number | null>(null);
-  const [currentStep, setCurrentStep] = useState<'login' | 'survey' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem'>('login');
+  const [currentStep, setCurrentStep] = useState<'login' | 'survey' | 'instruction' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem'>('login');
   const [selectedLogistics, setSelectedLogistics] = useState<'standard' | 'green' | 'fast' | null>(null);
   const [selectedPackaging, setSelectedPackaging] = useState<'standard' | 'green' | null>(null);
   const [wateringCount, setWateringCount] = useState(1);
