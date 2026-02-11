@@ -66,7 +66,9 @@ const Checkout: React.FC = () => {
       age: userDemographics?.age,
       education: userDemographics?.education,
       job: userDemographics?.job,
-      income: userDemographics?.income
+      income: userDemographics?.income,
+      gamificationExp: userDemographics?.gamificationExp,
+      knownGame: userDemographics?.knownGame
     };
     
     addPoints(totalEarned);

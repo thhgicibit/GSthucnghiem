@@ -256,7 +256,11 @@ const AppWrapper: React.FC = () => {
       } catch (err) { console.error("Lỗi Google Sign-in:", err); }
     };
     if (typeof (window as any).google !== 'undefined') {
-      (window as any).google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleCredentialResponse });
+      (window as any).google.accounts.id.initialize({ 
+        client_id: GOOGLE_CLIENT_ID, 
+        callback: handleCredentialResponse,
+        use_fedcm_for_prompt: false // Added to prevent identity-credentials-get NotAllowedError
+      });
       (window as any).google.accounts.id.prompt();
     }
   }, [context]);
