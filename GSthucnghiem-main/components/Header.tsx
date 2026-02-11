@@ -7,6 +7,7 @@ const Header: React.FC = () => {
   return (
     <header className="bg-white w-full border-b border-slate-200 sticky top-0 z-50">
       <div className="container-custom flex flex-col md:flex-row items-center justify-between py-3 md:py-5 gap-4">
+        {/* Brand Logo */}
         <div 
           onClick={resetFlow}
           className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-all self-start md:self-auto"
@@ -16,6 +17,8 @@ const Header: React.FC = () => {
              <span className="text-xl md:text-2xl font-black tracking-tighter text-emerald-600">ĐIỂM XANH</span>
           </div>
         </div>
+
+        {/* Simplified Search Bar */}
         <div className="flex-1 w-full max-w-2xl md:px-10 order-3 md:order-none">
           <div className="bg-slate-100 p-1 rounded-lg flex items-center">
             <input 
@@ -29,6 +32,8 @@ const Header: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Essential Actions */}
         <div className="flex items-center space-x-6 md:space-x-8 self-end md:self-auto">
           <div className="relative cursor-pointer group">
             <span className="text-slate-400 text-xl md:text-2xl transition-colors group-hover:text-emerald-600">🛒</span>

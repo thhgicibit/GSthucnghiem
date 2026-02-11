@@ -9,7 +9,6 @@ import Leaderboard from './components/Leaderboard';
 import Badges from './components/Badges';
 import Chat from './components/Chat';
 import RedeemStore from './components/RedeemStore';
-import Survey from './components/Survey';
 import { dataService } from './dataService';
 
 const GOOGLE_CLIENT_ID = "755280134148-069vea3i8un2a33neau4gu67dnbrkpln.apps.googleusercontent.com";
@@ -29,10 +28,6 @@ const MainContent: React.FC = () => {
   } = useAppContext();
 
   const renderContent = () => {
-    if (currentStep === 'survey') {
-      return null; // Survey handled separately to cover whole screen
-    }
-
     if (currentStep === 'social') {
       return (
         <div className="space-y-6 animate-slideUp">
@@ -68,7 +63,7 @@ const MainContent: React.FC = () => {
                 <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest">Bao bì xanh</h3>
                 <span className="inline-block bg-emerald-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase mt-2 shadow-sm">+10 💧</span>
               </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed">Sử dụng hộp giấy tái chế và băng keo sinh học. Giảm ~{activeProduct?.packagingWasteSaved || 50}g rác thải nhựa đóng gói.</p>
+              <p className="text-[11px] text-slate-500 leading-relaxed">Sử dụng hộp giấy tái chế và băng keo sinh học. Hạn chế tối đa rác thải nhựa.</p>
             </div>
             <div onClick={() => setSelectedPackaging('standard')} className={`p-6 border-2 rounded-3xl cursor-pointer transition-all flex flex-col items-center text-center space-y-4 ${selectedPackaging === 'standard' ? 'border-slate-800 bg-slate-50 shadow-lg scale-105' : 'border-slate-100 hover:border-slate-200 bg-white'}`}>
               <div className="text-5xl">📦</div>
@@ -87,54 +82,38 @@ const MainContent: React.FC = () => {
     }
 
     if (currentStep === 'success') {
-      const mainWasteSaved = (activeProduct?.isGreen ? activeProduct.wasteSaved : 0);
-      const packagingWasteSaved = (selectedPackaging === 'green' ? activeProduct?.packagingWasteSaved || 50 : 0);
-      const fuelSaved = (selectedLogistics === 'green' ? activeProduct?.logisticsFuelSaved || 0 : 0);
-      
+      const plasticSaved = (activeProduct?.isGreen ? 0.5 : 0) + (selectedLogistics === 'green' ? 0.2 : 0) + (selectedPackaging === 'green' ? 0.1 : 0);
       const prodPoints = activeProduct?.isGreen ? activeProduct.greenPoints : 0;
       const logiPoints = selectedLogistics === 'green' ? 25 : 0;
       const packPoints = selectedPackaging === 'green' ? 10 : 0;
       const totalEarned = prodPoints + logiPoints + packPoints;
 
       return (
-        <div className="bg-white p-6 md:p-12 rounded-[3rem] text-center space-y-8 animate-slideUp max-w-2xl mx-auto mt-4 border border-emerald-50 shadow-2xl shadow-emerald-100/20">
+        <div className="bg-white p-6 md:p-12 rounded-[3rem] text-center space-y-8 animate-slideUp max-w-2xl mx-auto mt-4">
           <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto shadow-inner">
             <span className="text-5xl">💧</span>
           </div>
           <div className="space-y-4">
-            <h1 className="text-2xl font-black text-slate-800 tracking-tight uppercase">Chúc mừng bạn!</h1>
-            
-            <div className="bg-emerald-50/50 p-6 rounded-3xl border border-emerald-100 text-left space-y-4">
-              <p className="text-sm md:text-base text-slate-700 leading-relaxed">
-                Với hoạt động mua sắm xanh của bạn hôm nay đã tích lũy thêm <span className="font-black text-emerald-600">{totalEarned} điểm xanh</span>. 
-              </p>
-              <ul className="space-y-2 text-[13px] md:text-sm text-slate-600 font-medium">
-                {mainWasteSaved > 0 && (
-                  <li className="flex items-center space-x-2">
-                    <span className="text-emerald-500">✔</span>
-                    <span>Bạn đã góp phần làm giảm được <span className="text-emerald-600 font-bold">{mainWasteSaved}g rác thải {activeProduct?.wasteType}</span>.</span>
-                  </li>
-                )}
-                {selectedPackaging === 'green' && (
-                  <li className="flex items-center space-x-2">
-                    <span className="text-emerald-500">✔</span>
-                    <span>Giảm <span className="text-emerald-600 font-bold">{packagingWasteSaved}g nhựa</span> từ bao bì thân thiện môi trường.</span>
-                  </li>
-                )}
-                {fuelSaved > 0 && (
-                  <li className="flex items-center space-x-2">
-                    <span className="text-emerald-500">✔</span>
-                    <span>Giảm tiêu thụ <span className="text-emerald-600 font-bold">{fuelSaved.toFixed(2)} lít nhiên liệu hóa thạch</span> cho Trái Đất.</span>
-                  </li>
-                )}
-                <li className="flex items-center space-x-2">
-                  <span className="text-emerald-500">✔</span>
-                  <span>Bạn đã góp thêm <span className="text-emerald-600 font-bold">{totalEarned} giọt nước</span> vào dự án trồng rừng.</span>
-                </li>
-              </ul>
+            <h1 className="text-3xl font-black text-slate-800 tracking-tight">Chúc mừng bạn!</h1>
+            <p className="text-emerald-600 font-black text-xl px-4">Bạn đã góp phần giảm được {plasticSaved.toFixed(1)}kg rác thải nhựa!</p>
+            <p className="text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">Hành động này đã mang về cho bạn <span className="font-black text-emerald-600">{totalEarned} giọt nước</span>. Hãy tiếp tục tích lũy để thăng hạng!</p>
+          </div>
+
+          <div className="bg-emerald-50/50 border border-emerald-100 rounded-[2.5rem] p-8 md:p-10">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="flex flex-col items-center space-y-2 border-r border-emerald-100/50">
+                <p className="text-2xl font-black text-emerald-600">+{prodPoints} <span className="text-xl">💧</span></p>
+                <p className="text-[9px] font-black text-emerald-800 uppercase tracking-widest">SẢN PHẨM</p>
+              </div>
+              <div className="flex flex-col items-center space-y-2 border-r border-emerald-100/50">
+                <p className="text-2xl font-black text-emerald-600">+{packPoints} <span className="text-xl">💧</span></p>
+                <p className="text-[9px] font-black text-emerald-800 uppercase tracking-widest">ĐÓNG GÓI</p>
+              </div>
+              <div className="flex flex-col items-center space-y-2">
+                <p className="text-2xl font-black text-emerald-600">+{logiPoints} <span className="text-xl">💧</span></p>
+                <p className="text-[9px] font-black text-emerald-800 uppercase tracking-widest">LOGISTICS</p>
+              </div>
             </div>
-            
-            <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">Hành động của bạn đang trực tiếp tạo nên một tương lai bền vững hơn!</p>
           </div>
 
           <div className="pt-6 flex flex-col md:flex-row items-center justify-center gap-4">
@@ -155,7 +134,7 @@ const MainContent: React.FC = () => {
            <button onClick={() => setActiveProduct(null)} className="mb-4 text-emerald-600 text-sm font-bold flex items-center hover:translate-x-[-4px] transition-transform">← Quay lại danh sách</button>
            <div className="bg-white p-4 md:p-8 rounded-xl shadow-sm border border-slate-100">
               <div className="flex flex-col md:flex-row gap-6 md:gap-12">
-                <div className="w-full md:w-1/2"><img src={activeProduct.image} className="w-full aspect-square object-cover rounded-xl shadow-inner border border-slate-100" alt={activeProduct.name} /></div>
+                <div className="w-full md:w-1/2"><img src={activeProduct.image} className="w-full aspect-square object-cover rounded-xl shadow-inner border border-slate-100" /></div>
                 <div className="w-full md:w-1/2 space-y-6">
                   <div className="flex items-center space-x-3"><span className="text-sm font-bold text-slate-400">{activeProduct.shopName}</span></div>
                   <h1 className="text-2xl font-bold text-slate-800 leading-tight">{activeProduct.name}</h1>
@@ -173,12 +152,6 @@ const MainContent: React.FC = () => {
                       <span className="text-slate-400">Chất liệu cấu tạo</span>
                       <span className={`font-bold ${activeProduct.isGreen ? 'text-emerald-600' : 'text-slate-700'}`}>{activeProduct.material}</span>
                     </div>
-                    {activeProduct.isGreen && (
-                      <div className="bg-emerald-50 p-3 rounded-lg flex items-start space-x-2">
-                        <span className="text-lg">🍃</span>
-                        <p className="text-[11px] text-emerald-800 leading-tight">Giúp giảm trực tiếp <span className="font-bold">{activeProduct.wasteSaved}g</span> rác thải {activeProduct.wasteType} khi sử dụng sản phẩm này.</p>
-                      </div>
-                    )}
                     <div className="text-sm leading-relaxed text-slate-500">{activeProduct.isGreen ? 'Sản phẩm đáp ứng tiêu chuẩn bền vững, ưu tiên nguyên liệu tái chế và giảm thiểu rác thải.' : 'Sản phẩm sản xuất theo quy trình công nghiệp tiêu chuẩn.'}</div>
                     <div className="flex space-x-4 pt-6">
                       <button onClick={() => setCurrentStep('packaging')} className="flex-1 bg-emerald-600 text-white py-4 font-bold rounded-xl shadow-lg hover:bg-emerald-700 active:scale-95 transition-all uppercase text-xs tracking-widest">Mua Ngay</button>
@@ -194,10 +167,6 @@ const MainContent: React.FC = () => {
     return <ProductGrid />;
   };
 
-  if (currentStep === 'survey') {
-    return <Survey />;
-  }
-
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col">
       <Header />
@@ -210,7 +179,7 @@ const MainContent: React.FC = () => {
                  <span className="text-2xl">💧</span>
                  <div>
                    <p className="font-black text-sm">+{showPointToast} 💧!</p>
-                   <p className="text-[9px] opacity-80 uppercase font-black">Bạn đã đóng góp một hành động xanh</p>
+                   <p className="text-[9px] opacity-80 uppercase font-black">Bạn đã đóng góp 1 giọt nước</p>
                  </div>
                </div>
             </div>
@@ -252,14 +221,14 @@ const AppWrapper: React.FC = () => {
         const profile = JSON.parse(jsonPayload);
         saveEmailToRecent(profile.email);
         context.setUserEmail(profile.email);
-        context.setCurrentStep('survey');
+        context.setCurrentStep('shop');
       } catch (err) { console.error("Lỗi Google Sign-in:", err); }
     };
     if (typeof (window as any).google !== 'undefined') {
       (window as any).google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleCredentialResponse });
       (window as any).google.accounts.id.prompt();
     }
-  }, [context]);
+  }, []);
 
   const saveEmailToRecent = (email: string) => {
     const saved = localStorage.getItem(RECENT_EMAILS_KEY);
@@ -272,7 +241,7 @@ const AppWrapper: React.FC = () => {
     if (!emailRegex.test(localEmail)) { alert('Vui lòng nhập đúng định dạng email.'); return; }
     saveEmailToRecent(localEmail);
     context.setUserEmail(localEmail);
-    context.setCurrentStep('survey');
+    context.setCurrentStep('shop');
   };
 
   const filteredEmails = recentEmails.filter(e => e.toLowerCase().includes(localEmail.toLowerCase()));
@@ -280,32 +249,22 @@ const AppWrapper: React.FC = () => {
   if (context.currentStep === 'login') {
     return (
       <div className="min-h-screen bg-emerald-600 flex flex-col items-center justify-center p-4 md:p-6 text-center text-white relative overflow-hidden">
-        <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl w-full max-w-5xl animate-slideUp relative z-10 flex flex-col">
+        <div className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl w-full max-w-2xl animate-slideUp relative z-10 flex flex-col">
           <div className="text-5xl mb-4">🌿</div>
-          <h1 className="text-xl md:text-2xl font-black text-emerald-600 mb-8 tracking-tighter uppercase text-justify">
-            KHẢO SÁT TÁC ĐỘNG CỦA TRÒ CHƠI HÓA ĐẾN Ý ĐỊNH TIÊU DÙNG XANH TRÊN NỀN TẢNG THƯƠNG MẠI ĐIỆN TỬ TẠI VIỆT NAM</h1>
+          <h1 className="text-3xl md:text-4xl font-black text-emerald-600 mb-8 tracking-tighter uppercase">ĐIỂM XANH</h1>
           <div className="space-y-6 text-left mb-10">
             <div className="bg-emerald-50 p-6 md:p-8 rounded-3xl border border-emerald-100 shadow-inner">
-              <div className="text-emerald-900 text-[13px] md:text-base leading-relaxed font-medium space-y-4 text-justify">
-                <p className="font-bold">Kính chào quý Anh/Chị,</p>
+              <h3 className="text-emerald-800 font-black text-sm md:text-base uppercase tracking-widest mb-4 flex items-center"><span>💡</span> Giới thiệu</h3>
+              <div className="text-emerald-900 text-[13px] md:text-sm leading-relaxed font-medium space-y-4">
                 <p>
-                  Trước tiên, nhóm chúng em xin chân thành cảm ơn Anh/Chị đã dành thời gian quý báu để tham gia khảo sát này! Chúng em là nhóm sinh viên thuộc Đại học Tôn Đức Thắng (TDTU). Hiện tại, nhóm đang thực hiện một nghiên cứu khoa học với chủ đề:
-                </p>
-                <p className="italic font-bold">
-                  “Tác động của trò chơi hóa đến ý định tiêu dùng xanh trên nền tảng thương mại điện tử tại Việt Nam”.
+                  Điểm xanh là hệ thống trò chơi hóa mô phỏng do nhóm nghiên cứu thực hiện, khi khách hàng mua sắm sản phẩm thân thiện với môi trường, đóng gói bằng bao bì thân thiện với môi trường, giao hàng bằng xe điện,... Khách hàng sẽ nhận được điểm xanh tương ứng với mức độ đóng góp vào việc cải thiện môi trường.
                 </p>
                 <p>
-                  Mục tiêu của nghiên cứu là phân tích và kiểm định tác động của các yếu tố trò chơi hóa đến ý định tiêu dùng xanh của người tiêu dùng trên các nền tảng thương mại điện tử tại Việt Nam, đồng thời xem xét vai trò của các động lực thực dụng và khoái lạc trong quá trình hình thành ý định này. Trên cơ sở đó, nghiên cứu hướng đến việc đề xuất các hàm ý quản trị nhằm hỗ trợ doanh nghiệp thiết kế và triển khai hệ thống trò chơi hóa một cách hiệu quả, góp phần thúc đẩy hành vi tiêu dùng bền vững.
+                  Điểm xanh này được tính toán dựa trên lượng giảm rác thải của sản phẩm và dấu chân carbon đều được sàn thương mại điện tử kiểm định. Ứng với mỗi số điểm xanh nhận được, quý khách hàng có thể sử dụng để đổi sản phẩm, dịch vụ miễn phí. Ngoài ra điểm xanh còn thể hiện sự tham gia về đóng góp môi trường của khách hàng.
                 </p>
-                <p>
-                  Những ý kiến, đánh giá và phản hồi khách quan của Anh/Chị sẽ là nguồn dữ liệu quý giá, góp phần nâng cao độ tin cậy và giá trị học thuật của nghiên cứu. Chúng em cam kết mọi thông tin Anh/Chị cung cấp sẽ được bảo mật tuyệt đối, chỉ sử dụng cho mục đích nghiên cứu học thuật và không tiết lộ cho bất kỳ bên thứ ba nào.
+                <p className="font-bold italic border-t border-emerald-100 pt-2">
+                  Mọi thông tin cung cấp sẽ được bảo mật tuyệt đối, chỉ sử dụng cho mục đích nghiên cứu học thuật và không tiết lộ cho bất kỳ bên thứ ba nào.
                 </p>
-                <p>Rất mong nhận được sự hỗ trợ và hợp tác từ Anh/Chị. Xin chân thành cảm ơn!</p>
-                <div className="pt-4 border-t border-emerald-100 space-y-1">
-                  <p className="font-black text-[13px] uppercase tracking-widest text-emerald-800">THÔNG TIN LIÊN HỆ</p>
-                  <p className="text-[12px]">SĐT: 0868027268 (Thanh Hằng)</p>
-                  <p className="text-[12px]">Email: nguyenvuthanhhang.2204@gmail.com</p>
-                </div>
               </div>
             </div>
           </div>
@@ -335,7 +294,7 @@ const AppWrapper: React.FC = () => {
                 </div>
               )}
             </div>
-            <button onClick={handleStart} className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all uppercase tracking-widest">Bắt đầu</button>
+            <button onClick={handleStart} className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all uppercase tracking-widest">Bắt đầu trải nghiệm</button>
           </div>
         </div>
       </div>

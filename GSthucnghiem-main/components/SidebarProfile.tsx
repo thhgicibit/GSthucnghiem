@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 import { BADGES } from '../constants';
 
@@ -7,13 +8,13 @@ const SidebarProfile: React.FC = () => {
 
   return (
     <div className="w-full md:w-[280px] flex-shrink-0 space-y-4 relative">
+      {/* 1. Hồ sơ & Điểm số */}
       <div className="bg-white rounded-[2.5rem] shadow-sm overflow-hidden border border-slate-100">
         <div className="bg-emerald-600 p-8 text-center">
           <div className="relative inline-block mb-3">
             <img 
               src={`https://ui-avatars.com/api/?name=${encodeURIComponent(userEmail || 'User')}&background=ffffff&color=059669&bold=true`} 
               className="w-16 h-16 rounded-2xl border-2 border-white/20 shadow-lg mx-auto" 
-              alt="Avatar"
             />
           </div>
           <h3 className="font-bold text-white tracking-tight truncate px-2 text-sm">{userEmail || 'Người tham gia'}</h3>
@@ -22,6 +23,8 @@ const SidebarProfile: React.FC = () => {
             <h1 className="text-5xl font-black text-white tracking-tighter">{greenScore} 💧</h1>
           </div>
         </div>
+
+        {/* 2. HỆ THỐNG CẤP ĐỘ & DANH HIỆU */}
         <div className="p-6 border-b border-slate-50 bg-slate-50/50">
           <div className="mb-5 px-1">
             <p className="text-[11px] font-black text-emerald-800 uppercase tracking-widest flex items-center">
@@ -29,10 +32,12 @@ const SidebarProfile: React.FC = () => {
             </p>
             <p className="text-[9px] text-slate-400 font-bold uppercase mt-1 tracking-tight">Tích lũy điểm để đạt danh hiệu mới</p>
           </div>
+          
           <div className="grid grid-cols-4 gap-2">
             {BADGES.map((badge, index) => {
               const isEarned = greenScore >= badge.requirement;
               const isCurrent = isEarned && (index === BADGES.length - 1 || greenScore < BADGES[index + 1].requirement);
+              
               return (
                 <div 
                   key={badge.id} 
@@ -52,6 +57,8 @@ const SidebarProfile: React.FC = () => {
               );
             })}
           </div>
+          
+          {/* Progress Bar Mini */}
           <div className="mt-6 px-1">
             <div className="flex justify-between text-[9px] font-black uppercase text-slate-400 mb-1.5">
                <span>Tiến độ thăng hạng</span>
@@ -65,6 +72,8 @@ const SidebarProfile: React.FC = () => {
             </div>
           </div>
         </div>
+        
+        {/* 3. MENU NHANH */}
         <div className="p-4 bg-white">
           <button 
             onClick={() => setCurrentStep('redeem')}
@@ -75,6 +84,8 @@ const SidebarProfile: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* 4. BẢNG XẾP HẠNG */}
       <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
         <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-5 px-1">Bảng xếp hạng tuần</h4>
         <div className="space-y-4">

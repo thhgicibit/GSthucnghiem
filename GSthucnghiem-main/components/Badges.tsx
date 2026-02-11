@@ -14,6 +14,7 @@ const Badges: React.FC = () => {
         {BADGES.map(badge => {
           const isEarned = greenScore >= badge.requirement;
           const pointsNeeded = badge.requirement - greenScore;
+
           return (
             <div 
               key={badge.id} 
@@ -21,6 +22,7 @@ const Badges: React.FC = () => {
             >
               <div className="text-2xl mb-2">{badge.icon}</div>
               <p className="font-black text-[11px] uppercase tracking-tight line-clamp-1">{badge.label}</p>
+              
               {isEarned ? (
                 <p className="text-[8px] mt-1 leading-tight text-green-100">
                   {badge.description}
@@ -30,8 +32,12 @@ const Badges: React.FC = () => {
                   <p className="text-[8px] font-black text-emerald-600 uppercase">
                     Cần thêm {pointsNeeded} 💧
                   </p>
+                  <p className="text-[7px] text-slate-400 mt-1 italic">
+                    Mua hàng xanh để thăng hạng
+                  </p>
                 </div>
               )}
+
               {isEarned && (
                 <div className="absolute top-3 right-3 text-[10px]">✅</div>
               )}

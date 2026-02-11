@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAppContext } from '../AppContext';
 
@@ -9,7 +10,7 @@ const GreenScoreDisplay: React.FC = () => {
 
   return (
     <div className="mx-4 mt-4 bg-white rounded-lg shadow-sm overflow-hidden border border-slate-100">
-      <div className="p-4 bg-emerald-600 text-white flex justify-between items-start">
+      <div className="green-gradient p-4 text-white flex justify-between items-start">
         <div>
           <div className="flex items-center space-x-2">
             <span className="bg-white/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Eco Rewards</span>
@@ -35,6 +36,7 @@ const GreenScoreDisplay: React.FC = () => {
             style={{ width: `${progress}%` }}
           ></div>
         </div>
+        <p className="mt-2 text-[10px] text-slate-400 text-center">Tích thêm {nextLevelScore - greenScore} điểm để thăng hạng!</p>
       </div>
     </div>
   );

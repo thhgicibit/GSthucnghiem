@@ -1,21 +1,18 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { dataService } from './dataService';
-import { UserDemographics } from './types';
 
 interface AppContextType {
   userEmail: string;
   setUserEmail: (email: string) => void;
-  userDemographics: UserDemographics | null;
-  setUserDemographics: (demo: UserDemographics) => void;
   greenScore: number;
   addPoints: (points: number) => void;
   subtractPoints: (points: number) => void;
   activeProduct: any | null;
   setActiveProduct: (product: any | null) => void;
   showPointToast: number | null;
-  currentStep: 'login' | 'survey' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem';
-  setCurrentStep: (step: 'login' | 'survey' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem') => void;
+  currentStep: 'login' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem';
+  setCurrentStep: (step: 'login' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem') => void;
   selectedLogistics: 'standard' | 'green' | 'fast' | null;
   setSelectedLogistics: (type: 'standard' | 'green' | 'fast' | null) => void;
   selectedPackaging: 'standard' | 'green' | null;
@@ -30,11 +27,10 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [userEmail, setUserEmail] = useState('');
-  const [userDemographics, setUserDemographicsState] = useState<UserDemographics | null>(null);
   const [greenScore, setGreenScore] = useState(0);
   const [activeProduct, setActiveProduct] = useState<any | null>(null);
   const [showPointToast, setShowPointToast] = useState<number | null>(null);
-  const [currentStep, setCurrentStep] = useState<'login' | 'survey' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem'>('login');
+  const [currentStep, setCurrentStep] = useState<'login' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem'>('login');
   const [selectedLogistics, setSelectedLogistics] = useState<'standard' | 'green' | 'fast' | null>(null);
   const [selectedPackaging, setSelectedPackaging] = useState<'standard' | 'green' | null>(null);
   const [wateringCount, setWateringCount] = useState(1);
@@ -46,10 +42,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const refreshLeaderboard = () => {
     setLeaderboard(dataService.getLeaderboard());
-  };
-
-  const setUserDemographics = (demo: UserDemographics) => {
-    setUserDemographicsState(demo);
   };
 
   const addPoints = (points: number) => {
@@ -75,8 +67,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     <AppContext.Provider value={{ 
       userEmail,
       setUserEmail,
-      userDemographics,
-      setUserDemographics,
       greenScore, 
       addPoints, 
       subtractPoints,

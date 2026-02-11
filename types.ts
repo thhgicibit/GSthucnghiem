@@ -17,6 +17,18 @@ export interface Product {
   sellerRating: number;
   greenPoints: number;
   description: string;
+  wasteSaved: number;
+  wasteType: 'nhựa' | 'giấy tái chế' | 'túi nilon';
+  packagingWasteSaved: number;
+  logisticsFuelSaved: number;
+}
+
+export interface UserDemographics {
+  gender: string;
+  age: string;
+  education: string;
+  job: string;
+  income: string;
 }
 
 export interface ChatMessage {
@@ -43,12 +55,12 @@ export interface Medal {
   requirement: number;
 }
 
-export interface SurveyRecord {
+export interface SurveyRecord extends Partial<UserDemographics> {
   userEmail: string;
   productId: string;
-  isGreenProduct: number; // 1 = Xanh, 0 = Thường
+  isGreenProduct: number; 
   logisticsType: string;
-  isGreenLogistics: number; // 1 = Xanh, 0 = Thường
+  isGreenLogistics: number; 
   packagingType: string;
-  isGreenPackaging: number; // 1 = Xanh, 0 = Thường
+  isGreenPackaging: number; 
 }
