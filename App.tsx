@@ -11,6 +11,8 @@ import Chat from './components/Chat';
 import RedeemStore from './components/RedeemStore';
 import Survey from './components/Survey';
 import SimulationIntro from './components/SimulationIntro';
+import PostSurvey from './components/PostSurvey';
+import ThankYou from './components/ThankYou';
 import { dataService } from './dataService';
 
 const GOOGLE_CLIENT_ID = "755280134148-069vea3i8un2a33neau4gu67dnbrkpln.apps.googleusercontent.com";
@@ -31,7 +33,7 @@ const MainContent: React.FC = () => {
 
   const renderContent = () => {
     // These steps occupy the whole screen and are handled separately below
-    if (currentStep === 'survey' || currentStep === 'instruction') {
+    if (currentStep === 'survey' || currentStep === 'instruction' || currentStep === 'post_survey' || currentStep === 'thank_you') {
       return null;
     }
 
@@ -140,8 +142,8 @@ const MainContent: React.FC = () => {
           </div>
 
           <div className="pt-6 flex flex-col md:flex-row items-center justify-center gap-4">
-            <button onClick={resetFlow} className="w-full md:w-auto px-10 py-4 bg-white border border-slate-200 text-slate-700 rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-slate-50 active:scale-95 transition-all shadow-sm">Tiếp tục mua sắm</button>
-            <button onClick={() => setCurrentStep('social')} className="w-full md:w-auto px-10 py-4 bg-emerald-600 text-white rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-emerald-700 active:scale-95 transition-all shadow-lg shadow-emerald-100">BXH & Cộng đồng</button>
+            <button onClick={() => setCurrentStep('post_survey')} className="w-full md:w-auto px-10 py-5 bg-emerald-600 text-white rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-emerald-700 active:scale-95 transition-all shadow-lg shadow-emerald-100">Khảo sát & Hoàn tất</button>
+            <button onClick={() => setCurrentStep('social')} className="w-full md:w-auto px-10 py-5 bg-white border border-slate-200 text-slate-700 rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-slate-50 active:scale-95 transition-all shadow-sm">BXH & Cộng đồng</button>
           </div>
         </div>
       );
@@ -202,6 +204,14 @@ const MainContent: React.FC = () => {
 
   if (currentStep === 'instruction') {
     return <SimulationIntro />;
+  }
+
+  if (currentStep === 'post_survey') {
+    return <PostSurvey />;
+  }
+  
+  if (currentStep === 'thank_you') {
+    return <ThankYou />;
   }
 
   return (
