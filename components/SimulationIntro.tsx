@@ -3,7 +3,16 @@ import React from 'react';
 import { useAppContext } from '../AppContext';
 
 const SimulationIntro: React.FC = () => {
-  const { setCurrentStep } = useAppContext();
+  const { setCurrentStep, lastSimulationStep, setLastSimulationStep } = useAppContext();
+
+  const handleContinue = () => {
+    if (lastSimulationStep) {
+      setCurrentStep(lastSimulationStep);
+      setLastSimulationStep(null);
+    } else {
+      setCurrentStep('shop');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#F0F4F8] py-12 px-4 flex flex-col items-center font-sans overflow-y-auto">
@@ -52,13 +61,13 @@ const SimulationIntro: React.FC = () => {
           </div>
 
           {/* Action Button */}
-          <div className="pt-8 flex justify-center">
+          <div className="pt-8 flex flex-col md:flex-row justify-center gap-4">
             <button 
-              onClick={() => setCurrentStep('shop')}
+              onClick={handleContinue}
               className="group relative px-16 py-6 bg-emerald-600 text-white rounded-[2rem] font-black uppercase text-lg tracking-[0.2em] shadow-2xl hover:bg-emerald-700 active:scale-95 transition-all"
             >
               <span className="relative z-10 flex items-center">
-                Bắt đầu trải nghiệm
+                {lastSimulationStep ? 'Tiếp tục phần đang thao tác' : 'Bắt đầu trải nghiệm'}
                 <span className="ml-3 group-hover:translate-x-2 transition-transform">→</span>
               </span>
               <div className="absolute inset-0 rounded-[2rem] bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>

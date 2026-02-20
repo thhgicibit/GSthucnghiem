@@ -2,19 +2,38 @@ import React from 'react';
 import { useAppContext } from '../AppContext';
 
 const Header: React.FC = () => {
-  const { resetFlow } = useAppContext();
+  const { resetFlow, currentStep, setCurrentStep, setLastSimulationStep } = useAppContext();
+
+  const isSimulationStep = ['shop', 'packaging', 'checkout', 'success', 'social', 'redeem'].includes(currentStep);
+
+  const handleShowInstructions = () => {
+    setLastSimulationStep(currentStep as any);
+    setCurrentStep('instruction');
+  };
 
   return (
     <header className="bg-white w-full border-b border-slate-200 sticky top-0 z-50">
       <div className="container-custom flex flex-col md:flex-row items-center justify-between py-3 md:py-5 gap-4">
-        <div 
-          onClick={resetFlow}
-          className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-all self-start md:self-auto"
-        >
-          <div className="flex items-center">
-             <span className="text-2xl md:text-3xl mr-2">🌿</span>
-             <span className="text-xl md:text-2xl font-black tracking-tighter text-emerald-600">ĐIỂM XANH</span>
+        <div className="flex items-center space-x-4">
+          <div 
+            onClick={resetFlow}
+            className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-all self-start md:self-auto"
+          >
+            <div className="flex items-center">
+               <span className="text-2xl md:text-3xl mr-2">🌿</span>
+               <span className="text-xl md:text-2xl font-black tracking-tighter text-emerald-600">ĐIỂM XANH</span>
+            </div>
           </div>
+          
+          {isSimulationStep && (
+            <button 
+              onClick={handleShowInstructions}
+              className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all flex items-center space-x-1"
+            >
+              <span>🎥</span>
+              <span>Xem hướng dẫn</span>
+            </button>
+          )}
         </div>
         <div className="flex-1 w-full max-w-2xl md:px-10 order-3 md:order-none">
           <div className="bg-slate-100 p-1 rounded-lg flex items-center">

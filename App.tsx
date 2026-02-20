@@ -42,7 +42,10 @@ const MainContent: React.FC = () => {
         <div className="space-y-6 animate-slideUp">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-4 gap-2">
             <h1 className="text-xl font-bold text-slate-800">Cộng Đồng ĐIỂM XANH</h1>
-            <button onClick={() => setCurrentStep('shop')} className="text-emerald-600 font-bold text-sm hover:underline">Quay lại mua sắm →</button>
+            <div className="flex space-x-4">
+              <button onClick={() => setCurrentStep('shop')} className="text-emerald-600 font-bold text-sm hover:underline">Quay lại mua sắm →</button>
+              <button onClick={() => setCurrentStep('post_survey')} className="bg-emerald-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all">Khảo sát & Hoàn tất</button>
+            </div>
           </div>
           <Leaderboard />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

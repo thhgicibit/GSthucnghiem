@@ -80,7 +80,10 @@ const RedeemStore: React.FC = () => {
           <h1 className="text-2xl font-black text-slate-800 uppercase tracking-tighter italic">TRUNG TÂM ĐỔI ĐIỂM</h1>
           <p className="text-xs text-slate-400 font-bold uppercase mt-1">Sử dụng giọt nước 💧 của bạn để tạo ra giá trị</p>
         </div>
-        <button onClick={() => setCurrentStep('shop')} className="text-emerald-600 font-black text-xs uppercase underline tracking-widest">Quay lại</button>
+        <div className="flex items-center space-x-4">
+          <button onClick={() => setCurrentStep('shop')} className="text-emerald-600 font-black text-xs uppercase underline tracking-widest">Quay lại</button>
+          <button onClick={() => setCurrentStep('post_survey')} className="bg-emerald-600 text-white px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-md">Khảo sát & Hoàn tất</button>
+        </div>
       </div>
       {successMsg && (
         <div className="bg-emerald-600 text-white p-5 rounded-3xl shadow-xl animate-bounce flex items-center space-x-3">
