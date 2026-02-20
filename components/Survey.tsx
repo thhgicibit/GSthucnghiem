@@ -139,11 +139,11 @@ const Survey: React.FC = () => {
               
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-inner bg-slate-50">
-                  <img src="https://i.ibb.co/VWVvG2Pq/Screenshot-2025-02-17-210137.png" className="w-full h-auto" alt="Example 1" />
-                  <p className="p-2 text-base text-center text-slate-400 font-bold uppercase">Lướt shop nhận xu</p>
+                  <img src="https://image2url.com/r2/default/images/1771598523898-0d7d2802-b5bc-4466-b99b-be9ca43c1b45.png" className="w-full h-auto" alt="Example 1" />
+                  <p className="p-2 text-base text-center text-slate-400 font-bold uppercase">Game "Nông trại Shopee"</p>
                 </div>
                 <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-inner bg-slate-50">
-                  <img src="https://i.ibb.co/m5CMLp4d/Screenshot-2025-02-17-210156.png" className="w-full h-auto" alt="Example 2" />
+                  <img src="https://image2url.com/r2/default/images/1771598631402-830ed18b-15cb-41b8-82c4-44b54cc04a7e.png" className="w-full h-auto" alt="Example 2" />
                   <p className="p-2 text-base text-center text-slate-400 font-bold uppercase">Game "Tưới cây" Shopee</p>
                 </div>
               </div>
