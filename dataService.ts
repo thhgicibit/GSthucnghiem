@@ -4,7 +4,7 @@ import { SurveyRecord } from './types';
 const STORAGE_KEY_RECORDS = 'greenscore_survey_records';
 const STORAGE_KEY_LEADERBOARD = 'greenscore_leaderboard';
 const GOOGLE_SHEET_WEBAPP_URL: string =
-  'https://script.google.com/macros/s/AKfycbwFkxqWA8UmoDPjiF3yhmTycbb41xoWH81JO-yKo0hgdrxMLlTCDc_UCaHhKy60hWOt/exec';
+  'https://script.google.com/macros/s/AKfycbwFBO5CfmcKufjL1HkNrucxD9KgD3kzDXQJkWlMOiYJPtN1Utr5qO9i-dFtFc-x-jRY/exec';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helper: gửi POST đến Google Apps Script (fire-and-forget, no-cors)
