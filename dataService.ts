@@ -3,7 +3,7 @@ import { SurveyRecord } from './types';
 
 const STORAGE_KEY_RECORDS = 'greenscore_survey_records';
 const STORAGE_KEY_LEADERBOARD = 'greenscore_leaderboard';
-const GOOGLE_SHEET_WEBAPP_URL: string = 'https://script.google.com/macros/s/AKfycbxnOXl0SmmkUQqgTVdC5eEy2pur2y5IEh4zHaALKIeGKcWXcP2sXhbelh0IMh8zIBaP/exec';
+const GOOGLE_SHEET_WEBAPP_URL: string = 'https://script.google.com/macros/s/AKfycbx9EbJQDG8NOK6RT5No7Zx7WBV1tynzcZJfuY8kYW9EXYG1YsWX0CO40uYrW3CvO0D7/exec';
 
 export const dataService = {
   saveChoice: async (record: SurveyRecord, finalScore: number) => {
