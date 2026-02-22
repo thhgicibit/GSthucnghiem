@@ -328,10 +328,16 @@ const AppWrapper: React.FC = () => {
                   “Tác động của trò chơi hóa đến ý định tiêu dùng xanh trên nền tảng thương mại điện tử tại Việt Nam”.
                 </p>
                 <p>
-                  Mục tiêu của nghiên cứu là phân tích và kiểm định tác động của các yếu tố trò chơi hóa đến ý định tiêu dùng xanh của người tiêu dùng trên các nền tảng thương mại điện tử tại Việt Nam, đồng thời xem xét vai trò của các động lực thực dụng và khoái lạc trong quá trình hình thành ý định này. Trên cơ sở đó, nghiên cứu hướng đến việc đề xuất các hàm ý quản trị nhằm hỗ trợ doanh nghiệp thiết kế và triển khai hệ thống trò chơi hóa một cách hiệu quả, góp phần thúc đẩy hành vi tiêu dùng bền vững.
-                </p>
-                <p>
-                  Những ý kiến, đánh giá và phản hồi khách quan của Anh/Chị sẽ là nguồn dữ liệu quý giá, góp phần nâng cao độ tin cậy và giá trị học thuật của nghiên cứu. Chúng em cam kết mọi thông tin Anh/Chị cung cấp sẽ được bảo mật tuyệt đối, chỉ sử dụng cho mục đích nghiên cứu học thuật và không tiết lộ cho bất kỳ bên thứ ba nào.
+                  Khảo sát gồm 3 phần:</p>
+
+<ul className="list-disc ml-6">
+  <li><strong>Nghiên cứu 1:</strong> Nghiên cứu thực nghiệm</li>
+  <li>Tham gia mô phỏng hệ thống trò chơi tích điểm Điểm Xanh</li>
+  <li><strong>Nghiên cứu 2:</strong> Nghiên cứu dữ liệu điều tra</li>
+</ul>
+
+<p>
+  Những ý kiến, đánh giá và phản hồi khách quan của Anh/Chị sẽ là nguồn dữ liệu quý giá, góp phần nâng cao độ tin cậy và giá trị học thuật của nghiên cứu. Chúng em cam kết mọi thông tin Anh/Chị cung cấp sẽ được bảo mật tuyệt đối, chỉ sử dụng cho mục đích nghiên cứu học thuật và không tiết lộ cho bất kỳ bên thứ ba nào.
                 </p>
                 <p>Rất mong nhận được sự hỗ trợ và hợp tác từ Anh/Chị. Xin chân thành cảm ơn!</p>
                 <div className="pt-4 border-t border-emerald-100 space-y-1">
