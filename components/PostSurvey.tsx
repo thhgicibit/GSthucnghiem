@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
+import { dataService } from '../dataService';
 
 const PostSurvey: React.FC = () => {
-  const { setCurrentStep, lastSimulationStep } = useAppContext();
+  const { setCurrentStep, lastSimulationStep, userEmail } = useAppContext();
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showValidationErrors, setShowValidationErrors] = useState(false);
 
@@ -101,6 +102,7 @@ const PostSurvey: React.FC = () => {
   const TOTAL_W = COL_W * 5;
 
   const handleSelect = (questionId: string, value: string) => {
+    dataService.logSurvey2Response(userEmail, questionId, value);
     setAnswers(prev => ({ ...prev, [questionId]: value }));
   };
 
