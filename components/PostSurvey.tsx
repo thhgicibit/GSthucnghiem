@@ -10,12 +10,67 @@ const PostSurvey: React.FC = () => {
 
   const sections = [
     {
-      id: 'GLI',
-      title: 'Ý ĐỊNH THỰC HIỆN HÀNH VI LOGISTICS XANH (GLI)',
+      id: 'COM',
+      title: 'KHẢ NĂNG GỢI MỞ CẠNH TRANH (COM)',
       questions: [
-        { id: 'GLI1', text: 'Tôi có ý định tham gia vào các hành vi logistics xanh để bảo vệ môi trường.' },
-        { id: 'GLI2', text: 'Trong thời gian tới, tôi có ý định hạn chế những hành vi gây lãng phí trong quá trình giao hàng khi mua sắm trực tuyến (như bao bì, thời gian và chi phí vận chuyển).' },
-        { id: 'GLI3', text: 'Tôi có ý định giảm thiểu lượng rác thải phát sinh từ các hoạt động mua sắm trực tuyến và giao hàng trong những tháng tới.' },
+        { id: 'COM1', text: 'Game tích điểm xanh có tính cạnh tranh.' },
+        { id: 'COM2', text: 'Tôi có thể so sánh thành tích của mình với người khác trên Game tích Điểm Xanh.' },
+        { id: 'COM3', text: 'Điểm Xanh tạo cơ hội cho tôi cạnh tranh thứ hạng của những người khác thông qua việc tham gia tích cực của mình.' },
+      ]
+    },
+    {
+      id: 'ACH',
+      title: 'KHẢ NĂNG GỢI MỞ THÀNH TÍCH (ACH)',
+      questions: [
+        { id: 'ACH1', text: 'Tôi có thể khoe với người khác về các thành tích xanh mà tôi đạt được trên nền tảng này.' },
+        { id: 'ACH2', text: 'Game tích điểm xanh cho tôi cơ hội thể hiện thành tích của mình khi tham gia vào các hoạt động tiêu dùng xanh.' },
+        { id: 'ACH3', text: 'Điểm Xanh cho phép tôi thể hiện mức độ tham gia của mình vào các hoạt động tiêu dùng xanh.' },
+      ]
+    },
+    {
+      id: 'SEE',
+      title: 'KHẢ NĂNG GỢI MỞ TỰ THỂ HIỆN (SEE)',
+      questions: [
+        { id: 'SEE1', text: 'Tôi có thể thể hiện bản sắc cá nhân thông qua hệ thống tích điểm xanh.' },
+        { id: 'SEE2', text: 'Tôi được thể hiện bản thân theo cách tôi muốn trên Điểm Xanh.' },
+        { id: 'SEE3', text: 'Tôi có thể tạo sự khác biệt giữa bản thân và những người khác trên Điểm Xanh.' },
+      ]
+    },
+    {
+      id: 'INT',
+      title: 'KHẢ NĂNG GỢI MỞ TƯƠNG TÁC (INT)',
+      questions: [
+        { id: 'INT1', text: 'Điểm Xanh hỗ trợ tôi trong việc tương tác với bạn bè.' },
+        { id: 'INT2', text: 'Điểm Xanh mang đến cho tôi cơ hội giao lưu với những người tham gia khác.' },
+        { id: 'INT3', text: 'Điểm Xanh cung cấp cho tôi một hình thức để thúc đẩy sự tương tác và đối thoại với bạn bè.' },
+      ]
+    },
+    {
+      id: 'PEOU',
+      title: 'NHẬN THỨC VỀ TÍNH DỄ SỬ DỤNG (PEOU)',
+      questions: [
+        { id: 'PEOU1', text: 'Giao diện tương tác của Điểm Xanh rõ ràng và dễ hiểu.' },
+        { id: 'PEOU2', text: 'Tôi thấy Điểm Xanh dễ sử dụng.' },
+        { id: 'PEOU3', text: 'Tôi dễ dàng hoàn thành các tác vụ tôi mong muốn trên Hệ thống Điểm Xanh.' },
+      ]
+    },
+    {
+      id: 'PU',
+      title: 'NHẬN THỨC VỀ TÍNH HỮU ÍCH (PU)',
+      description: 'Định nghĩa: Mức độ người dùng tin rằng hệ thống trò chơi tích điểm Điểm Xanh giúp họ thực hiện hành vi tiêu dùng xanh hiệu quả hơn trên nền tảng thương mại điện tử',
+      questions: [
+        { id: 'PU1', text: 'Tôi cảm thấy Điểm Xanh giúp tôi thực hiện các hoạt động mua sắm trực tuyến nhanh chóng hơn.' },
+        { id: 'PU2', text: 'Tôi cảm thấy Điểm Xanh giúp tôi thực hiện các hoạt động mua sắm trực tuyến hiệu quả hơn.' },
+        { id: 'PU3', text: 'Tôi thấy Điểm Xanh hữu ích (giúp tôi thực hiện và duy trì lối sống bền vững dễ dàng hơn).' },
+      ]
+    },
+    {
+      id: 'PE',
+      title: 'NHẬN THỨC VỀ SỰ THÍCH THÚ (PE)',
+      questions: [
+        { id: 'PE1', text: 'Tôi cảm thấy thích thú khi sử dụng Điểm Xanh.' },
+        { id: 'PE2', text: 'Tôi thấy việc sử dụng Điểm Xanh thú vị.' },
+        { id: 'PE3', text: 'Sử dụng Điểm Xanh mang lại cảm giác dễ chịu.' },
       ]
     },
     {
@@ -32,67 +87,12 @@ const PostSurvey: React.FC = () => {
       ]
     },
     {
-      id: 'PE',
-      title: 'NHẬN THỨC VỀ SỰ THÍCH THÚ (PE)',
+      id: 'GLI',
+      title: 'Ý ĐỊNH THỰC HIỆN HÀNH VI LOGISTICS XANH (GLI)',
       questions: [
-        { id: 'PE1', text: 'Tôi cảm thấy thích thú khi sử dụng Điểm Xanh.' },
-        { id: 'PE2', text: 'Tôi thấy việc sử dụng Điểm Xanh thú vị.' },
-        { id: 'PE3', text: 'Sử dụng Điểm Xanh mang lại cảm giác dễ chịu.' },
-      ]
-    },
-    {
-      id: 'PU',
-      title: 'NHẬN THỨC VỀ TÍNH HỮU ÍCH (PU)',
-      description: 'Định nghĩa: Mức độ người dùng tin rằng hệ thống trò chơi tích điểm Điểm Xanh giúp họ thực hiện hành vi tiêu dùng xanh hiệu quả hơn trên nền tảng thương mại điện tử',
-      questions: [
-        { id: 'PU1', text: 'Tôi cảm thấy Điểm Xanh giúp tôi thực hiện các hoạt động mua sắm trực tuyến nhanh chóng hơn.' },
-        { id: 'PU2', text: 'Tôi cảm thấy Điểm Xanh giúp tôi thực hiện các hoạt động mua sắm trực tuyến hiệu quả hơn.' },
-        { id: 'PU3', text: 'Tôi thấy Điểm Xanh hữu ích (giúp tôi thực hiện và duy trì lối sống bền vững dễ dàng hơn).' },
-      ]
-    },
-    {
-      id: 'PEOU',
-      title: 'NHẬN THỨC VỀ TÍNH DỄ SỬ DỤNG (PEOU)',
-      questions: [
-        { id: 'PEOU1', text: 'Giao diện tương tác của Điểm Xanh rõ ràng và dễ hiểu.' },
-        { id: 'PEOU2', text: 'Tôi thấy Điểm Xanh dễ sử dụng.' },
-        { id: 'PEOU3', text: 'Tôi dễ dàng hoàn thành các tác vụ tôi mong muốn trên Hệ thống Điểm Xanh.' },
-      ]
-    },
-    {
-      id: 'INT',
-      title: 'KHẢ NĂNG GỢI MỞ TƯƠNG TÁC (INT)',
-      questions: [
-        { id: 'INT1', text: 'Điểm Xanh hỗ trợ tôi trong việc tương tác với bạn bè.' },
-        { id: 'INT2', text: 'Điểm Xanh mang đến cho tôi cơ hội giao lưu với những người tham gia khác.' },
-        { id: 'INT3', text: 'Điểm Xanh cung cấp cho tôi một hình thức để thúc đẩy sự tương tác và đối thoại với bạn bè.' },
-      ]
-    },
-    {
-      id: 'SEE',
-      title: 'KHẢ NĂNG GỢI MỞ TỰ THỂ HIỆN (SEE)',
-      questions: [
-        { id: 'SEE1', text: 'Tôi có thể thể hiện bản sắc cá nhân thông qua hệ thống tích điểm xanh.' },
-        { id: 'SEE2', text: 'Tôi được thể hiện bản thân theo cách tôi muốn trên Điểm Xanh.' },
-        { id: 'SEE3', text: 'Tôi có thể tạo sự khác biệt giữa bản thân và những người khác trên Điểm Xanh.' },
-      ]
-    },
-    {
-      id: 'ACH',
-      title: 'KHẢ NĂNG GỢI MỞ THÀNH TÍCH (ACH)',
-      questions: [
-        { id: 'ACH1', text: 'Tôi có thể khoe với người khác về các thành tích xanh mà tôi đạt được trên nền tảng này.' },
-        { id: 'ACH2', text: 'Game tích điểm xanh cho tôi cơ hội thể hiện thành tích của mình khi tham gia vào các hoạt động tiêu dùng xanh.' },
-        { id: 'ACH3', text: 'Điểm Xanh cho phép tôi thể hiện mức độ tham gia của mình vào các hoạt động tiêu dùng xanh.' },
-      ]
-    },
-    {
-      id: 'COM',
-      title: 'KHẢ NĂNG GỢI MỞ CẠNH TRANH (COM)',
-      questions: [
-        { id: 'COM1', text: 'Game tích điểm xanh có tính cạnh tranh.' },
-        { id: 'COM2', text: 'Tôi có thể so sánh thành tích của mình với người khác trên Game tích Điểm Xanh.' },
-        { id: 'COM3', text: 'Điểm Xanh tạo cơ hội cho tôi cạnh tranh thứ hạng của những người khác thông qua việc tham gia tích cực của mình.' },
+        { id: 'GLI1', text: 'Tôi có ý định tham gia vào các hành vi logistics xanh để bảo vệ môi trường.' },
+        { id: 'GLI2', text: 'Trong thời gian tới, tôi có ý định hạn chế những hành vi gây lãng phí trong quá trình giao hàng khi mua sắm trực tuyến (như bao bì, thời gian và chi phí vận chuyển).' },
+        { id: 'GLI3', text: 'Tôi có ý định giảm thiểu lượng rác thải phát sinh từ các hoạt động mua sắm trực tuyến và giao hàng trong những tháng tới.' },
       ]
     }
   ];
