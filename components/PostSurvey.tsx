@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 
 const PostSurvey: React.FC = () => {
-  const { setCurrentStep } = useAppContext();
+  const { setCurrentStep, lastSimulationStep } = useAppContext();
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
 
   const sections = [
     {
@@ -108,8 +109,22 @@ const PostSurvey: React.FC = () => {
   };
 
   const handleSubmit = () => {
+    if (!isComplete()) {
+      setShowValidationErrors(true);
+      setTimeout(() => {
+        const firstError = document.querySelector('.bg-red-50');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+      return;
+    }
     alert('Cảm ơn bạn đã hoàn thành khảo sát sau mô phỏng!');
     setCurrentStep('login');
+  };
+
+  const handleBack = () => {
+    setCurrentStep(lastSimulationStep || 'success');
   };
 
   const RadioGroup = ({ qId }: { qId: string }) => (
@@ -171,32 +186,37 @@ const PostSurvey: React.FC = () => {
 
       {/* Rows */}
       <div>
-        {section.questions.map((q, idx) => (
-          <div
-            key={q.id}
-            className={`px-6 py-5 border-b border-slate-100 last:border-0 ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}`}
-          >
-            {/* Desktop: text + radio nằm ngang */}
-            <div className="hidden md:flex items-center">
-              <div className="flex-1 text-sm font-medium text-slate-700 leading-relaxed pr-4">
-                <span className="font-bold">{q.id}.</span> {q.text}
-              </div>
-              <RadioGroup qId={q.id} />
-            </div>
-
-            {/* Mobile: text trên, radio dưới */}
-            <div className="md:hidden">
-              <p className="text-sm font-medium text-slate-700 leading-relaxed mb-4">
-                <span className="font-bold">{q.id}.</span> {q.text}
-              </p>
-              <div className="flex items-end justify-between px-2">
-                <span className="text-[11px] text-slate-400 font-medium pb-1">Rất không đồng ý</span>
+        {section.questions.map((q, idx) => {
+          const isInvalid = showValidationErrors && !answers[q.id];
+          return (
+            <div
+              key={q.id}
+              className={`px-6 py-5 border-b border-slate-100 last:border-0 transition-all ${isInvalid ? 'bg-red-50 border-l-4 border-red-500' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/40')}`}
+            >
+              {/* Desktop: text + radio nằm ngang */}
+              <div className="hidden md:flex items-center">
+                <div className="flex-1 text-sm font-medium text-slate-700 leading-relaxed pr-4">
+                  <span className="font-bold">{q.id}.</span> {q.text}
+                  {isInvalid && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">Vui lòng chọn</p>}
+                </div>
                 <RadioGroup qId={q.id} />
-                <span className="text-[11px] text-slate-400 font-medium pb-1">Rất đồng ý</span>
+              </div>
+
+              {/* Mobile: text trên, radio dưới */}
+              <div className="md:hidden">
+                <p className="text-sm font-medium text-slate-700 leading-relaxed mb-4">
+                  <span className="font-bold">{q.id}.</span> {q.text}
+                  {isInvalid && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">Vui lòng chọn</p>}
+                </p>
+                <div className="flex items-end justify-between px-2">
+                  <span className="text-[11px] text-slate-400 font-medium pb-1">Rất không đồng ý</span>
+                  <RadioGroup qId={q.id} />
+                  <span className="text-[11px] text-slate-400 font-medium pb-1">Rất đồng ý</span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -225,15 +245,15 @@ const PostSurvey: React.FC = () => {
       <div className="w-full max-w-3xl">
         {sections.map(section => renderSection(section))}
 
-        {/* Submit */}
-        <div className="flex justify-end items-center mt-10 mb-20 px-2">
+        {/* Actions */}
+        <div className="flex justify-between items-center mt-10 mb-20 px-2">
+          <button onClick={handleBack} className="px-8 py-3 text-emerald-600 font-black text-base uppercase tracking-[0.2em] hover:bg-emerald-50 rounded-xl transition-all">← Quay lại</button>
           <button
             onClick={handleSubmit}
-            disabled={!isComplete()}
             className={`px-12 py-4 rounded-xl font-black uppercase text-base tracking-[0.2em] transition-all shadow-xl
               ${isComplete()
                 ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95'
-                : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'}`}
+                : 'bg-slate-200 text-slate-400 shadow-none'}`}
           >
             Gửi
           </button>

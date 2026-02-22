@@ -31,17 +31,89 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [userEmail, setUserEmail] = useState('');
-  const [userDemographics, setUserDemographicsState] = useState<UserDemographics | null>(null);
-  const [greenScore, setGreenScore] = useState(0);
+  const [userEmail, setUserEmail] = useState(() => localStorage.getItem('eco_userEmail') || '');
+  const [userDemographics, setUserDemographicsState] = useState<UserDemographics | null>(() => {
+    const saved = localStorage.getItem('eco_userDemographics');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [greenScore, setGreenScore] = useState(() => Number(localStorage.getItem('eco_greenScore')) || 0);
   const [activeProduct, setActiveProduct] = useState<any | null>(null);
   const [showPointToast, setShowPointToast] = useState<number | null>(null);
-  const [currentStep, setCurrentStep] = useState<'login' | 'survey' | 'instruction' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem' | 'post_survey' | 'thank_you'>('login');
-  const [lastSimulationStep, setLastSimulationStep] = useState<'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem' | null>(null);
-  const [selectedLogistics, setSelectedLogistics] = useState<'standard' | 'green' | 'fast' | null>(null);
-  const [selectedPackaging, setSelectedPackaging] = useState<'standard' | 'green' | null>(null);
-  const [wateringCount, setWateringCount] = useState(1);
+  const [currentStep, setCurrentStepState] = useState<'login' | 'survey' | 'instruction' | 'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem' | 'post_survey' | 'thank_you'>(() => 
+    (localStorage.getItem('eco_currentStep') as any) || 'login'
+  );
+
+  const setCurrentStep = (step: any) => {
+    setCurrentStepState(step);
+    window.history.pushState({ step }, '', '');
+  };
+
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      if (event.state && event.state.step) {
+        setCurrentStepState(event.state.step);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+  const [lastSimulationStep, setLastSimulationStep] = useState<'shop' | 'packaging' | 'checkout' | 'success' | 'social' | 'redeem' | null>(() => 
+    (localStorage.getItem('eco_lastSimulationStep') as any) || null
+  );
+  const [selectedLogistics, setSelectedLogistics] = useState<'standard' | 'green' | 'fast' | null>(() => 
+    (localStorage.getItem('eco_selectedLogistics') as any) || null
+  );
+  const [selectedPackaging, setSelectedPackaging] = useState<'standard' | 'green' | null>(() => 
+    (localStorage.getItem('eco_selectedPackaging') as any) || null
+  );
+  const [wateringCount, setWateringCount] = useState(() => Number(localStorage.getItem('eco_wateringCount')) || 1);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
+
+  useEffect(() => {
+    localStorage.setItem('eco_userEmail', userEmail);
+  }, [userEmail]);
+
+  useEffect(() => {
+    if (userDemographics) {
+      localStorage.setItem('eco_userDemographics', JSON.stringify(userDemographics));
+    }
+  }, [userDemographics]);
+
+  useEffect(() => {
+    localStorage.setItem('eco_greenScore', greenScore.toString());
+  }, [greenScore]);
+
+  useEffect(() => {
+    localStorage.setItem('eco_currentStep', currentStep);
+  }, [currentStep]);
+
+  useEffect(() => {
+    if (lastSimulationStep) {
+      localStorage.setItem('eco_lastSimulationStep', lastSimulationStep);
+    } else {
+      localStorage.removeItem('eco_lastSimulationStep');
+    }
+  }, [lastSimulationStep]);
+
+  useEffect(() => {
+    if (selectedLogistics) {
+      localStorage.setItem('eco_selectedLogistics', selectedLogistics);
+    } else {
+      localStorage.removeItem('eco_selectedLogistics');
+    }
+  }, [selectedLogistics]);
+
+  useEffect(() => {
+    if (selectedPackaging) {
+      localStorage.setItem('eco_selectedPackaging', selectedPackaging);
+    } else {
+      localStorage.removeItem('eco_selectedPackaging');
+    }
+  }, [selectedPackaging]);
+
+  useEffect(() => {
+    localStorage.setItem('eco_wateringCount', wateringCount.toString());
+  }, [wateringCount]);
 
   useEffect(() => {
     setLeaderboard(dataService.getLeaderboard());
