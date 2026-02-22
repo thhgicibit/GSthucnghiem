@@ -75,6 +75,17 @@ const Checkout: React.FC = () => {
     refreshLeaderboard();
     setCurrentStep('success');
     
+    // Ghi mô phỏng vào sheet "Mô phỏng"
+    await dataService.logSimulationOrder(
+      userEmail,
+      activeProduct?.id || 'unknown',
+      activeProduct?.name || 'unknown',
+      activeProduct?.isGreen ? 1 : 0,
+      selectedLogistics || 'standard',
+      selectedLogistics === 'green' ? 1 : 0,
+      selectedPackaging || 'standard',
+      selectedPackaging === 'green' ? 1 : 0
+    );
     await dataService.saveChoice(record, finalScore);
   };
   
