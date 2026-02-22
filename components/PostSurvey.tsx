@@ -57,10 +57,12 @@ const PostSurvey: React.FC = () => {
     {
       id: 'PU',
       title: 'NHẬN THỨC VỀ TÍNH HỮU ÍCH (PU)',
-      description: 'Định nghĩa: Mức độ người dùng tin rằng hệ thống trò chơi tích điểm Điểm Xanh giúp họ thực hiện hành vi tiêu dùng xanh hiệu quả hơn trên nền tảng thương mại điện tử',
+      description: 'Định nghĩa:
+- Nhận thức về tính hữu ích (Perceived Usefulness – PU): Mức độ người dùng tin rằng hệ thống trò chơi tích điểm Điểm Xanh giúp họ thực hiện hành vi tiêu dùng xanh hiệu quả hơn trên nền tảng thương mại điện tử.
+- Mua sắm xanh: Là hành vi mua sắm các sản phẩm và dịch vụ thân thiện với môi trường nhằm giảm thiểu tối đa tác động tiêu cực đến môi trường và sức khỏe con người.',
       questions: [
-        { id: 'PU1', text: 'Tôi cảm thấy Điểm Xanh giúp tôi thực hiện các hoạt động mua sắm trực tuyến nhanh chóng hơn.' },
-        { id: 'PU2', text: 'Tôi cảm thấy Điểm Xanh giúp tôi thực hiện các hoạt động mua sắm trực tuyến hiệu quả hơn.' },
+        { id: 'PU1', text: 'Tôi cảm thấy Điểm Xanh giúp tôi thực hiện các hoạt động mua sắm xanh nhanh chóng hơn.' },
+        { id: 'PU2', text: 'Tôi cảm thấy Điểm Xanh giúp tôi thực hiện các hoạt động mua sắm xanh hiệu quả hơn.' },
         { id: 'PU3', text: 'Tôi thấy Điểm Xanh hữu ích (giúp tôi thực hiện và duy trì lối sống bền vững dễ dàng hơn).' },
       ]
     },
