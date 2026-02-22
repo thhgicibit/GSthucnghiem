@@ -26,6 +26,7 @@ interface UserProfile {
   titleId: string;
   tags: string[];
   slogan: string;
+  avatarUrl: string;
 }
 
 interface AppContextType {
@@ -61,6 +62,7 @@ const DEFAULT_PROFILE: UserProfile = {
   titleId: 'green_rookie',
   tags: [],
   slogan: '',
+  avatarUrl: '',
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
