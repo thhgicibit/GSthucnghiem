@@ -42,6 +42,7 @@ const PostSurvey: React.FC = () => {
     {
       id: 'PU',
       title: 'NHẬN THỨC VỀ TÍNH HỮU ÍCH (PU)',
+      description: 'Định nghĩa: Mức độ người dùng tin rằng hệ thống trò chơi tích điểm Điểm Xanh giúp họ thực hiện hành vi tiêu dùng xanh hiệu quả hơn trên nền tảng thương mại điện tử',
       questions: [
         { id: 'PU1', text: 'Tôi thấy Điểm Xanh giúp tôi thực hiện các hoạt động nhanh chóng hơn.' },
         { id: 'PU2', text: 'Tôi cảm thấy Điểm Xanh giúp tôi thực hiện các hoạt động mua sắm trực tuyến hiệu quả hơn (như dễ dàng tìm kiếm sản phẩm xanh, so sánh lựa chọn và hoàn tất đơn hàng).' },
@@ -127,10 +128,10 @@ const PostSurvey: React.FC = () => {
     setCurrentStep(lastSimulationStep || 'success');
   };
 
-  const RadioGroup = ({ qId }: { qId: string }) => (
-    <div className="flex shrink-0" style={{ width: TOTAL_W }}>
+  const RadioGroup = ({ qId, isMobile }: { qId: string, isMobile?: boolean }) => (
+    <div className={`flex ${isMobile ? 'w-full justify-between' : 'shrink-0'}`} style={isMobile ? {} : { width: TOTAL_W }}>
       {[1, 2, 3, 4, 5].map(num => (
-        <div key={num} className="flex flex-col items-center" style={{ width: COL_W }}>
+        <div key={num} className="flex flex-col items-center" style={isMobile ? { flex: 1 } : { width: COL_W }}>
           {/* Số — chỉ hiện trên mobile */}
           <span className="md:hidden text-xs font-bold text-slate-400 mb-1">{num}</span>
           <label className="relative flex items-center justify-center cursor-pointer group w-8 h-8">
@@ -152,7 +153,7 @@ const PostSurvey: React.FC = () => {
     </div>
   );
 
-  const renderSection = (section: typeof sections[0]) => (
+  const renderSection = (section: any) => (
     <div key={section.id} className="bg-white rounded-xl border border-slate-200 shadow-sm mb-4 overflow-hidden">
 
       {/* Header */}
@@ -160,6 +161,11 @@ const PostSurvey: React.FC = () => {
         <h3 className="text-base font-black text-slate-800 uppercase tracking-tight">
           {section.title} <span className="text-red-500">*</span>
         </h3>
+        {section.description && (
+          <p className="mt-2 text-xs text-slate-600 leading-relaxed italic border-l-2 border-emerald-500 pl-3">
+            {section.description}
+          </p>
+        )}
 
         {/* Desktop column headers — khớp chính xác với RadioGroup */}
         <div className="mt-4 hidden md:flex items-start">
@@ -170,12 +176,12 @@ const PostSurvey: React.FC = () => {
                 <span className="text-sm font-bold text-slate-500">{n}</span>
                 {i === 0 && (
                   <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">
-                    Hoàn toàn không<br />đồng ý
+                    Rất không<br />đồng ý
                   </span>
                 )}
                 {i === 4 && (
                   <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">
-                    Hoàn toàn<br />đồng ý
+                    Rất<br />đồng ý
                   </span>
                 )}
               </div>
@@ -208,10 +214,12 @@ const PostSurvey: React.FC = () => {
                   <span className="font-bold">{q.id}.</span> {q.text}
                   {isInvalid && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">Vui lòng chọn</p>}
                 </p>
-                <div className="flex items-end justify-between px-2">
-                  <span className="text-[11px] text-slate-400 font-medium pb-1">Hoàn toàn không đồng ý</span>
-                  <RadioGroup qId={q.id} />
-                  <span className="text-[11px] text-slate-400 font-medium pb-1">Hoàn toàn đồng ý</span>
+                <div className="bg-slate-50 p-3 rounded-lg">
+                  <div className="flex justify-between w-full text-[10px] font-bold text-emerald-700 uppercase tracking-tighter mb-2 px-1">
+                    <span>Rất không đồng ý</span>
+                    <span>Rất đồng ý</span>
+                  </div>
+                  <RadioGroup qId={q.id} isMobile />
                 </div>
               </div>
             </div>
@@ -247,10 +255,10 @@ const PostSurvey: React.FC = () => {
 
         {/* Actions */}
         <div className="flex justify-between items-center mt-10 mb-20 px-2">
-          <button onClick={handleBack} className="px-8 py-3 text-emerald-600 font-black text-base uppercase tracking-[0.2em] hover:bg-emerald-50 rounded-xl transition-all">← Quay lại</button>
+          <button onClick={handleBack} className="px-4 md:px-8 py-3 text-emerald-600 font-black text-sm md:text-base uppercase tracking-[0.1em] md:tracking-[0.2em] hover:bg-emerald-50 rounded-xl transition-all">← Quay lại</button>
           <button
             onClick={handleSubmit}
-            className={`px-12 py-4 rounded-xl font-black uppercase text-base tracking-[0.2em] transition-all shadow-xl
+            className={`px-6 md:px-12 py-4 rounded-xl font-black uppercase text-sm md:text-base tracking-[0.1em] md:tracking-[0.2em] transition-all shadow-xl
               ${isComplete()
                 ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95'
                 : 'bg-slate-200 text-slate-400 shadow-none'}`}
