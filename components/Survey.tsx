@@ -88,11 +88,23 @@ const Survey: React.FC = () => {
     <div className="bg-white rounded-lg border border-slate-200 shadow-sm mb-4 overflow-hidden">
       <div className="p-6 border-b border-slate-100 bg-slate-50/30">
         <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">{title} <span className="text-red-500">*</span></h3>
-        <div className="mt-4 hidden md:flex items-center text-base font-black text-slate-400 tracking-widest">
-          <div className="w-1/2 text-left normal-case">Nội dung</div>
-          <div className="w-1/2 flex justify-between px-2">
-            {[1, 2, 3, 4, 5].map(n => (
-              <div key={n} className="flex-1 text-center">{n}</div>
+        <div className="mt-4 hidden md:flex items-start">
+          <div className="flex-1 text-sm font-semibold text-slate-400 pr-4">Nội dung</div>
+          <div className="flex shrink-0" style={{ width: 280 }}>
+            {[1, 2, 3, 4, 5].map((n, i) => (
+              <div key={n} className="flex flex-col items-center" style={{ width: 56 }}>
+                <span className="text-sm font-bold text-slate-500">{n}</span>
+                {i === 0 && (
+                  <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">
+                    Hoàn toàn không<br />đồng ý
+                  </span>
+                )}
+                {i === 4 && (
+                  <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">
+                    Hoàn toàn<br />đồng ý
+                  </span>
+                )}
+              </div>
             ))}
           </div>
         </div>
@@ -101,25 +113,60 @@ const Survey: React.FC = () => {
         {questions.map((q, idx) => {
           const isInvalid = showValidationErrors && !answers[q.field];
           return (
-            <div key={q.field} className={`px-6 py-5 flex flex-col md:flex-row items-start md:items-center transition-all ${isInvalid ? 'bg-red-50/50 border-l-4 border-red-500' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/30')}`}>
-              <div className="w-full md:w-1/2 text-base text-slate-700 leading-snug pr-4 mb-3 md:mb-0">
+            <div key={q.field} className={`px-6 py-5 transition-all ${isInvalid ? 'bg-red-50/50 border-l-4 border-red-500' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/30')}`}>
+              <div className="hidden md:flex items-center">
+              <div className="flex-1 text-sm font-medium text-slate-700 leading-relaxed pr-4 mb-3 md:mb-0">
                 {q.text}
                 {isInvalid && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">Vui lòng chọn</p>}
               </div>
-              <div className="w-full md:w-1/2 flex justify-between items-center px-2">
+              <div className="hidden md:flex shrink-0" style={{ width: 280 }}>
                 {[1, 2, 3, 4, 5].map((num) => (
-                  <label key={num} className="flex-1 flex flex-col items-center cursor-pointer group">
-                    <span className="md:hidden text-base font-bold text-slate-400 mb-1">{num}</span>
-                    <input
-                      type="radio"
-                      name={q.field}
-                      value={num.toString()}
-                      checked={answers[q.field] === num.toString()}
-                      onChange={() => updateAnswer(q.field, num.toString())}
-                      className="w-6 h-6 accent-emerald-600 cursor-pointer"
-                    />
-                  </label>
+                  <div key={num} className="flex flex-col items-center" style={{ width: 56 }}>
+                    <label className="relative flex items-center justify-center cursor-pointer group w-8 h-8">
+                      <input
+                        type="radio"
+                        name={q.field}
+                        value={num.toString()}
+                        checked={answers[q.field] === num.toString()}
+                        onChange={() => updateAnswer(q.field, num.toString())}
+                        className="appearance-none w-7 h-7 border-2 border-slate-300 rounded-full checked:border-emerald-500 transition-all cursor-pointer"
+                      />
+                      {answers[q.field] === num.toString() && (
+                        <div className="absolute w-3.5 h-3.5 bg-emerald-500 rounded-full pointer-events-none" />
+                      )}
+                      <div className="absolute inset-0 rounded-full group-hover:bg-emerald-50 transition-colors -z-10" />
+                    </label>
+                  </div>
                 ))}
+              </div>
+              </div>{/* desktop flex */}
+              <div className="md:hidden">
+                <p className="text-sm font-medium text-slate-700 leading-relaxed mb-3">{q.text}{isInvalid && <span className="text-red-500 text-[10px] font-bold ml-2 uppercase tracking-wider">Vui lòng chọn</span>}</p>
+                <div className="bg-slate-50 p-3 rounded-lg">
+                <div className="flex justify-between w-full text-[10px] font-bold text-emerald-700 uppercase tracking-tighter mb-2 px-1">
+                  <span>Hoàn toàn không đồng ý</span>
+                  <span>Hoàn toàn đồng ý</span>
+                </div>
+                <div className="flex justify-between w-full">
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <div key={num} className="flex flex-col items-center flex-1">
+                      <span className="text-xs font-bold text-slate-400 mb-1">{num}</span>
+                      <label className="relative flex items-center justify-center cursor-pointer w-8 h-8">
+                        <input
+                          type="radio"
+                          name={q.field}
+                          value={num.toString()}
+                          checked={answers[q.field] === num.toString()}
+                          onChange={() => updateAnswer(q.field, num.toString())}
+                          className="appearance-none w-7 h-7 border-2 border-slate-300 rounded-full checked:border-emerald-500 transition-all cursor-pointer"
+                        />
+                        {answers[q.field] === num.toString() && (
+                          <div className="absolute w-3.5 h-3.5 bg-emerald-500 rounded-full pointer-events-none" />
+                        )}
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           );
