@@ -24,7 +24,7 @@ export const PRODUCTS: ExtendedProduct[] = [
   // Cặp 1: Bình nước (Nặng ~500g - 1kg bao gồm đóng gói)
   {
     id: '1a',
-    name: 'Bình nước giữ nhiệt Eco-Life 500ml',
+    name: 'Bình nước giữ nhiệt 500ml',
     price: 145000,
     image: 'https://th.bing.com/th/id/R.d865c7fa82657b20d900379ef5135948?rik=zGZc9d2mwLppkQ&riu=http%3a%2f%2fwww.sieuthinhua.vn%2fmedia%2fproduct%2f11203_0_binh_the_thao_500ml_2_scaled.jpg&ehk=KAM0%2biEd35tOtlxd3AKRwgUNMReUTi96X4nbD7CgxfI%3d&risl=&pid=ImgRaw&r=0',
     isGreen: true,
@@ -94,7 +94,7 @@ export const PRODUCTS: ExtendedProduct[] = [
   // Cặp 3: Túi Tote (Nhẹ ~100g)
   {
     id: '3a',
-    name: 'Túi Tote vải Canvas Eco-Bag',
+    name: 'Túi Tote',
     price: 65000,
     image: 'https://goudainc.com/wp-content/uploads/2019/08/6oz-Cotton-Tote-with-Gusset-Natural-jpg.webp',
     isGreen: true,
@@ -111,7 +111,7 @@ export const PRODUCTS: ExtendedProduct[] = [
   },
   {
     id: '3b',
-    name: 'Túi Tote Basic',
+    name: 'Túi Tote',
     price: 50000,
     image: 'https://goudainc.com/wp-content/uploads/2019/08/6oz-Cotton-Tote-with-Gusset-Natural-jpg.webp',
     isGreen: false,
