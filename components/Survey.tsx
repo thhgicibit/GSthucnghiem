@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 import { UserDemographics } from '../types';
+import { dataService } from '../dataService';
 
 const Survey: React.FC = () => {
-  const { setUserDemographics, setCurrentStep } = useAppContext();
+  const { setUserDemographics, setCurrentStep, userEmail } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [answers, setAnswers] = useState<Partial<UserDemographics>>({
@@ -13,8 +13,10 @@ const Survey: React.FC = () => {
     know_q1: '', know_q2: '', know_q3: '', know_q4: '', know_q5: ''
   });
 
+  // Ghi realtime ngay khi chọn
   const updateAnswer = (field: keyof UserDemographics, value: string) => {
     setAnswers(prev => ({ ...prev, [field]: value }));
+    dataService.logSurvey1Response(userEmail, field, value);
   };
 
   const isPageValid = () => {
@@ -31,7 +33,6 @@ const Survey: React.FC = () => {
   const handleNext = () => {
     if (!isPageValid()) {
       setShowValidationErrors(true);
-      // Scroll to first error
       setTimeout(() => {
         const firstError = document.querySelector('.border-red-500');
         if (firstError) {
