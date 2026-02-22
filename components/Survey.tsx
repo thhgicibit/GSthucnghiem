@@ -9,7 +9,7 @@ const Survey: React.FC = () => {
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [answers, setAnswers] = useState<Partial<UserDemographics>>({
     gender: '', age: '', education: '', job: '', income: '', gamificationExp: '', knownGame: '',
-    sent_q1: '', sent_q2: '', sent_q3: '', sent_q5: '', sent_q6: '',
+    sent_q1: '', sent_q2: '', sent_q3: '', sent_q4: '', sent_q5: '', sent_q6: '',
     know_q1: '', know_q2: '', know_q3: '', know_q4: '', know_q5: ''
   });
 
@@ -24,7 +24,7 @@ const Survey: React.FC = () => {
       return !!(answers.gender && answers.age && answers.education && answers.job && answers.income && answers.gamificationExp && answers.knownGame);
     }
     if (currentPage === 2) {
-      return !!(answers.sent_q1 && answers.sent_q2 && answers.sent_q3 && answers.sent_q5 && answers.sent_q6 &&
+      return !!(answers.sent_q1 && answers.sent_q2 && answers.sent_q3 && answers.sent_q4 && answers.sent_q5 && answers.sent_q6 &&
                 answers.know_q1 && answers.know_q2 && answers.know_q3 && answers.know_q4 && answers.know_q5);
     }
     return false;
@@ -230,6 +230,7 @@ const Survey: React.FC = () => {
               { field: 'sent_q1', text: 'Q1. Tôi coi trọng việc sử dụng các sản phẩm không gây hại đến môi trường' },
               { field: 'sent_q2', text: 'Q2. Thói quen mua sắm của tôi có sự thay đổi từ khi quan tâm đến môi trường' },
               { field: 'sent_q3', text: 'Q3. Tôi lo ngại về việc lãng phí các nguồn tài nguyên của trái đất' },
+              { field: 'sent_q4', text: 'Q4. Tôi cân nhắc đến những tác động tiềm ẩn đối với môi trường từ hành động của mình khi đưa ra các quyết định' },
               { field: 'sent_q5', text: 'Q5. Khi có sự lựa chọn giữa hai sản phẩm tương đương, tôi chọn sản phẩm ít gây hại hơn cho con người và môi trường' },
               { field: 'sent_q6', text: 'Q6. Tôi đã từng quyết định không mua một sản phẩm khi biết rằng nó có khả năng gây hại cho môi trường' }
             ])}
