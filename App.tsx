@@ -328,14 +328,17 @@ const AppWrapper: React.FC = () => {
                   “Tác động của trò chơi hóa đến ý định tiêu dùng xanh trên nền tảng thương mại điện tử tại Việt Nam”.
                 </p>
                 <p>
-                  Khảo sát gồm 3 phần:
-                    - Nghiên cứu 1: Nghiên cứu thực nghiệm
-                    - Tham gia mô phỏng hệ thống trò chơi tích điểm Điểm Xanh
-                    - Nghiên cứu 2: Nghiên cứu dữ liệu điều tra.
-                </p>
-                <p>
-                  Những ý kiến, đánh giá và phản hồi khách quan của Anh/Chị sẽ là nguồn dữ liệu quý giá, góp phần nâng cao độ tin cậy và giá trị học thuật của nghiên cứu. Chúng em cam kết mọi thông tin Anh/Chị cung cấp sẽ được bảo mật tuyệt đối, chỉ sử dụng cho mục đích nghiên cứu học thuật và không tiết lộ cho bất kỳ bên thứ ba nào.
-                </p>
+                  Khảo sát gồm 3 phần:</p>
+
+<ul className="list-disc ml-6">
+  <li><strong>Nghiên cứu 1:</strong> Nghiên cứu thực nghiệm</li>
+  <li>Tham gia mô phỏng hệ thống trò chơi tích điểm Điểm Xanh</li>
+  <li><strong>Nghiên cứu 2:</strong> Nghiên cứu dữ liệu điều tra</li>
+</ul>
+
+<p>
+  Những ý kiến, đánh giá và phản hồi khách quan của Anh/Chị sẽ là nguồn dữ liệu quý giá, góp phần nâng cao độ tin cậy và giá trị học thuật của nghiên cứu. Chúng em cam kết mọi thông tin Anh/Chị cung cấp sẽ được bảo mật tuyệt đối, chỉ sử dụng cho mục đích nghiên cứu học thuật và không tiết lộ cho bất kỳ bên thứ ba nào.
+</p>
                 <p>Rất mong nhận được sự hỗ trợ và hợp tác từ Anh/Chị. Xin chân thành cảm ơn!</p>
                 <div className="pt-4 border-t border-emerald-100 space-y-1">
                   <p className="font-black text-[13px] uppercase tracking-widest text-emerald-800">THÔNG TIN LIÊN HỆ</p>
