@@ -81,7 +81,7 @@ const PostSurvey: React.FC = () => {
         { id: 'GCI2', text: 'Tôi sẵn sàng chuyển sang mua sắm tại các thương hiệu khác vì lý do bảo vệ môi trường.' },
         { id: 'GCI3', text: 'Tôi sẵn sàng trả giá cao hơn cho một sản phẩm nếu nó tốt cho sức khỏe hoặc giúp bảo vệ môi trường.' },
         { id: 'GCI4', text: 'Tôi sẽ cân nhắc mua các sản phẩm xanh vì chúng gây ít ô nhiễm hơn.' },
-        { id: 'GCI5', text: 'Tôi muốn các sàn giao dịch TMĐT có hệ thống tích Điểm Xanh.' },
+        { id: 'GCI5', text: 'Tôi muốn các sàn thương mại điện tử có hệ thống tích Điểm Xanh.' },
         { id: 'GCI6', text: 'Sử dụng game tích Điểm Xanh là một ý tưởng hay.' },
         { id: 'GCI7', text: 'Tôi sẽ giới thiệu cho bạn bè về hệ thống tích Điểm Xanh nếu có hình thức này.' },
       ]
