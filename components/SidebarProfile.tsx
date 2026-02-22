@@ -2,12 +2,27 @@ import React, { useState } from 'react';
 import { useAppContext, AVAILABLE_TITLES, AVAILABLE_TAGS } from '../AppContext';
 import { BADGES } from '../constants';
 
+// Avatar mặc định có thể chọn nhanh
+const PRESET_AVATARS = [
+  'https://api.dicebear.com/7.x/bottts/svg?seed=eco1&backgroundColor=b6e3f4',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=eco2&backgroundColor=c0aede',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=eco3&backgroundColor=d1d4f9',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=eco4&backgroundColor=ffd5dc',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=eco5&backgroundColor=ffdfbf',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=eco6&backgroundColor=c0e8c0',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=eco7&backgroundColor=ffe4b5',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=eco8&backgroundColor=b0d4f1',
+];
+
 const SidebarProfile: React.FC = () => {
   const { greenScore, userEmail, setCurrentStep, userProfile, setUserProfile } = useAppContext();
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(userProfile);
+  const [avatarInputMode, setAvatarInputMode] = useState<'preset' | 'url'>('preset');
 
   const currentTitle = AVAILABLE_TITLES.find(t => t.id === userProfile.titleId);
+  const avatarSrc = userProfile.avatarUrl ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(userEmail || 'User')}&background=ffffff&color=059669&bold=true`;
   const displayName = userProfile.nickname || userEmail || 'Người tham gia';
 
   const handleOpenEdit = () => { setDraft(userProfile); setIsEditing(true); };
@@ -85,6 +100,70 @@ const SidebarProfile: React.FC = () => {
                 />
                 <p className="text-right text-[9px] text-slate-300 mt-1">{draft.slogan.length}/60</p>
               </div>
+
+              {/* Avatar */}
+              <div>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Ảnh đại diện</label>
+                {/* Preview */}
+                <div className="flex justify-center mb-3">
+                  <img
+                    src={draft.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(draft.nickname || userEmail || 'User')}&background=ffffff&color=059669&bold=true`}
+                    className="w-16 h-16 rounded-2xl border-2 border-emerald-200 shadow object-cover bg-emerald-50"
+                    alt="Preview"
+                    onError={e => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=User&background=ffffff&color=059669&bold=true`; }}
+                  />
+                </div>
+                {/* Toggle preset / url */}
+                <div className="flex rounded-xl overflow-hidden border border-slate-100 mb-3">
+                  <button
+                    onClick={() => setAvatarInputMode('preset')}
+                    className={`flex-1 py-1.5 text-[10px] font-black uppercase tracking-wider transition-all ${avatarInputMode === 'preset' ? 'bg-emerald-600 text-white' : 'bg-slate-50 text-slate-400'}`}
+                  >
+                    Chọn sẵn
+                  </button>
+                  <button
+                    onClick={() => setAvatarInputMode('url')}
+                    className={`flex-1 py-1.5 text-[10px] font-black uppercase tracking-wider transition-all ${avatarInputMode === 'url' ? 'bg-emerald-600 text-white' : 'bg-slate-50 text-slate-400'}`}
+                  >
+                    Nhập URL
+                  </button>
+                </div>
+                {/* Preset grid */}
+                {avatarInputMode === 'preset' && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {PRESET_AVATARS.map((url, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setDraft(prev => ({ ...prev, avatarUrl: url }))}
+                        className={`rounded-xl overflow-hidden border-2 transition-all ${draft.avatarUrl === url ? 'border-emerald-500 scale-105' : 'border-slate-100 hover:border-emerald-200'}`}
+                      >
+                        <img src={url} alt={`avatar ${i+1}`} className="w-full h-full object-cover aspect-square bg-slate-50" />
+                      </button>
+                    ))}
+                    {/* Xóa avatar tùy chỉnh, về mặc định */}
+                    <button
+                      onClick={() => setDraft(prev => ({ ...prev, avatarUrl: '' }))}
+                      className={`rounded-xl border-2 flex items-center justify-center aspect-square transition-all ${draft.avatarUrl === '' ? 'border-emerald-500 bg-emerald-50' : 'border-slate-100 bg-slate-50 hover:border-slate-200'}`}
+                      title="Dùng avatar mặc định"
+                    >
+                      <span className="text-lg">👤</span>
+                    </button>
+                  </div>
+                )}
+                {/* URL input */}
+                {avatarInputMode === 'url' && (
+                  <div>
+                    <input
+                      type="url"
+                      placeholder="https://..."
+                      value={draft.avatarUrl}
+                      onChange={e => setDraft(prev => ({ ...prev, avatarUrl: e.target.value }))}
+                      className="w-full border-2 border-slate-100 rounded-xl px-4 py-2.5 text-xs text-slate-700 focus:border-emerald-400 outline-none transition-all"
+                    />
+                    <p className="text-[9px] text-slate-300 mt-1">Dán link ảnh trực tiếp (jpg, png, svg...)</p>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="px-6 pb-6 flex gap-3">
               <button onClick={() => setIsEditing(false)}
@@ -102,23 +181,22 @@ const SidebarProfile: React.FC = () => {
 
       {/* ── PROFILE CARD — GIỮ NGUYÊN 100% GIAO DIỆN GỐC, CHỈ THÊM VÀO ── */}
       <div className="bg-white rounded-[2.5rem] shadow-sm overflow-hidden border border-slate-100">
-        <div className="bg-emerald-600 p-8 text-center">
+        <div className="bg-emerald-600 p-8 text-center relative">
 
-          {/* Nút ✏️ thêm vào — không thay đổi layout gốc */}
-          <div className="flex justify-end mb-[-20px]">
-            <button onClick={handleOpenEdit}
-              className="w-7 h-7 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-all"
-              title="Tùy chỉnh hồ sơ">
-              <span className="text-white text-xs">✏️</span>
-            </button>
-          </div>
+          {/* Nút ✏️ — absolute, không chiếm không gian, không xê dịch layout gốc */}
+          <button onClick={handleOpenEdit}
+            className="absolute top-3 right-3 w-7 h-7 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-all"
+            title="Tùy chỉnh hồ sơ">
+            <span className="text-white text-xs">✏️</span>
+          </button>
 
           {/* Avatar — GỐC */}
           <div className="relative inline-block mb-3">
             <img
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(userEmail || 'User')}&background=ffffff&color=059669&bold=true`}
-              className="w-16 h-16 rounded-2xl border-2 border-white/20 shadow-lg mx-auto"
+              src={avatarSrc}
+              className="w-16 h-16 rounded-2xl border-2 border-white/20 shadow-lg mx-auto object-cover bg-white"
               alt="Avatar"
+              onError={e => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userEmail || 'User')}&background=ffffff&color=059669&bold=true`; }}
             />
           </div>
 
