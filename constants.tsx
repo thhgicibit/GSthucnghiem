@@ -45,7 +45,7 @@ export const PRODUCTS: ExtendedProduct[] = [
     price: 125000,
     image: 'https://th.bing.com/th/id/R.d865c7fa82657b20d900379ef5135948?rik=zGZc9d2mwLppkQ&riu=http%3a%2f%2fwww.sieuthinhua.vn%2fmedia%2fproduct%2f11203_0_binh_the_thao_500ml_2_scaled.jpg&ehk=KAM0%2biEd35tOtlxd3AKRwgUNMReUTi96X4nbD7CgxfI%3d&risl=&pid=ImgRaw&r=0',
     isGreen: false,
-    sellerRating: 4.7,
+    sellerRating: 4.9,
     greenPoints: 0,
     wasteSaved: 0,
     wasteType: 'nhựa',
