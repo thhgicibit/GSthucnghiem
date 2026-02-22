@@ -170,12 +170,12 @@ const PostSurvey: React.FC = () => {
                 <span className="text-sm font-bold text-slate-500">{n}</span>
                 {i === 0 && (
                   <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">
-                    Rất không<br />đồng ý
+                    Hoàn toàn không<br />đồng ý
                   </span>
                 )}
                 {i === 4 && (
                   <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">
-                    Rất<br />đồng ý
+                    Hoàn toàn<br />đồng ý
                   </span>
                 )}
               </div>
@@ -209,9 +209,9 @@ const PostSurvey: React.FC = () => {
                   {isInvalid && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">Vui lòng chọn</p>}
                 </p>
                 <div className="flex items-end justify-between px-2">
-                  <span className="text-[11px] text-slate-400 font-medium pb-1">Rất không đồng ý</span>
+                  <span className="text-[11px] text-slate-400 font-medium pb-1">Hoàn toàn không đồng ý</span>
                   <RadioGroup qId={q.id} />
-                  <span className="text-[11px] text-slate-400 font-medium pb-1">Rất đồng ý</span>
+                  <span className="text-[11px] text-slate-400 font-medium pb-1">Hoàn toàn đồng ý</span>
                 </div>
               </div>
             </div>
