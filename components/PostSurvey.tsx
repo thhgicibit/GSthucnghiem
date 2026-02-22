@@ -13,7 +13,7 @@ const PostSurvey: React.FC = () => {
       id: 'COM',
       title: 'KHẢ NĂNG GỢI MỞ CẠNH TRANH (COM)',
       questions: [
-        { id: 'COM1', text: 'Game tích điểm xanh có tính cạnh tranh.' },
+        { id: 'COM1', text: 'Game tích Điểm Xanh có tính cạnh tranh.' },
         { id: 'COM2', text: 'Tôi có thể so sánh thành tích của mình với người khác trên Game tích Điểm Xanh.' },
         { id: 'COM3', text: 'Điểm Xanh tạo cơ hội cho tôi cạnh tranh thứ hạng của những người khác thông qua việc tham gia tích cực của mình.' },
       ]
@@ -23,7 +23,7 @@ const PostSurvey: React.FC = () => {
       title: 'KHẢ NĂNG GỢI MỞ THÀNH TÍCH (ACH)',
       questions: [
         { id: 'ACH1', text: 'Tôi có thể khoe với người khác về các thành tích xanh mà tôi đạt được trên nền tảng này.' },
-        { id: 'ACH2', text: 'Game tích điểm xanh cho tôi cơ hội thể hiện thành tích của mình khi tham gia vào các hoạt động tiêu dùng xanh.' },
+        { id: 'ACH2', text: 'Game tích Điểm Xanh cho tôi cơ hội thể hiện thành tích của mình khi tham gia vào các hoạt động tiêu dùng xanh.' },
         { id: 'ACH3', text: 'Điểm Xanh cho phép tôi thể hiện mức độ tham gia của mình vào các hoạt động tiêu dùng xanh.' },
       ]
     },
@@ -31,7 +31,7 @@ const PostSurvey: React.FC = () => {
       id: 'SEE',
       title: 'KHẢ NĂNG GỢI MỞ TỰ THỂ HIỆN (SEE)',
       questions: [
-        { id: 'SEE1', text: 'Tôi có thể thể hiện bản sắc cá nhân thông qua hệ thống tích điểm xanh.' },
+        { id: 'SEE1', text: 'Tôi có thể thể hiện bản sắc cá nhân thông qua hệ thống tích Điểm Xanh.' },
         { id: 'SEE2', text: 'Tôi được thể hiện bản thân theo cách tôi muốn trên Điểm Xanh.' },
         { id: 'SEE3', text: 'Tôi có thể tạo sự khác biệt giữa bản thân và những người khác trên Điểm Xanh.' },
       ]
@@ -81,9 +81,9 @@ const PostSurvey: React.FC = () => {
         { id: 'GCI2', text: 'Tôi sẵn sàng chuyển sang mua sắm tại các thương hiệu khác vì lý do bảo vệ môi trường.' },
         { id: 'GCI3', text: 'Tôi sẵn sàng trả giá cao hơn cho một sản phẩm nếu nó tốt cho sức khỏe hoặc giúp bảo vệ môi trường.' },
         { id: 'GCI4', text: 'Tôi sẽ cân nhắc mua các sản phẩm xanh vì chúng gây ít ô nhiễm hơn.' },
-        { id: 'GCI5', text: 'Tôi muốn các sàn giao dịch TMĐT có hệ thống tích điểm xanh.' },
-        { id: 'GCI6', text: 'Sử dụng game tích điểm xanh là một ý tưởng hay.' },
-        { id: 'GCI7', text: 'Tôi sẽ giới thiệu cho bạn bè về hệ thống tích điểm xanh nếu có hình thức này.' },
+        { id: 'GCI5', text: 'Tôi muốn các sàn giao dịch TMĐT có hệ thống tích Điểm Xanh.' },
+        { id: 'GCI6', text: 'Sử dụng game tích Điểm Xanh là một ý tưởng hay.' },
+        { id: 'GCI7', text: 'Tôi sẽ giới thiệu cho bạn bè về hệ thống tích Điểm Xanh nếu có hình thức này.' },
       ]
     },
     {
