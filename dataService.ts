@@ -4,7 +4,7 @@ import { SurveyRecord } from './types';
 const STORAGE_KEY_RECORDS = 'greenscore_survey_records';
 const STORAGE_KEY_LEADERBOARD = 'greenscore_leaderboard';
 const GOOGLE_SHEET_WEBAPP_URL: string =
-  'https://script.google.com/macros/s/AKfycbxxYJ6dvGjJxWrERrmksMzlvdi0AoYAm8UzVQcRNRJjVkPPOf6xpJzJEUzXI5PlxElt/exec';
+  'https://script.google.com/macros/s/AKfycbxnOXl0SmmkUQqgTVdC5eEy2pur2y5IEh4zHaALKIeGKcWXcP2sXhbelh0IMh8zIBaP/exec';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helper: gửi POST đến Google Apps Script (fire-and-forget, no-cors)
@@ -24,12 +24,20 @@ const postToSheet = async (payload: object): Promise<void> => {
 };
 
 export const dataService = {
+
   // ───────────────────────────────────────────────────────────────────────────
-  // 1. NGHIÊN CỨU 1 — ghi từng câu trả lời ngay khi người dùng chọn
-  //    Sheet đích: "Nghiên cứu 1"
-  //    Gọi từ: Survey.tsx → updateAnswer()
+  // NGHIÊN CỨU 1
+  // Cột: Thời gian | Email | A1 | A2 | A3 | A4 | A5 | A6 | A7 |
+  //       sent_q1 | sent_q2 | sent_q3 | sent_q5 | sent_q6 |
+  //       know_q1 | know_q2 | know_q3 | know_q4 | know_q5
+  //
+  // Ghi TỪNG CÂU ngay khi người dùng click — gọi từ Survey.tsx → updateAnswer()
   // ───────────────────────────────────────────────────────────────────────────
-  logSurvey1: async (userEmail: string, questionId: string, value: string): Promise<void> => {
+  logSurvey1Response: async (
+    userEmail: string,
+    questionId: string,
+    value: string
+  ): Promise<void> => {
     console.log(`[NC1] ${questionId}: ${value}`);
     await postToSheet({
       type: 'nghien_cuu_1',
@@ -41,37 +49,71 @@ export const dataService = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // 2. MÔ PHỎNG — ghi từng lần click chọn sản phẩm / bao bì / vận chuyển
-  //    Sheet đích: "Mô phỏng"
-  //    Gọi từ: ProductGrid, Packaging, Checkout khi người dùng click chọn
+  // MÔ PHỎNG
+  // Ghi MỘT DÒNG DUY NHẤT khi người dùng nhấn "Đặt hàng"
+  //
+  // Cột: Thời gian | Email |
+  //      Tên sản phẩm | Nhóm sản phẩm | Quy đổi sản phẩm (1/0) |
+  //      Phương thức vận chuyển | Quy đổi vận chuyển (1/0) |
+  //      Bao bì | Quy đổi bao bì (1/0)
   // ───────────────────────────────────────────────────────────────────────────
-  logSimulation: async (
+  logSimulationOrder: async (
     userEmail: string,
-    actionType: 'product' | 'packaging' | 'logistics' | 'order',
-    choiceId: string,
-    choiceLabel: string,
-    isGreen: boolean,
-    pointsEarned?: number
+    productId: string,
+    productName: string,
+    isGreenProduct: number,
+    logisticsType: string,
+    isGreenLogistics: number,
+    packagingType: string,
+    isGreenPackaging: number
   ): Promise<void> => {
-    console.log(`[MPS] ${actionType} → ${choiceId} (${choiceLabel})`);
+    const productGroup: Record<string, string> = {
+      '1a': '1: Bình nước - a: Xanh',
+      '1b': '1: Bình nước - b: Thường',
+      '2a': '2: Sổ tay - a: Xanh',
+      '2b': '2: Sổ tay - b: Thường',
+      '3a': '3: Túi - a: Xanh',
+      '3b': '3: Túi - b: Thường',
+    };
+    const logisticsLabel: Record<string, string> = {
+      green: 'Vận chuyển xanh',
+      standard: 'Giao hàng tiêu chuẩn',
+      fast: 'Giao hàng hỏa tốc',
+    };
+    const packagingLabel: Record<string, string> = {
+      green: 'Bao bì xanh',
+      standard: 'Đóng gói tiêu chuẩn',
+    };
+
+    console.log(`[MPS] Đặt hàng: ${productId} | ${logisticsType} | ${packagingType}`);
     await postToSheet({
       type: 'mo_phong',
-      userEmail,
-      actionType,   // product | packaging | logistics | order
-      choiceId,     // ID sản phẩm hoặc 'green'/'standard'/'fast'
-      choiceLabel,  // Tên hiển thị
-      isGreen,
-      pointsEarned: pointsEarned ?? 0,
       timestamp: new Date().toISOString(),
+      userEmail,
+      productName,
+      productGroup: productGroup[productId] ?? productId,
+      isGreenProduct,
+      logisticsLabel: logisticsLabel[logisticsType] ?? logisticsType,
+      isGreenLogistics,
+      packagingLabel: packagingLabel[packagingType] ?? packagingType,
+      isGreenPackaging,
     });
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // 3. NGHIÊN CỨU 2 — ghi từng câu trả lời ngay khi người dùng chọn
-  //    Sheet đích: "Nghiên cứu 2"
-  //    Gọi từ: PostSurvey.tsx → handleSelect()
+  // NGHIÊN CỨU 2
+  // Cột: Thời gian | Email |
+  //      GLI1 | GLI2 | GLI3 | GCI1..GCI7 |
+  //      PE1..PE3 | PU1..PU3 | PEOU1..PEOU3 |
+  //      INT1..INT3 | SEE1..SEE3 | ACH1..ACH3 | COM1..COM3
+  //
+  // Ghi TỪNG CÂU ngay khi người dùng click — gọi từ PostSurvey.tsx → handleSelect()
   // ───────────────────────────────────────────────────────────────────────────
-  logSurvey2: async (userEmail: string, questionId: string, value: string): Promise<void> => {
+  logSurvey2Response: async (
+    userEmail: string,
+    questionId: string,
+    value: string
+  ): Promise<void> => {
     console.log(`[NC2] ${questionId}: ${value}`);
     await postToSheet({
       type: 'nghien_cuu_2',
@@ -83,9 +125,7 @@ export const dataService = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // 4. saveChoice — vẫn giữ để lưu localStorage + cập nhật leaderboard
-  //    Gọi khi nhấn "Đặt hàng" (Checkout.tsx)
-  //    KHÔNG ghi thêm sheet vì logSimulation đã ghi realtime rồi
+  // saveChoice — lưu localStorage + leaderboard
   // ───────────────────────────────────────────────────────────────────────────
   saveChoice: async (record: SurveyRecord, finalScore: number): Promise<void> => {
     const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || '[]');
@@ -94,9 +134,6 @@ export const dataService = {
     dataService.updateGlobalLeaderboard(record.userEmail, finalScore);
   },
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // Giữ nguyên các hàm leaderboard / exportData
-  // ───────────────────────────────────────────────────────────────────────────
   updateGlobalLeaderboard: (email: string, score: number): void => {
     let leaderboard = JSON.parse(
       localStorage.getItem(STORAGE_KEY_LEADERBOARD) || JSON.stringify(MOCK_LEADERBOARD)
