@@ -176,12 +176,12 @@ const PostSurvey: React.FC = () => {
                 <span className="text-sm font-bold text-slate-500">{n}</span>
                 {i === 0 && (
                   <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">
-                    Rất không<br />đồng ý
+                    Hoàn toàn không<br />đồng ý
                   </span>
                 )}
                 {i === 4 && (
                   <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">
-                    Rất<br />đồng ý
+                    Hoàn toàn<br />đồng ý
                   </span>
                 )}
               </div>
@@ -216,8 +216,8 @@ const PostSurvey: React.FC = () => {
                 </p>
                 <div className="bg-slate-50 p-3 rounded-lg">
                   <div className="flex justify-between w-full text-[10px] font-bold text-emerald-700 uppercase tracking-tighter mb-2 px-1">
-                    <span>Rất không đồng ý</span>
-                    <span>Rất đồng ý</span>
+                    <span>Hoàn toàn không đồng ý</span>
+                    <span>Hoàn toàn đồng ý</span>
                   </div>
                   <RadioGroup qId={q.id} isMobile />
                 </div>
@@ -237,7 +237,7 @@ const PostSurvey: React.FC = () => {
         <div className="h-3 w-full bg-emerald-600 rounded-t-xl" />
         <div className="bg-white p-8 rounded-b-xl border-x border-b border-slate-200 shadow-sm text-justify">
           <h1 className="text-2xl md:text-3xl font-black text-slate-900 mb-4 uppercase tracking-tight leading-tight">
-            KHẢO SÁT SAU THỰC NGHIỆM
+            NGHIÊN CỨU 2 - NGHIÊN CỨU DỮ LIỆU ĐIỀU TRA
           </h1>
           <p className="text-sm text-slate-600 leading-relaxed italic">
             Anh/Chị vui lòng đánh giá mức độ đồng ý của mình dựa trên trải nghiệm tại hệ thống Điểm Xanh vừa rồi.
