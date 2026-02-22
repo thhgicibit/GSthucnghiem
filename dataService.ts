@@ -5,7 +5,7 @@ import { SurveyRecord } from './types';
 const STORAGE_KEY_RECORDS = 'greenscore_survey_records';
 const STORAGE_KEY_LEADERBOARD = 'greenscore_leaderboard';
 
-const GOOGLE_SHEET_WEBAPP_URL: string = 'https://script.google.com/macros/s/AKfycbxnOXl0SmmkUQqgTVdC5eEy2pur2y5IEh4zHaALKIeGKcWXcP2sXhbelh0IMh8zIBaP/exec'; 
+const GOOGLE_SHEET_WEBAPP_URL: string = 'https://script.google.com/macros/s/AKfycbw24pxzmEvcfeKDL7VRbzQJ1eNlnU_-bzWsc6FpUdmhtlsKQKaosS6Yc0p8OHE1aPL-/exec'; 
 
 export const dataService = {
   saveChoice: async (record: SurveyRecord, finalScore: number) => {
