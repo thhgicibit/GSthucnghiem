@@ -217,11 +217,11 @@ const Survey: React.FC = () => {
               <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight mb-4">KHẢO SÁT VỀ TÌNH CẢM VÀ KIẾN THỨC MÔI TRƯỜNG TRƯỚC THỰC NGHIỆM</h3>
               <p className="text-base leading-relaxed opacity-90">Anh/Chị vui lòng đánh giá mức độ đồng ý của mình đối với các phát biểu dưới đây về tình cảm và kiến thức đối với môi trường bằng cách chọn một con số từ 1 đến 5, trong đó:</p>
               <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-6 text-[12px] md:text-base font-medium text-center opacity-90">
-                <span className="whitespace-nowrap">1: Rất không đồng ý</span>
+                <span className="whitespace-nowrap">1: Hoàn toàn không đồng ý</span>
                 <span className="whitespace-nowrap">2: Không đồng ý</span>
                 <span className="whitespace-nowrap">3: Bình thường</span>
                 <span className="whitespace-nowrap">4: Đồng ý</span>
-                <span className="whitespace-nowrap">5: Rất đồng ý</span>
+                <span className="whitespace-nowrap">5: Hoàn toàn đồng ý</span>
               </div>
             </div>
 
