@@ -1,4 +1,3 @@
-
 export interface User {
   id: string;
   name: string;
@@ -35,6 +34,7 @@ export interface UserDemographics {
   sent_q1: string;
   sent_q2: string;
   sent_q3: string;
+  sent_q4: string;
   sent_q5: string;
   sent_q6: string;
   // Kiến thức môi trường (1-5)
