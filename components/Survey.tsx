@@ -136,7 +136,7 @@ const Survey: React.FC = () => {
                     </div>
                   ))}
                 </div>
-                <span className="text-[11px] text-slate-400 font-medium pb-1">hoàn toàn đồng ý</span>
+                <span className="text-[11px] text-slate-400 font-medium pb-1">Hoàn toàn đồng ý</span>
               </div>
             </div>
           </div>
