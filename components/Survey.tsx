@@ -170,7 +170,7 @@ const Survey: React.FC = () => {
                 </div>
                 <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-inner bg-slate-50">
                   <img src="https://image2url.com/r2/default/images/1771598631402-830ed18b-15cb-41b8-82c4-44b54cc04a7e.png" className="w-full h-auto" alt="Example 2" />
-                  <p className="p-2 text-base text-center text-slate-400 font-bold uppercase">Game "Nhiệm vụ tích xu" của MoMo Xu Shopee</p>
+                  <p className="p-2 text-base text-center text-slate-400 font-bold uppercase">Game "Nhiệm vụ tích xu" của MoMo Xu</p>
                 </div>
               </div>
 
