@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../AppContext';
 import { UserDemographics } from '../types';
 import { dataService } from '../dataService';
@@ -7,11 +7,21 @@ const Survey: React.FC = () => {
   const { setUserDemographics, setCurrentStep, userEmail } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
+  const shouldScrollToError = useRef(false);
   const [answers, setAnswers] = useState<Partial<UserDemographics>>({
     gender: '', age: '', education: '', job: '', income: '', gamificationExp: '', knownGame: '',
     sent_q1: '', sent_q2: '', sent_q3: '', sent_q4: '', sent_q5: '', sent_q6: '',
     know_q1: '', know_q2: '', know_q3: '', know_q4: '', know_q5: ''
   });
+
+  // Scroll đến lỗi đầu tiên SAU KHI React đã render xong (giống Google Form)
+  useEffect(() => {
+    if (shouldScrollToError.current && showValidationErrors) {
+      shouldScrollToError.current = false;
+      const firstError = document.querySelector('.bg-red-50');
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [showValidationErrors]);
 
   const updateAnswer = (field: keyof UserDemographics, value: string) => {
     setAnswers(prev => ({ ...prev, [field]: value }));
@@ -33,11 +43,8 @@ const Survey: React.FC = () => {
 
   const handleNext = () => {
     if (!isPageValid()) {
+      shouldScrollToError.current = true;
       setShowValidationErrors(true);
-      setTimeout(() => {
-        const firstError = document.querySelector('.border-red-500, .bg-red-50');
-        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
       return;
     }
     setShowValidationErrors(false);
@@ -319,7 +326,7 @@ const Survey: React.FC = () => {
 
             {renderLikertSection('Câu hỏi kiến thức môi trường', [
               { field: 'know_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả (dùng ít năng lượng hơn) của các phương tiện xanh dùng trong giao hàng chặng cuối' },
-              { field: 'know_q2', text: 'Q2.Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải, ít gây ô nhiễm hơn,...) trong các phương tiện xanh dùng cho chặng giao hàng cuối cùng' },
+              { field: 'know_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải, ít gây ô nhiễm hơn) trong các phương tiện xanh dùng cho chặng giao hàng cuối cùng' },
               { field: 'know_q3', text: 'Q3. Tôi nhận thức được những tác động của biến đổi khí hậu đối với môi trường và con người' },
               { field: 'know_q4', text: 'Q4. Khi đọc mô tả sản phẩm, tôi có thể hiểu được liệu sản phẩm đó có gây hại cho môi trường hay không' },
               { field: 'know_q5', text: 'Q5. Tôi dễ dàng nhận biết được sản phẩm thân thiện với môi trường' }
