@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 import { UserDemographics } from '../types';
 import { dataService } from '../dataService';
@@ -7,21 +7,11 @@ const Survey: React.FC = () => {
   const { setUserDemographics, setCurrentStep, userEmail } = useAppContext();
   const [currentPage, setCurrentPage] = useState(1);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
-  const shouldScrollToError = useRef(false);
   const [answers, setAnswers] = useState<Partial<UserDemographics>>({
     gender: '', age: '', education: '', job: '', income: '', gamificationExp: '', knownGame: '',
     sent_q1: '', sent_q2: '', sent_q3: '', sent_q4: '', sent_q5: '', sent_q6: '',
     know_q1: '', know_q2: '', know_q3: '', know_q4: '', know_q5: ''
   });
-
-  // Scroll đến lỗi đầu tiên SAU KHI React đã render xong (giống Google Form)
-  useEffect(() => {
-    if (shouldScrollToError.current && showValidationErrors) {
-      shouldScrollToError.current = false;
-      const firstError = document.querySelector('.bg-red-50');
-      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [showValidationErrors]);
 
   const updateAnswer = (field: keyof UserDemographics, value: string) => {
     setAnswers(prev => ({ ...prev, [field]: value }));
@@ -41,10 +31,20 @@ const Survey: React.FC = () => {
     return false;
   };
 
+  const scrollToFirstError = () => {
+    // requestAnimationFrame đảm bảo chạy sau khi React render xong DOM
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const firstError = document.querySelector('.bg-red-50');
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+  };
+
   const handleNext = () => {
     if (!isPageValid()) {
-      shouldScrollToError.current = true;
       setShowValidationErrors(true);
+      scrollToFirstError();
       return;
     }
     setShowValidationErrors(false);
@@ -291,64 +291,4 @@ const Survey: React.FC = () => {
                 <li className="flex items-start space-x-4">
                   <div>
                     <p className="font-bold text-slate-800 text-base">Trò chơi hóa (Gamification):</p>
-                    <p className="text-base text-slate-600 mt-1">Là việc áp dụng các yếu tố, quy tắc và cơ chế của trò chơi vào những lĩnh vực không phải là trò chơi (như kinh doanh, marketing, giáo dục, sức khỏe,...). Mục đích là tăng sự tham gia, tạo động lực và thúc đẩy hành vi mong muốn từ người dùng.</p>
-                  </div>
-                </li>
-                <li className="flex items-start space-x-4">
-                  <div>
-                    <p className="font-bold text-slate-800 text-base">Giao hàng chặng cuối (Last Mile Delivery):</p>
-                    <p className="text-base text-slate-600 mt-1">Là thuật ngữ chỉ công đoạn vận chuyển hàng hóa từ trung tâm phân phối gần nhất đến tay người tiêu dùng cuối cùng.</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-emerald-600 text-white p-6 md:p-10 rounded-lg shadow-sm text-justify">
-              <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight mb-4">KHẢO SÁT VỀ TÌNH CẢM VÀ KIẾN THỨC MÔI TRƯỜNG TRƯỚC THỰC NGHIỆM</h3>
-              <p className="text-base leading-relaxed opacity-90">Anh/Chị vui lòng đánh giá mức độ đồng ý của mình đối với các phát biểu dưới đây về tình cảm và kiến thức đối với môi trường bằng cách chọn một con số từ 1 đến 5, trong đó:</p>
-              <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-6 text-[12px] md:text-base font-medium text-center opacity-90">
-                <span className="whitespace-nowrap">1: Hoàn toàn không đồng ý</span>
-                <span className="whitespace-nowrap">2: Không đồng ý</span>
-                <span className="whitespace-nowrap">3: Bình thường</span>
-                <span className="whitespace-nowrap">4: Đồng ý</span>
-                <span className="whitespace-nowrap">5: Hoàn toàn đồng ý</span>
-              </div>
-            </div>
-
-            {renderLikertSection('Câu hỏi tình cảm môi trường', [
-              { field: 'sent_q1', text: 'Q1. Tôi coi trọng việc sử dụng các sản phẩm không gây hại đến môi trường' },
-              { field: 'sent_q2', text: 'Q2. Thói quen mua sắm của tôi có sự thay đổi từ khi quan tâm đến môi trường' },
-              { field: 'sent_q3', text: 'Q3. Tôi lo ngại về việc lãng phí các nguồn tài nguyên của trái đất' },
-              { field: 'sent_q4', text: 'Q4. Tôi cân nhắc đến những tác động tiềm ẩn đối với môi trường từ hành động của mình khi đưa ra các quyết định' },
-              { field: 'sent_q5', text: 'Q5. Khi có sự lựa chọn giữa hai sản phẩm tương đương, tôi chọn sản phẩm ít gây hại hơn cho con người và môi trường' },
-              { field: 'sent_q6', text: 'Q6. Tôi đã từng quyết định không mua một sản phẩm khi biết rằng nó có khả năng gây hại cho môi trường' }
-            ])}
-
-            {renderLikertSection('Câu hỏi kiến thức môi trường', [
-              { field: 'know_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả (dùng ít năng lượng hơn) của các phương tiện xanh dùng trong giao hàng chặng cuối' },
-              { field: 'know_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải, ít gây ô nhiễm hơn) trong các phương tiện xanh dùng cho chặng giao hàng cuối cùng' },
-              { field: 'know_q3', text: 'Q3. Tôi nhận thức được những tác động của biến đổi khí hậu đối với môi trường và con người' },
-              { field: 'know_q4', text: 'Q4. Khi đọc mô tả sản phẩm, tôi có thể hiểu được liệu sản phẩm đó có gây hại cho môi trường hay không' },
-              { field: 'know_q5', text: 'Q5. Tôi dễ dàng nhận biết được sản phẩm thân thiện với môi trường' }
-            ])}
-          </div>
-        )}
-
-        <div className="flex justify-between items-center mt-10 mb-20 px-2">
-          <button onClick={handleBack} className="px-4 md:px-8 py-3 text-emerald-600 font-black text-sm md:text-base uppercase tracking-[0.1em] md:tracking-[0.2em] hover:bg-emerald-50 rounded-xl transition-all">← Quay lại</button>
-          <button
-            onClick={handleNext}
-            disabled={!isPageValid()}
-            className={`px-6 md:px-12 py-4 rounded-xl font-black uppercase text-sm md:text-base tracking-[0.1em] md:tracking-[0.2em] transition-all shadow-xl ${
-              isPageValid() ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95' : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
-            }`}
-          >
-            {currentPage === 2 ? 'Tiếp tục' : 'Tiếp theo →'}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Survey;
+                    <p className="text-base text-slate-600 mt-1">Là việc áp dụng các yếu tố, quy tắc và
