@@ -49,7 +49,7 @@ const SimulationIntro: React.FC = () => {
             <div className="aspect-video w-full rounded-2xl overflow-hidden bg-slate-900 shadow-2xl border-4 border-slate-100 relative group">
               <iframe 
                 className="w-full h-full"
-                src="https://youtu.be/Z4Atpo1--wQ" 
+                src="https://www.youtube.com/embed/Z4Atpo1--wQ" 
                 title="Hướng dẫn trải nghiệm mô phỏng"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen
