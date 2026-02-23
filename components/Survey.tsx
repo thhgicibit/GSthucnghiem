@@ -35,7 +35,7 @@ const Survey: React.FC = () => {
     if (!isPageValid()) {
       setShowValidationErrors(true);
       setTimeout(() => {
-        const firstError = document.querySelector('.border-red-500');
+        const firstError = document.querySelector('.border-red-500, .bg-red-50');
         if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 100);
       return;
@@ -62,7 +62,7 @@ const Survey: React.FC = () => {
   const renderRadioGroup = (field: keyof UserDemographics, label: string, options: string[]) => {
     const isInvalid = showValidationErrors && !answers[field];
     return (
-      <div className={`bg-white p-6 rounded-lg border shadow-sm mb-4 overflow-hidden transition-all ${isInvalid ? 'border-red-500 bg-red-50/30' : 'border-slate-200'}`}>
+      <div className={`bg-white p-6 rounded-lg border shadow-sm mb-4 overflow-hidden transition-all ${isInvalid ? 'border-red-500 bg-red-50' : 'border-slate-200'}`}>
         <div className="mb-4">
           <label className="text-base font-medium text-slate-800">{label} <span className="text-red-500">*</span></label>
           {isInvalid && <p className="text-red-500 text-xs font-bold mt-1 uppercase tracking-wider">Vui lòng chọn một câu trả lời</p>}
@@ -161,9 +161,9 @@ const Survey: React.FC = () => {
 
                 {/* Mobile */}
                 <div className="md:hidden">
-                  <p className="text-sm font-medium text-slate-700 leading-relaxed mb-3">
+                  <p className="text-sm font-medium text-slate-700 leading-relaxed mb-4">
                     {q.text}
-                    {isInvalid && <span className="text-red-500 text-[10px] font-bold ml-2 uppercase tracking-wider">Vui lòng chọn</span>}
+                    {isInvalid && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">Vui lòng chọn</p>}
                   </p>
                   <div className="bg-slate-50 p-3 rounded-lg">
                     <div className="flex justify-between w-full text-[10px] font-bold text-emerald-700 uppercase tracking-tighter mb-2 px-1">
@@ -230,10 +230,12 @@ const Survey: React.FC = () => {
             ])}
             {renderRadioGroup('income', 'A5. Thu nhập cá nhân trung bình hàng tháng của Anh/Chị là:', ['Dưới 5 triệu VNĐ', 'Từ 5 – 10 triệu VNĐ', 'Từ 10 – 20 triệu VNĐ', 'Trên 20 triệu VNĐ'])}
 
-            <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+            {(() => { const isInvalid = showValidationErrors && !answers.gamificationExp; return (
+            <div className={`bg-white p-6 rounded-lg border shadow-sm transition-all ${isInvalid ? 'border-red-500 bg-red-50' : 'border-slate-200'}`}>
               <label className="text-base font-medium text-slate-800 block mb-2">
                 A6. Anh/Chị đã từng tương tác với các ứng dụng hoặc nền tảng có tích hợp cơ chế trò chơi hóa (Gamification) chưa? <span className="text-red-500">*</span>
               </label>
+              {isInvalid && <p className="text-red-500 text-xs font-bold mb-2 uppercase tracking-wider">Vui lòng chọn một câu trả lời</p>}
               <p className="text-base text-slate-500 mb-6 italic">(Ví dụ: Trồng cây trên Shopee/Lazada, làm nhiệm vụ tích xu trên Momo, học tập trên Duolingo, chạy bộ UpRace...)</p>
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-inner bg-slate-50">
@@ -254,19 +256,23 @@ const Survey: React.FC = () => {
                 ))}
               </div>
             </div>
+            ); })()}
 
-            <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+            {(() => { const isInvalid = showValidationErrors && !answers.knownGame; return (
+            <div className={`bg-white p-6 rounded-lg border shadow-sm transition-all ${isInvalid ? 'border-red-500 bg-red-50' : 'border-slate-200'}`}>
               <label className="text-base font-medium text-slate-800 block mb-4">
                 A7. Hãy kể tên một game mà bạn đã từng chơi/biết hoặc đã từng thấy: <span className="text-red-500">*</span>
               </label>
+              {isInvalid && <p className="text-red-500 text-xs font-bold mb-2 uppercase tracking-wider">Vui lòng nhập câu trả lời</p>}
               <input
                 type="text"
                 placeholder="Câu trả lời của bạn"
                 value={answers.knownGame}
                 onChange={(e) => updateAnswer('knownGame', e.target.value)}
-                className="w-full border-b-2 border-slate-200 focus:border-emerald-500 outline-none py-2 text-base transition-all"
+                className={`w-full border-b-2 outline-none py-2 text-base transition-all ${isInvalid ? 'border-red-400' : 'border-slate-200 focus:border-emerald-500'}`}
               />
             </div>
+            ); })()}
           </div>
         )}
 
@@ -313,7 +319,7 @@ const Survey: React.FC = () => {
 
             {renderLikertSection('Câu hỏi kiến thức môi trường', [
               { field: 'know_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả (dùng ít năng lượng hơn) của các phương tiện xanh dùng trong giao hàng chặng cuối' },
-              { field: 'know_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải, ít gây ô nhiễm hơn) trong các phương tiện xanh dùng cho chặng giao hàng cuối cùng' },
+              { field: 'know_q2', text: 'Q2.Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải, ít gây ô nhiễm hơn,...) trong các phương tiện xanh dùng cho chặng giao hàng cuối cùng' },
               { field: 'know_q3', text: 'Q3. Tôi nhận thức được những tác động của biến đổi khí hậu đối với môi trường và con người' },
               { field: 'know_q4', text: 'Q4. Khi đọc mô tả sản phẩm, tôi có thể hiểu được liệu sản phẩm đó có gây hại cho môi trường hay không' },
               { field: 'know_q5', text: 'Q5. Tôi dễ dàng nhận biết được sản phẩm thân thiện với môi trường' }
