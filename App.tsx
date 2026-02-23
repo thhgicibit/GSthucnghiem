@@ -332,7 +332,7 @@ const AppWrapper: React.FC = () => {
 
 <ul className="list-disc ml-6">
   <li><strong>Nghiên cứu 1:</strong> Nghiên cứu thực nghiệm</li>
-  <li>Tham gia mô phỏng hệ thống trò chơi tích điểm Điểm Xanh</li>
+  <li>Tham gia trải nghiệm mua sắm mô phỏng trên hệ thống có tích hợp cơ chế trò chơi hóa Điểm Xanh</li>
   <li><strong>Nghiên cứu 2:</strong> Nghiên cứu dữ liệu điều tra</li>
 </ul>
 
