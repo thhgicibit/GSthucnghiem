@@ -14,7 +14,7 @@ const PostSurvey: React.FC = () => {
       questions: [
         { id: 'COM1', text: 'Game tích Điểm Xanh có tính cạnh tranh.' },
         { id: 'COM2', text: 'Tôi có thể so sánh thành tích của mình với người khác trên Game tích Điểm Xanh.' },
-        { id: 'COM3', text: 'Điểm Xanh tạo cơ hội cho tôi cạnh tranh thứ hạng của những người khác thông qua việc tham gia tích cực của mình.' },
+        { id: 'COM3', text: 'Điểm Xanh tạo cơ hội cho tôi cạnh tranh thứ hạng với những người khác thông qua việc tham gia tích cực của mình.' },
       ]
     },
     {
