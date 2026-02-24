@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 import { dataService } from '../dataService';
@@ -30,7 +31,7 @@ const PostSurvey: React.FC = () => {
       id: 'SEE',
       title: 'KHẢ NĂNG GỢI MỞ TỰ THỂ HIỆN (SEE)',
       questions: [
-        { id: 'SEE1', text: 'Tôi có thể thể hiện bản sắc cá nhân (thông qua hình đại diện, biệt danh,...) trên hệ thống tích Điểm Xanh.' },
+        { id: 'SEE1', text: 'Tôi có thể thể hiện bản sắc cá nhân (thông qua hình đại diện, biệt danh, slogan,...) trên hệ thống tích Điểm Xanh.' },
         { id: 'SEE2', text: 'Tôi được thể hiện bản thân theo cách tôi muốn trên Điểm Xanh.' },
         { id: 'SEE3', text: 'Tôi có thể tạo sự khác biệt giữa bản thân và những người khác trên Điểm Xanh.' },
       ]
@@ -124,8 +125,9 @@ const PostSurvey: React.FC = () => {
       }, 100);
       return;
     }
-    alert('Cảm ơn bạn đã hoàn thành khảo sát sau mô phỏng!');
-    setCurrentStep('login');
+    // Đánh dấu đã hoàn thành để lần sau login sẽ reset flow
+    localStorage.setItem('eco_completed', 'true');
+    setCurrentStep('thank_you');
   };
 
   const handleBack = () => {
