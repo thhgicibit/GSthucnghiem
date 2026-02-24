@@ -5,7 +5,11 @@ import { dataService } from '../dataService';
 
 const PostSurvey: React.FC = () => {
   const { setCurrentStep, lastSimulationStep, userEmail } = useAppContext();
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [answers, setAnswers] = useState<Record<string, string>>(() => {
+    const saved = localStorage.getItem('eco_s2_answers');
+    if (saved) { try { return JSON.parse(saved); } catch (e) {} }
+    return {};
+  });
   const [showValidationErrors, setShowValidationErrors] = useState(false);
 
   const sections = [
@@ -106,7 +110,11 @@ const PostSurvey: React.FC = () => {
 
   const handleSelect = (questionId: string, value: string) => {
     dataService.logSurvey2Response(userEmail, questionId, value);
-    setAnswers(prev => ({ ...prev, [questionId]: value }));
+    setAnswers(prev => {
+      const next = { ...prev, [questionId]: value };
+      localStorage.setItem('eco_s2_answers', JSON.stringify(next));
+      return next;
+    });
   };
 
   const isComplete = () => {
@@ -117,16 +125,14 @@ const PostSurvey: React.FC = () => {
   const handleSubmit = () => {
     if (!isComplete()) {
       setShowValidationErrors(true);
-      setTimeout(() => {
+      requestAnimationFrame(() => requestAnimationFrame(() => {
         const firstError = document.querySelector('.bg-red-50');
-        if (firstError) {
-          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }));
       return;
     }
-    // Đánh dấu đã hoàn thành để lần sau login sẽ reset flow
     localStorage.setItem('eco_completed', 'true');
+    localStorage.removeItem('eco_s2_answers');
     setCurrentStep('thank_you');
   };
 
