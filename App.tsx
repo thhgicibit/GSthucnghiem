@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { AppProvider, useAppContext } from './AppContext';
 import Header from './components/Header';
@@ -276,7 +275,8 @@ const AppWrapper: React.FC = () => {
         const isDifferentEmail = savedEmail && savedEmail !== profile.email;
         if (isCompleted || isDifferentEmail) {
           ['eco_currentStep','eco_greenScore','eco_userDemographics','eco_lastSimulationStep',
-           'eco_selectedLogistics','eco_selectedPackaging','eco_wateringCount','eco_completed'].forEach(k => localStorage.removeItem(k));
+           'eco_selectedLogistics','eco_selectedPackaging','eco_wateringCount','eco_completed',
+           'eco_s1_answers','eco_s1_page','eco_s2_answers'].forEach(k => localStorage.removeItem(k));
         }
         context.setUserEmail(profile.email);
         const savedStep = localStorage.getItem('eco_currentStep');
