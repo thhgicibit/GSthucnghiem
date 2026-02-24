@@ -271,8 +271,16 @@ const AppWrapper: React.FC = () => {
         const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join(''));
         const profile = JSON.parse(jsonPayload);
         saveEmailToRecent(profile.email);
+        const savedEmail = localStorage.getItem('eco_userEmail') || '';
+        const isCompleted = localStorage.getItem('eco_completed') === 'true';
+        const isDifferentEmail = savedEmail && savedEmail !== profile.email;
+        if (isCompleted || isDifferentEmail) {
+          ['eco_currentStep','eco_greenScore','eco_userDemographics','eco_lastSimulationStep',
+           'eco_selectedLogistics','eco_selectedPackaging','eco_wateringCount','eco_completed'].forEach(k => localStorage.removeItem(k));
+        }
         context.setUserEmail(profile.email);
-        context.setCurrentStep('survey');
+        const savedStep = localStorage.getItem('eco_currentStep');
+        context.setCurrentStep((savedStep && savedStep !== 'login' && !isCompleted && !isDifferentEmail) ? savedStep as any : 'survey');
       } catch (err) { console.error("Lỗi Google Sign-in:", err); }
     };
 
@@ -304,8 +312,18 @@ const AppWrapper: React.FC = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(localEmail)) { alert('Vui lòng nhập đúng định dạng email.'); return; }
     saveEmailToRecent(localEmail);
+    const savedEmail = localStorage.getItem('eco_userEmail') || '';
+    const isCompleted = localStorage.getItem('eco_completed') === 'true';
+    const isDifferentEmail = savedEmail && savedEmail !== localEmail;
+    // Reset nếu: đã hoàn thành lần trước, hoặc đổi sang email khác
+    if (isCompleted || isDifferentEmail) {
+      ['eco_currentStep','eco_greenScore','eco_userDemographics','eco_lastSimulationStep',
+       'eco_selectedLogistics','eco_selectedPackaging','eco_wateringCount','eco_completed'].forEach(k => localStorage.removeItem(k));
+    }
     context.setUserEmail(localEmail);
-    context.setCurrentStep('survey');
+    const savedStep = localStorage.getItem('eco_currentStep');
+    // Nếu có tiến trình dở (cùng email, chưa hoàn thành) thì tiếp tục
+    context.setCurrentStep((savedStep && savedStep !== 'login' && !isCompleted && !isDifferentEmail) ? savedStep as any : 'survey');
   };
 
   const filteredEmails = recentEmails.filter(e => e.toLowerCase().includes(localEmail.toLowerCase()));
@@ -376,7 +394,43 @@ const AppWrapper: React.FC = () => {
                 </div>
               )}
             </div>
-            <button onClick={handleStart} className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all uppercase tracking-widest">Bắt đầu</button>
+            {/* Banner tiếp tục nếu đang làm dở */}
+            {(() => {
+              const savedEmail = localStorage.getItem('eco_userEmail') || '';
+              const savedStep = localStorage.getItem('eco_currentStep');
+              const isCompleted = localStorage.getItem('eco_completed') === 'true';
+              const stepLabels: Record<string, string> = {
+                survey: 'Khảo sát trước mô phỏng',
+                instruction: 'Xem hướng dẫn mô phỏng',
+                shop: 'Mô phỏng – Mua sắm',
+                packaging: 'Mô phỏng – Chọn đóng gói',
+                checkout: 'Mô phỏng – Thanh toán',
+                success: 'Mô phỏng – Hoàn thành đơn hàng',
+                social: 'Mô phỏng – Bảng xếp hạng',
+                redeem: 'Mô phỏng – Đổi quà',
+                post_survey: 'Khảo sát sau mô phỏng',
+              };
+              const showBanner = savedEmail && savedStep && savedStep !== 'login' && !isCompleted && localEmail === savedEmail;
+              if (!showBanner) return null;
+              return (
+                <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-4 flex items-center justify-between gap-3 mb-2">
+                  <div>
+                    <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-0.5">Đang làm dở</p>
+                    <p className="text-sm font-bold text-slate-700">📍 {stepLabels[savedStep] || savedStep}</p>
+                  </div>
+                  <span className="text-[10px] text-emerald-600 font-black uppercase tracking-wider whitespace-nowrap">→ Tiếp tục</span>
+                </div>
+              );
+            })()}
+            <button onClick={handleStart} className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all uppercase tracking-widest">
+              {(() => {
+                const savedEmail = localStorage.getItem('eco_userEmail') || '';
+                const savedStep = localStorage.getItem('eco_currentStep');
+                const isCompleted = localStorage.getItem('eco_completed') === 'true';
+                return (savedEmail && savedStep && savedStep !== 'login' && !isCompleted && localEmail === savedEmail)
+                  ? 'Tiếp tục' : 'Bắt đầu';
+              })()}
+            </button>
           </div>
         </div>
       </div>
