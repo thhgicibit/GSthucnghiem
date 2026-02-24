@@ -5,16 +5,26 @@ import { dataService } from '../dataService';
 
 const Survey: React.FC = () => {
   const { setUserDemographics, setCurrentStep, userEmail } = useAppContext();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+    return Number(localStorage.getItem('eco_s1_page') || '1');
+  });
   const [showValidationErrors, setShowValidationErrors] = useState(false);
-  const [answers, setAnswers] = useState<Partial<UserDemographics>>({
-    gender: '', age: '', education: '', job: '', income: '', gamificationExp: '', knownGame: '',
-    sent_q1: '', sent_q2: '', sent_q3: '', sent_q4: '', sent_q5: '', sent_q6: '',
-    know_q1: '', know_q2: '', know_q3: '', know_q4: '', know_q5: ''
+  const [answers, setAnswers] = useState<Partial<UserDemographics>>(() => {
+    const saved = localStorage.getItem('eco_s1_answers');
+    if (saved) { try { return JSON.parse(saved); } catch (e) {} }
+    return {
+      gender: '', age: '', education: '', job: '', income: '', gamificationExp: '', knownGame: '',
+      sent_q1: '', sent_q2: '', sent_q3: '', sent_q4: '', sent_q5: '', sent_q6: '',
+      know_q1: '', know_q2: '', know_q3: '', know_q4: '', know_q5: ''
+    };
   });
 
   const updateAnswer = (field: keyof UserDemographics, value: string) => {
-    setAnswers(prev => ({ ...prev, [field]: value }));
+    setAnswers(prev => {
+      const next = { ...prev, [field]: value };
+      localStorage.setItem('eco_s1_answers', JSON.stringify(next));
+      return next;
+    });
     dataService.logSurvey1Response(userEmail, field, value);
   };
 
@@ -48,17 +58,19 @@ const Survey: React.FC = () => {
     }
     setShowValidationErrors(false);
     if (currentPage < 2) {
-      setCurrentPage(prev => prev + 1);
+      setCurrentPage(prev => { const n = prev + 1; localStorage.setItem('eco_s1_page', String(n)); return n; });
       window.scrollTo(0, 0);
     } else {
       setUserDemographics(answers as UserDemographics);
+      localStorage.removeItem('eco_s1_answers');
+      localStorage.removeItem('eco_s1_page');
       setCurrentStep('instruction');
     }
   };
 
   const handleBack = () => {
     if (currentPage > 1) {
-      setCurrentPage(prev => prev - 1);
+      setCurrentPage(prev => { const n = prev - 1; localStorage.setItem('eco_s1_page', String(n)); return n; });
       window.scrollTo(0, 0);
     } else {
       setCurrentStep('login');
@@ -307,9 +319,9 @@ const Survey: React.FC = () => {
               </div>
             </div>
 
-            {renderLikertSection('Câu hỏi tình cảm môi trường', [
-              { field: 'sent_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả (dùng ít năng lượng hơn) của các phương tiện xanh dùng trong giao hàng chặng cuối' },
-              { field: 'sent_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải, ít gây ô nhiễm hơn,...) trong các phương tiện xanh dùng cho chặng giao hàng cuối cùng' },
+            {renderLikertSection('Câu hỏi cảm nhận đối với môi trường', [
+              { field: 'sent_q1', text: 'Q1. Tôi coi trọng việc sử dụng các sản phẩm không gây hại đến môi trường' },
+              { field: 'sent_q2', text: 'Q2. Thói quen mua sắm của tôi có sự thay đổi từ khi quan tâm của tôi đối với môi trường' },
               { field: 'sent_q3', text: 'Q3. Tôi lo ngại về việc lãng phí các nguồn tài nguyên của trái đất' },
               { field: 'sent_q4', text: 'Q4. Tôi cân nhắc đến những tác động tiềm ẩn đối với môi trường từ hành động của mình khi đưa ra các quyết định' },
               { field: 'sent_q5', text: 'Q5. Khi có sự lựa chọn giữa hai sản phẩm tương đương, tôi chọn sản phẩm ít gây hại hơn cho con người và môi trường' },
@@ -317,8 +329,8 @@ const Survey: React.FC = () => {
             ])}
 
             {renderLikertSection('Câu hỏi kiến thức môi trường', [
-              { field: 'know_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả của các phương tiện xanh trong giao hàng chặng cuối' },
-              { field: 'know_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giảm khí thải) của phương tiện xanh trong giao hàng chặng cuối' },
+              { field: 'know_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả (dùng ít năng lượng hơn) của các phương tiện xanh dùng trong giao hàng chặng cuối' },
+              { field: 'know_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải, ít gây ô nhiễm hơn) trong các phương tiện xanh dùng cho chặng giao hàng cuối cùng' },
               { field: 'know_q3', text: 'Q3. Tôi nhận thức được những tác động của biến đổi khí hậu đối với môi trường và con người' },
               { field: 'know_q4', text: 'Q4. Khi đọc mô tả sản phẩm, tôi có thể hiểu được liệu sản phẩm đó có gây hại cho môi trường hay không' },
               { field: 'know_q5', text: 'Q5. Tôi dễ dàng nhận biết được sản phẩm thân thiện với môi trường' }
