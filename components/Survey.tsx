@@ -347,7 +347,7 @@ const Survey: React.FC = () => {
               isPageValid() ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95' : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
             }`}
           >
-            {currentPage === 2 ? 'Tiếp tục' : 'Tiếp theo →'}
+            {currentPage === 2 ? 'Tiếp tục khảo sát' : 'Tiếp theo →'}
           </button>
         </div>
       </div>
