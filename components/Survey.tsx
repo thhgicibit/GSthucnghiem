@@ -238,16 +238,16 @@ const Survey: React.FC = () => {
           <div className="animate-slideUp space-y-4">
             {renderRadioGroup('gender', 'A1. Giới tính của Anh/Chị là:', ['Nam', 'Nữ'])}
             {renderRadioGroup('age', 'A2. Độ tuổi của Anh/Chị là:', ['18 – 24', '25 – 30', '31 – 35', '36 – 40', 'Trên 40'])}
-            {renderRadioGroup('education', 'A3. Trình độ học vấn cao nhất của Anh/Chị là:', ['Dưới trung học phổ thông', 'Cao đẳng/ Đại học', 'Sau đại học'])}
+            {renderRadioGroup('education', 'A3. Trình độ học vấn cao nhất của Anh/Chị là:', ['Từ THPT trở xuống', 'Cao đẳng/ Đại học', 'Sau đại học'])}
             {renderRadioGroup('job', 'A4. Loại hình nghề nghiệp/ Vị trí công việc hiện tại của Anh/Chị là:', [
               'Học sinh, Sinh viên', 'Nhân viên văn phòng', 'Quản lý cấp trung (Quản lý, trưởng nhóm)',
               'Quản lý cấp cao (Giám đốc, phó giám đốc,...)', 'Freelancer (Lao động tự do)', 'Nội trợ/ chưa đi làm', 'Mục khác'
             ])}
-            {renderRadioGroup('income', 'A5. Thu nhập cá nhân trung bình hàng tháng của Anh/Chị là:', ['Dưới 5 triệu VNĐ', 'Từ 5 – 10 triệu VNĐ', 'Từ 10 – 20 triệu VNĐ', 'Trên 20 triệu VNĐ'])}
+            {renderRadioGroup('income', 'A5. Thu nhập cá nhân trung bình hàng tháng của Anh/Chị là:', ['Dưới 5 triệu VNĐ', 'Từ 5 – 10 triệu VNĐ', 'Từ 11 – 20 triệu VNĐ', 'Trên 20 triệu VNĐ'])}
 
             <div className={`bg-white p-6 rounded-lg border shadow-sm transition-all ${isInvalidGamification ? 'border-red-500 bg-red-50' : 'border-slate-200'}`}>
               <label className="text-base font-medium text-slate-800 block mb-2">
-                A6. Anh/Chị đã từng tương tác với các ứng dụng hoặc nền tảng có tích hợp cơ chế trò chơi hóa (Gamification) chưa? <span className="text-red-500">*</span>
+                A6. Anh/Chị đã từng tương tác với các ứng dụng (mua sắm, tài chính, học tập,...) hoặc nền tảng có tích hợp cơ chế trò chơi hóa (Gamification) chưa? <span className="text-red-500">*</span>
               </label>
               {isInvalidGamification && <p className="text-red-500 text-xs font-bold mb-2 uppercase tracking-wider">Vui lòng chọn một câu trả lời</p>}
               <p className="text-base text-slate-500 mb-6 italic">(Ví dụ: Trồng cây trên Shopee/Lazada, làm nhiệm vụ tích xu trên Momo, học tập trên Duolingo, chạy bộ UpRace...)</p>
