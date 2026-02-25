@@ -321,7 +321,7 @@ const Survey: React.FC = () => {
 
             {renderLikertSection('Câu hỏi cảm nhận đối với môi trường', [
               { field: 'sent_q1', text: 'Q1. Tôi coi trọng việc sử dụng các sản phẩm không gây hại đến môi trường' },
-              { field: 'sent_q2', text: 'Q2. Thói quen mua sắm của tôi có sự thay đổi từ khi quan tâm của tôi đối với môi trường' },
+              { field: 'sent_q2', text: 'Q2. Thói quen mua sắm của tôi có sự thay đổi kể từ khi tôi quan tâm hơn đến môi trường.' },
               { field: 'sent_q3', text: 'Q3. Tôi lo ngại về việc lãng phí các nguồn tài nguyên của trái đất' },
               { field: 'sent_q4', text: 'Q4. Tôi cân nhắc đến những tác động tiềm ẩn đối với môi trường từ hành động của mình khi đưa ra các quyết định' },
               { field: 'sent_q5', text: 'Q5. Khi có sự lựa chọn giữa hai sản phẩm tương đương, tôi chọn sản phẩm ít gây hại hơn cho con người và môi trường' },
