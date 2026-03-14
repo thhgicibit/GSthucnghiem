@@ -162,7 +162,7 @@ const Checkout: React.FC = () => {
                   <p className="text-[10px] md:text-xs text-slate-500 leading-snug">Xe điện 100%. Tiết kiệm ~{activeProduct?.logisticsFuelSaved}L nhiên liệu hóa thạch.</p>
                 </div>
               </div>
-              <p className="font-black text-[#00AFB9] text-base md:text-lg ml-2">{formatPrice(25000)}</p>
+              <p className="font-black text-slate-800 text-base md:text-lg ml-2">{formatPrice(25000)}</p>
             </div>
           </div>
           
