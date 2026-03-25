@@ -4,7 +4,7 @@ import { SurveyRecord } from './types';
 const STORAGE_KEY_RECORDS = 'greenscore_survey_records';
 const STORAGE_KEY_LEADERBOARD = 'greenscore_leaderboard';
 const GOOGLE_SHEET_WEBAPP_URL: string =
-  'https://script.google.com/macros/s/AKfycbzpM6DYPv0y5lNAiPcnnWChiK4niOTTLzC9MeXyM-m-699OUM_cZMUgG_-2H_HthBA8/exec';
+  'https://script.google.com/macros/s/AKfycbxirV2Vv9CpF2TA03wxu0L6nB58pmNv0fIm1VGtia9d5R01ACIb5OPK6__P_00hw6do/exec';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helper: gửi POST đến Google Apps Script (fire-and-forget, no-cors)
@@ -23,6 +23,15 @@ const postToSheet = async (payload: object): Promise<void> => {
   }
 };
 
+// ─── Ghi nhận thời điểm bắt đầu làm từng phần ───────────────────────────────
+export const markSurveyStart = (key: string) => {
+  localStorage.setItem(key, new Date().toISOString());
+};
+
+export const getSurveyStart = (key: string): string | null => {
+  return localStorage.getItem(key);
+};
+
 export const dataService = {
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -36,15 +45,20 @@ export const dataService = {
   logSurvey1Response: async (
     userEmail: string,
     questionId: string,
-    value: string
+    value: string,
+    isLast = false   // true khi gửi câu cuối cùng của NC1
   ): Promise<void> => {
+    const startTime = localStorage.getItem('tn_nc1_start') || undefined;
+    const endTime   = isLast ? new Date().toISOString() : undefined;
     console.log(`[NC1] ${questionId}: ${value}`);
     await postToSheet({
-      type: 'nghien_cuu_1',
+      type:      'nghien_cuu_1',
+      timestamp: new Date().toISOString(),
       userEmail,
       questionId,
       value,
-      timestamp: new Date().toISOString(),
+      ...(startTime && { nc1_startTime: startTime }),
+      ...(endTime   && { nc1_endTime:   endTime   }),
     });
   },
 
@@ -112,15 +126,20 @@ export const dataService = {
   logSurvey2Response: async (
     userEmail: string,
     questionId: string,
-    value: string
+    value: string,
+    isLast = false   // true khi gửi câu cuối cùng của NC2
   ): Promise<void> => {
+    const startTime = localStorage.getItem('tn_nc2_start') || undefined;
+    const endTime   = isLast ? new Date().toISOString() : undefined;
     console.log(`[NC2] ${questionId}: ${value}`);
     await postToSheet({
-      type: 'nghien_cuu_2',
+      type:      'nghien_cuu_2',
+      timestamp: new Date().toISOString(),
       userEmail,
       questionId,
       value,
-      timestamp: new Date().toISOString(),
+      ...(startTime && { nc2_startTime: startTime }),
+      ...(endTime   && { nc2_endTime:   endTime   }),
     });
   },
 
