@@ -1,10 +1,16 @@
-
 import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
-import { dataService } from '../dataService';
+import { dataService, markSurveyStart } from '../dataService';
 
 const PostSurvey: React.FC = () => {
   const { setCurrentStep, lastSimulationStep, userEmail } = useAppContext();
+  // Ghi nhận thời điểm bắt đầu làm NC2 (chỉ ghi lần đầu)
+  React.useEffect(() => {
+    if (!localStorage.getItem('tn_nc2_start')) {
+      markSurveyStart('tn_nc2_start');
+    }
+  }, []);
+
   const [answers, setAnswers] = useState<Record<string, string>>(() => {
     const saved = localStorage.getItem('eco_s2_answers');
     if (saved) { try { return JSON.parse(saved); } catch (e) {} }
@@ -109,7 +115,9 @@ const PostSurvey: React.FC = () => {
   const TOTAL_W = COL_W * 5;
 
   const handleSelect = (questionId: string, value: string) => {
-    dataService.logSurvey2Response(userEmail, questionId, value);
+    const isLastQuestion = questionId === 'GLI3';
+    dataService.logSurvey2Response(userEmail, questionId, value, isLastQuestion);
+    if (isLastQuestion) localStorage.removeItem('tn_nc2_start');
     setAnswers(prev => {
       const next = { ...prev, [questionId]: value };
       localStorage.setItem('eco_s2_answers', JSON.stringify(next));
