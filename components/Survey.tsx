@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 import { UserDemographics } from '../types';
-import { dataService } from '../dataService';
+import { dataService, markSurveyStart } from '../dataService';
 
 const Survey: React.FC = () => {
   const { setUserDemographics, setCurrentStep, userEmail } = useAppContext();
+  // Ghi nhận thời điểm bắt đầu làm NC1 (chỉ ghi lần đầu, không ghi đè)
+  React.useEffect(() => {
+    if (!localStorage.getItem('tn_nc1_start')) {
+      markSurveyStart('tn_nc1_start');
+    }
+  }, []);
+
   const [currentPage, setCurrentPage] = useState(() => {
     return Number(localStorage.getItem('eco_s1_page') || '1');
   });
@@ -20,12 +27,15 @@ const Survey: React.FC = () => {
   });
 
   const updateAnswer = (field: keyof UserDemographics, value: string) => {
+    const isLastQuestion = field === 'know_q5';
     setAnswers(prev => {
       const next = { ...prev, [field]: value };
       localStorage.setItem('eco_s1_answers', JSON.stringify(next));
       return next;
     });
-    dataService.logSurvey1Response(userEmail, field, value);
+    dataService.logSurvey1Response(userEmail, field, value, isLastQuestion);
+    // Nếu là câu cuối, xóa key start để không tái sử dụng nếu làm lại
+    if (isLastQuestion) localStorage.removeItem('tn_nc1_start');
   };
 
   const scrollToFirstError = () => {
@@ -238,16 +248,16 @@ const Survey: React.FC = () => {
           <div className="animate-slideUp space-y-4">
             {renderRadioGroup('gender', 'A1. Giới tính của Anh/Chị là:', ['Nam', 'Nữ'])}
             {renderRadioGroup('age', 'A2. Độ tuổi của Anh/Chị là:', ['18 – 24', '25 – 30', '31 – 35', '36 – 40', 'Trên 40'])}
-            {renderRadioGroup('education', 'A3. Trình độ học vấn cao nhất của Anh/Chị là:', ['Từ THPT trở xuống', 'Cao đẳng/ Đại học', 'Sau đại học'])}
+            {renderRadioGroup('education', 'A3. Trình độ học vấn cao nhất của Anh/Chị là:', ['Dưới trung học phổ thông', 'Cao đẳng/ Đại học', 'Sau đại học'])}
             {renderRadioGroup('job', 'A4. Loại hình nghề nghiệp/ Vị trí công việc hiện tại của Anh/Chị là:', [
               'Học sinh, Sinh viên', 'Nhân viên văn phòng', 'Quản lý cấp trung (Quản lý, trưởng nhóm)',
               'Quản lý cấp cao (Giám đốc, phó giám đốc,...)', 'Freelancer (Lao động tự do)', 'Nội trợ/ chưa đi làm', 'Mục khác'
             ])}
-            {renderRadioGroup('income', 'A5. Thu nhập cá nhân trung bình hàng tháng của Anh/Chị là:', ['Dưới 5 triệu VNĐ', 'Từ 5 – 10 triệu VNĐ', 'Từ 11 – 20 triệu VNĐ', 'Trên 20 triệu VNĐ'])}
+            {renderRadioGroup('income', 'A5. Thu nhập cá nhân trung bình hàng tháng của Anh/Chị là:', ['Dưới 5 triệu VNĐ', 'Từ 5 – 10 triệu VNĐ', 'Từ 10 – 20 triệu VNĐ', 'Trên 20 triệu VNĐ'])}
 
             <div className={`bg-white p-6 rounded-lg border shadow-sm transition-all ${isInvalidGamification ? 'border-red-500 bg-red-50' : 'border-slate-200'}`}>
               <label className="text-base font-medium text-slate-800 block mb-2">
-                A6. Anh/Chị đã từng tương tác với các ứng dụng (mua sắm, tài chính, học tập,...) hoặc nền tảng có tích hợp cơ chế trò chơi hóa (Gamification) chưa? <span className="text-red-500">*</span>
+                A6. Anh/Chị đã từng tương tác với các ứng dụng hoặc nền tảng có tích hợp cơ chế trò chơi hóa (Gamification) chưa? <span className="text-red-500">*</span>
               </label>
               {isInvalidGamification && <p className="text-red-500 text-xs font-bold mb-2 uppercase tracking-wider">Vui lòng chọn một câu trả lời</p>}
               <p className="text-base text-slate-500 mb-6 italic">(Ví dụ: Trồng cây trên Shopee/Lazada, làm nhiệm vụ tích xu trên Momo, học tập trên Duolingo, chạy bộ UpRace...)</p>
@@ -319,9 +329,9 @@ const Survey: React.FC = () => {
               </div>
             </div>
 
-            {renderLikertSection('Câu hỏi cảm nhận đối với môi trường', [
-              { field: 'sent_q1', text: 'Q1. Tôi coi trọng việc sử dụng các sản phẩm không gây hại đến môi trường' },
-              { field: 'sent_q2', text: 'Q2. Thói quen mua sắm của tôi có sự thay đổi kể từ khi tôi quan tâm hơn đến môi trường.' },
+            {renderLikertSection('Câu hỏi tình cảm môi trường', [
+              { field: 'sent_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả (dùng ít năng lượng hơn) của các phương tiện xanh dùng trong giao hàng chặng cuối' },
+              { field: 'sent_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải, ít gây ô nhiễm hơn,...) trong các phương tiện xanh dùng cho chặng giao hàng cuối cùng' },
               { field: 'sent_q3', text: 'Q3. Tôi lo ngại về việc lãng phí các nguồn tài nguyên của trái đất' },
               { field: 'sent_q4', text: 'Q4. Tôi cân nhắc đến những tác động tiềm ẩn đối với môi trường từ hành động của mình khi đưa ra các quyết định' },
               { field: 'sent_q5', text: 'Q5. Khi có sự lựa chọn giữa hai sản phẩm tương đương, tôi chọn sản phẩm ít gây hại hơn cho con người và môi trường' },
@@ -329,8 +339,8 @@ const Survey: React.FC = () => {
             ])}
 
             {renderLikertSection('Câu hỏi kiến thức môi trường', [
-              { field: 'know_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả (dùng ít năng lượng hơn) của các phương tiện xanh dùng trong giao hàng chặng cuối' },
-              { field: 'know_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải, ít gây ô nhiễm hơn) trong các phương tiện xanh dùng cho chặng giao hàng cuối cùng' },
+              { field: 'know_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả của các phương tiện xanh trong giao hàng chặng cuối' },
+              { field: 'know_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giảm khí thải) của phương tiện xanh trong giao hàng chặng cuối' },
               { field: 'know_q3', text: 'Q3. Tôi nhận thức được những tác động của biến đổi khí hậu đối với môi trường và con người' },
               { field: 'know_q4', text: 'Q4. Khi đọc mô tả sản phẩm, tôi có thể hiểu được liệu sản phẩm đó có gây hại cho môi trường hay không' },
               { field: 'know_q5', text: 'Q5. Tôi dễ dàng nhận biết được sản phẩm thân thiện với môi trường' }
@@ -347,7 +357,7 @@ const Survey: React.FC = () => {
               isPageValid() ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95' : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
             }`}
           >
-            {currentPage === 2 ? 'Tiếp tục khảo sát' : 'Tiếp theo →'}
+            {currentPage === 2 ? 'Tiếp tục' : 'Tiếp theo →'}
           </button>
         </div>
       </div>
