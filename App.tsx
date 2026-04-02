@@ -18,6 +18,56 @@ const GOOGLE_CLIENT_ID = "755280134148-069vea3i8un2a33neau4gu67dnbrkpln.apps.goo
 const RECENT_EMAILS_KEY = 'eco_recent_emails';
 
 const MainContent: React.FC = () => {
+  const [exportStatus, setExportStatus] = React.useState<string | null>(null);
+  const [isExporting, setIsExporting] = React.useState(false);
+  const [showAdminModal, setShowAdminModal] = React.useState(false);
+  const [adminInput, setAdminInput] = React.useState('');
+  const [adminError, setAdminError] = React.useState(false);
+
+  const ADMIN_HASH = 'd33acb41fca6de2e002473ea72a58977711b95c5339eef7ddf1f7adf1916b9f0';
+
+  const hashPassword = async (pwd: string): Promise<string> => {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  };
+
+  const handleAdminSubmit = async () => {
+    const hash = await hashPassword(adminInput);
+    if (hash !== ADMIN_HASH) {
+      setAdminError(true);
+      setAdminInput('');
+      return;
+    }
+    setShowAdminModal(false);
+    setAdminInput('');
+    setAdminError(false);
+    runExport();
+  };
+
+  const runExport = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
+    setExportStatus('Đang chuẩn bị...');
+    try {
+      const sheetUrl = await dataService.exportToGoogleSheets((msg: string) => setExportStatus(msg));
+      setExportStatus('✅ Xong! Đang mở Google Sheets...');
+      setTimeout(() => {
+        if (sheetUrl) window.open(sheetUrl, '_blank');
+        setExportStatus(null);
+        setIsExporting(false);
+      }, 1000);
+    } catch (err) {
+      setExportStatus('❌ Lỗi: ' + (err as any).message);
+      setIsExporting(false);
+    }
+  };
+
+  const handleExportToSheets = () => {
+    setAdminError(false);
+    setAdminInput('');
+    setShowAdminModal(true);
+  };
+
   const { 
     currentStep, 
     showPointToast, 
@@ -239,9 +289,49 @@ const MainContent: React.FC = () => {
       <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50">
         <button onClick={() => setCurrentStep('social')} className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-xl flex items-center justify-center text-xl md:text-2xl transition-all hover:scale-110 active:scale-90 ${currentStep === 'social' ? 'bg-emerald-600 text-white ring-4 ring-emerald-100' : 'bg-white text-emerald-600 border border-slate-100'}`} title="Xem Bảng xếp hạng">🏆</button>
       </div>
-      <footer className="py-2 px-4 md:px-8 text-[8px] text-slate-300 flex justify-end">
-        <button onClick={() => dataService.exportData()} className="hover:text-slate-500 underline uppercase tracking-widest">Export Survey Data</button>
+      <footer className="py-2 px-4 md:px-8 text-[8px] text-slate-300 flex items-center justify-end gap-3">
+        {exportStatus && (
+          <span className="text-emerald-600 font-medium animate-pulse">{exportStatus}</span>
+        )}
+        <button
+          onClick={handleExportToSheets}
+          disabled={isExporting}
+          className={`underline uppercase tracking-widest transition-colors ${isExporting ? 'text-emerald-400 cursor-wait' : 'hover:text-slate-500'}`}
+        >
+          {isExporting ? 'Đang xuất...' : 'Xuất lên Google Sheets'}
+        </button>
       </footer>
+
+      {/* Admin password modal */}
+      {showAdminModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 w-80 flex flex-col gap-4">
+            <h2 className="text-base font-black text-slate-800 text-center">🔐 Xác nhận quản trị viên</h2>
+            <input
+              type="password"
+              placeholder="Nhập mật khẩu..."
+              value={adminInput}
+              onChange={e => { setAdminInput(e.target.value); setAdminError(false); }}
+              onKeyDown={e => e.key === 'Enter' && handleAdminSubmit()}
+              autoFocus
+              className={`border rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-400 transition-all ${adminError ? 'border-red-400 bg-red-50' : 'border-slate-200'}`}
+            />
+            {adminError && (
+              <p className="text-red-500 text-xs text-center -mt-2">Mật khẩu không đúng, thử lại.</p>
+            )}
+            <div className="flex gap-2">
+              <button
+                onClick={() => { setShowAdminModal(false); setAdminInput(''); setAdminError(false); }}
+                className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-all"
+              >Huỷ</button>
+              <button
+                onClick={handleAdminSubmit}
+                className="flex-1 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-all"
+              >Xác nhận</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
