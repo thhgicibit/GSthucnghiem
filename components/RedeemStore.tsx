@@ -4,7 +4,7 @@ import { useAppContext } from '../AppContext';
 const DONATION_PROJECTS = [
   {
     id: 'donation_tre',
-    name: 'Dự án Tre Chống Lũ (reeBank)',
+    name: 'Dự án Tre Chống Lũ (TreeBank)',
     points: 1, 
     icon: '🎋',
     participants: '1.240',
