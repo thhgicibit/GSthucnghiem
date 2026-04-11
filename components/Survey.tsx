@@ -69,10 +69,11 @@ const Survey: React.FC = () => {
       return;
     }
     setShowValidationErrors(false);
-    // Nếu người dùng chưa từng biết gamification → ghi nhận dữ liệu, dừng khảo sát
+    // Nếu người dùng chưa từng biết gamification → dừng khảo sát
+    // Các câu A1–A6 đã được ghi thời gian thực qua updateAnswer() rồi
+    // Chỉ cần gửi thêm nc1_endTime để ghi thời gian làm
     if (currentPage === 1 && answers.gamificationExp === 'Chưa từng') {
-      // Ghi nhận câu trả lời cuối cùng kèm end time vào Google Sheet
-      dataService.logSurvey1Response(userEmail, 'gamificationExp', answers.gamificationExp, true);
+      dataService.logSurvey1End(userEmail);
       localStorage.setItem('eco_completed', 'true');
       localStorage.removeItem('eco_s1_answers');
       localStorage.removeItem('eco_s1_page');
