@@ -1,211 +1,422 @@
-import { MOCK_LEADERBOARD } from './constants';
-import { SurveyRecord } from './types';
+import React, { useState, useMemo } from 'react';
+import { useAppContext } from '../AppContext';
+import { dataService, markSurveyStart } from '../dataService';
 
-const STORAGE_KEY_RECORDS = 'greenscore_survey_records';
-const STORAGE_KEY_LEADERBOARD = 'greenscore_leaderboard';
-const GOOGLE_SHEET_WEBAPP_URL: string =
-  'https://script.google.com/macros/s/AKfycbxirV2Vv9CpF2TA03wxu0L6nB58pmNv0fIm1VGtia9d5R01ACIb5OPK6__P_00hw6do/exec';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Helper: gửi POST đến Google Apps Script (fire-and-forget, no-cors)
-// ─────────────────────────────────────────────────────────────────────────────
-const postToSheet = async (payload: object): Promise<void> => {
-  if (!GOOGLE_SHEET_WEBAPP_URL) return;
-  try {
-    await fetch(GOOGLE_SHEET_WEBAPP_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-  } catch (err) {
-    console.error('[dataService] Lỗi gửi Google Sheet:', err);
-  }
-};
-
-// ─── Ghi nhận thời điểm bắt đầu làm từng phần ───────────────────────────────
-export const markSurveyStart = (key: string) => {
-  localStorage.setItem(key, new Date().toISOString());
-};
-
-export const getSurveyStart = (key: string): string | null => {
-  return localStorage.getItem(key);
-};
-
-export const dataService = {
-
-  // ───────────────────────────────────────────────────────────────────────────
-  // NGHIÊN CỨU 1
-  // Cột: Thời gian | Email | A1 | A2 | A3 | A4 | A5 | A6 | A7 |
-  //       sent_q1 | sent_q2 | sent_q3 | sent_q5 | sent_q6 |
-  //       know_q1 | know_q2 | know_q3 | know_q4 | know_q5
-  //
-  // Ghi TỪNG CÂU ngay khi người dùng click — gọi từ Survey.tsx → updateAnswer()
-  // ───────────────────────────────────────────────────────────────────────────
-  // ───────────────────────────────────────────────────────────────────────────
-  // Ghi nc1_endTime khi dừng sớm (chọn "Chưa từng" ở A6)
-  // Không ghi đè dữ liệu câu hỏi, chỉ cập nhật cột thời gian làm
-  // ───────────────────────────────────────────────────────────────────────────
-  logSurvey1End: async (userEmail: string): Promise<void> => {
-    const startTime = localStorage.getItem('tn_nc1_start') || undefined;
-    const endTime = new Date().toISOString();
-    console.log('[NC1] Kết thúc sớm — ghi thời gian làm');
-    await postToSheet({
-      type: 'nghien_cuu_1',
-      timestamp: endTime,
-      userEmail,
-      questionId: 'nc1_duration_marker', // questionId không có trong colMap → Apps Script bỏ qua, nhưng vẫn ghi duration
-      value: '',
-      ...(startTime && { nc1_startTime: startTime }),
-      nc1_endTime: endTime,
-    });
-    localStorage.removeItem('tn_nc1_start');
-  },
-
-  logSurvey1Response: async (
-    userEmail: string,
-    questionId: string,
-    value: string,
-    isLast = false   // true khi gửi câu cuối cùng của NC1
-  ): Promise<void> => {
-    const startTime = localStorage.getItem('tn_nc1_start') || undefined;
-    const endTime   = isLast ? new Date().toISOString() : undefined;
-    console.log(`[NC1] ${questionId}: ${value}`);
-    await postToSheet({
-      type:      'nghien_cuu_1',
-      timestamp: new Date().toISOString(),
-      userEmail,
-      questionId,
-      value,
-      ...(startTime && { nc1_startTime: startTime }),
-      ...(endTime   && { nc1_endTime:   endTime   }),
-    });
-  },
-
-  // ───────────────────────────────────────────────────────────────────────────
-  // MÔ PHỎNG
-  // Ghi MỘT DÒNG DUY NHẤT khi người dùng nhấn "Đặt hàng"
-  //
-  // Cột: Thời gian | Email |
-  //      Tên sản phẩm | Nhóm sản phẩm | Quy đổi sản phẩm (1/0) |
-  //      Phương thức vận chuyển | Quy đổi vận chuyển (1/0) |
-  //      Bao bì | Quy đổi bao bì (1/0)
-  // ───────────────────────────────────────────────────────────────────────────
-  logSimulationOrder: async (
-    userEmail: string,
-    productId: string,
-    productName: string,
-    isGreenProduct: number,
-    logisticsType: string,
-    isGreenLogistics: number,
-    packagingType: string,
-    isGreenPackaging: number
-  ): Promise<void> => {
-    const productGroup: Record<string, string> = {
-      '1a': '1: Bình nước - a: Xanh',
-      '1b': '1: Bình nước - b: Thường',
-      '2a': '2: Sổ tay - a: Xanh',
-      '2b': '2: Sổ tay - b: Thường',
-      '3a': '3: Túi - a: Xanh',
-      '3b': '3: Túi - b: Thường',
-    };
-    const logisticsLabel: Record<string, string> = {
-      green: 'Vận chuyển xanh',
-      standard: 'Giao hàng tiêu chuẩn',
-      fast: 'Giao hàng hỏa tốc',
-    };
-    const packagingLabel: Record<string, string> = {
-      green: 'Bao bì xanh',
-      standard: 'Đóng gói tiêu chuẩn',
-    };
-
-    console.log(`[MPS] Đặt hàng: ${productId} | ${logisticsType} | ${packagingType}`);
-    await postToSheet({
-      type: 'mo_phong',
-      timestamp: new Date().toISOString(),
-      userEmail,
-      productName,
-      productGroup: productGroup[productId] ?? productId,
-      isGreenProduct,
-      logisticsLabel: logisticsLabel[logisticsType] ?? logisticsType,
-      isGreenLogistics,
-      packagingLabel: packagingLabel[packagingType] ?? packagingType,
-      isGreenPackaging,
-    });
-  },
-
-  // ───────────────────────────────────────────────────────────────────────────
-  // NGHIÊN CỨU 2
-  // Cột: Thời gian | Email |
-  //      GLI1 | GLI2 | GLI3 | GCI1..GCI7 |
-  //      PE1..PE3 | PU1..PU3 | PEOU1..PEOU3 |
-  //      INT1..INT3 | SEE1..SEE3 | ACH1..ACH3 | COM1..COM3
-  //
-  // Ghi TỪNG CÂU ngay khi người dùng click — gọi từ PostSurvey.tsx → handleSelect()
-  // ───────────────────────────────────────────────────────────────────────────
-  logSurvey2Response: async (
-    userEmail: string,
-    questionId: string,
-    value: string,
-    isLast = false   // true khi gửi câu cuối cùng của NC2
-  ): Promise<void> => {
-    const startTime = localStorage.getItem('tn_nc2_start') || undefined;
-    const endTime   = isLast ? new Date().toISOString() : undefined;
-    console.log(`[NC2] ${questionId}: ${value}`);
-    await postToSheet({
-      type:      'nghien_cuu_2',
-      timestamp: new Date().toISOString(),
-      userEmail,
-      questionId,
-      value,
-      ...(startTime && { nc2_startTime: startTime }),
-      ...(endTime   && { nc2_endTime:   endTime   }),
-    });
-  },
-
-  // ───────────────────────────────────────────────────────────────────────────
-  // saveChoice — lưu localStorage + leaderboard
-  // ───────────────────────────────────────────────────────────────────────────
-  saveChoice: async (record: SurveyRecord, finalScore: number): Promise<void> => {
-    const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || '[]');
-    existing.push({ ...record, timestamp: new Date().toISOString(), finalScore });
-    localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(existing));
-    dataService.updateGlobalLeaderboard(record.userEmail, finalScore);
-  },
-
-  updateGlobalLeaderboard: (email: string, score: number): void => {
-    let leaderboard = JSON.parse(
-      localStorage.getItem(STORAGE_KEY_LEADERBOARD) || JSON.stringify(MOCK_LEADERBOARD)
-    );
-    const idx = leaderboard.findIndex((u: any) => u.name === email);
-    if (idx > -1) {
-      if (score > leaderboard[idx].score) leaderboard[idx].score = score;
-    } else {
-      leaderboard.push({
-        id: `user_${Date.now()}`,
-        name: email,
-        score,
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(email)}&background=random`,
-      });
+const PostSurvey: React.FC = () => {
+  const { setCurrentStep, lastSimulationStep, userEmail } = useAppContext();
+  // Ghi nhận thời điểm bắt đầu làm NC2 (chỉ ghi lần đầu)
+  React.useEffect(() => {
+    if (!localStorage.getItem('tn_nc2_start')) {
+      markSurveyStart('tn_nc2_start');
     }
-    leaderboard.sort((a: any, b: any) => b.score - a.score);
-    localStorage.setItem(STORAGE_KEY_LEADERBOARD, JSON.stringify(leaderboard));
-  },
+  }, []);
 
-  getLeaderboard: () => {
-    return JSON.parse(
-      localStorage.getItem(STORAGE_KEY_LEADERBOARD) || JSON.stringify(MOCK_LEADERBOARD)
+  const [answers, setAnswers] = useState<Record<string, string>>(() => {
+    const saved = localStorage.getItem('eco_s2_answers');
+    if (saved) { try { return JSON.parse(saved); } catch (e) {} }
+    return {};
+  });
+  const [showValidationErrors, setShowValidationErrors] = useState(false);
+
+  // ── Attention check questions ──────────────────────────────────────────────
+  // AC1: Instructed Response — người đọc kỹ sẽ chọn "1" (Rất không đồng ý)
+  // AC2: Factual Check — hỏi về tính năng KHÔNG có trong mô phỏng để lọc người không chú ý
+  // Vị trí của 2 câu được random khi mount, giữ cố định trong suốt session
+  const acPositions = useMemo(() => {
+    // acPos1: vị trí chèn AC1 vào sections (0 = trước section đầu, 1 = sau section 0, ...)
+    // acPos2: vị trí chèn AC2, đảm bảo khác acPos1 và cách nhau ít nhất 2 sections
+    const totalSections = 9; // COM ACH SEE INT PEOU PU PE GCI GLI
+    const pos1 = Math.floor(Math.random() * (totalSections - 1)); // 0..7
+    let pos2 = Math.floor(Math.random() * (totalSections - 1));
+    while (Math.abs(pos2 - pos1) < 2) {
+      pos2 = Math.floor(Math.random() * (totalSections - 1));
+    }
+    return { ac1: pos1, ac2: pos2 };
+  }, []);
+
+  const sections = [
+    {
+      id: 'COM',
+      title: 'KHẢ NĂNG GỢI MỞ CẠNH TRANH (COM)',
+      questions: [
+        { id: 'COM1', text: 'Game tích Điểm Xanh có tính cạnh tranh.' },
+        { id: 'COM2', text: 'Tôi có thể so sánh thành tích của mình với người khác trên Game tích Điểm Xanh.' },
+        { id: 'COM3', text: 'Điểm Xanh tạo cơ hội cho tôi cạnh tranh thứ hạng với những người khác thông qua việc tham gia tích cực của mình.' },
+      ]
+    },
+    {
+      id: 'ACH',
+      title: 'KHẢ NĂNG GỢI MỞ THÀNH TÍCH (ACH)',
+      questions: [
+        { id: 'ACH1', text: 'Tôi có thể khoe với người khác về các thành tích xanh mà tôi đạt được trên nền tảng này.' },
+        { id: 'ACH2', text: 'Game tích Điểm Xanh cho tôi cơ hội thể hiện thành tích của mình khi tham gia vào các hoạt động tiêu dùng xanh.' },
+        { id: 'ACH3', text: 'Điểm Xanh cho phép tôi thể hiện mức độ tham gia của mình vào các hoạt động tiêu dùng xanh.' },
+      ]
+    },
+    {
+      id: 'INT',
+      title: 'KHẢ NĂNG GỢI MỞ TƯƠNG TÁC (INT)',
+      questions: [
+        { id: 'INT1', text: 'Điểm Xanh hỗ trợ tôi trong việc tương tác với bạn bè.' },
+        { id: 'INT2', text: 'Điểm Xanh mang đến cho tôi cơ hội giao lưu với những người tham gia khác.' },
+        { id: 'INT3', text: 'Điểm Xanh cung cấp cho tôi một hình thức để thúc đẩy sự tương tác và đối thoại với bạn bè.' },
+      ]
+    },
+    {
+      id: 'SEE',
+      title: 'KHẢ NĂNG GỢI MỞ TỰ THỂ HIỆN (SEE)',
+      questions: [
+        { id: 'SEE1', text: 'Tôi có thể thể hiện bản sắc cá nhân (thông qua hình đại diện, biệt danh, slogan,...) trên hệ thống tích Điểm Xanh.' },
+        { id: 'SEE2', text: 'Tôi được thể hiện bản thân theo cách tôi muốn trên Điểm Xanh.' },
+        { id: 'SEE3', text: 'Tôi có thể tạo sự khác biệt giữa bản thân và những người khác trên Điểm Xanh.' },
+      ]
+    },
+    {
+      id: 'PEOU',
+      title: 'NHẬN THỨC VỀ TÍNH DỄ SỬ DỤNG (PEOU)',
+      questions: [
+        { id: 'PEOU1', text: 'Giao diện tương tác của Điểm Xanh rõ ràng và dễ hiểu.' },
+        { id: 'PEOU2', text: 'Tôi thấy Điểm Xanh dễ sử dụng.' },
+        { id: 'PEOU3', text: 'Tôi dễ dàng hoàn thành các tác vụ tôi mong muốn trên Hệ thống Điểm Xanh.' },
+      ]
+    },
+    {
+      id: 'PU',
+      title: 'NHẬN THỨC VỀ TÍNH HỮU ÍCH (PU)',
+      description: [
+        'Nhận thức về tính hữu ích: Mức độ người dùng tin rằng hệ thống trò chơi tích điểm Điểm Xanh giúp họ thực hiện hành vi tiêu dùng xanh hiệu quả hơn trên nền tảng thương mại điện tử.',
+        'Mua sắm xanh: Là hành vi mua sắm các sản phẩm và dịch vụ thân thiện với môi trường nhằm giảm thiểu tối đa tác động tiêu cực đến môi trường và sức khỏe con người.',
+      ],
+      questions: [
+        { id: 'PU1', text: 'Tôi cảm thấy Điểm Xanh giúp tôi thực hiện các hoạt động mua sắm xanh nhanh chóng hơn.' },
+        { id: 'PU2', text: 'Tôi cảm thấy Điểm Xanh giúp tôi thực hiện các hoạt động mua sắm xanh hiệu quả hơn.' },
+        { id: 'PU3', text: 'Tôi thấy Điểm Xanh hữu ích (giúp tôi thực hiện và duy trì lối sống bền vững dễ dàng hơn).' },
+      ]
+    },
+    {
+      id: 'PE',
+      title: 'NHẬN THỨC VỀ SỰ THÍCH THÚ (PE)',
+      questions: [
+        { id: 'PE1', text: 'Tôi cảm thấy thích thú khi sử dụng Điểm Xanh.' },
+        { id: 'PE2', text: 'Tôi thấy việc sử dụng Điểm Xanh thú vị.' },
+        { id: 'PE3', text: 'Sử dụng Điểm Xanh mang lại cảm giác dễ chịu.' },
+      ]
+    },
+    {
+      id: 'GCI',
+      title: 'Ý ĐỊNH TIÊU DÙNG XANH (GCI)',
+      questions: [
+        { id: 'GCI1', text: 'Tôi dự định sẽ mua các sản phẩm thân thiện với môi trường (như thực phẩm hữu cơ hoặc sản phẩm tiết kiệm năng lượng) trong tháng tới.' },
+        { id: 'GCI2', text: 'Tôi sẵn sàng chuyển sang mua sắm tại các thương hiệu khác vì lý do bảo vệ môi trường.' },
+        { id: 'GCI3', text: 'Tôi sẵn sàng trả giá cao hơn cho một sản phẩm nếu nó tốt cho sức khỏe hoặc giúp bảo vệ môi trường.' },
+        { id: 'GCI4', text: 'Tôi sẽ cân nhắc mua các sản phẩm xanh vì chúng gây ít ô nhiễm hơn.' },
+        { id: 'GCI5', text: 'Tôi muốn các sàn thương mại điện tử có hệ thống tích Điểm Xanh.' },
+        { id: 'GCI6', text: 'Sử dụng game tích Điểm Xanh là một ý tưởng hay.' },
+        { id: 'GCI7', text: 'Tôi sẽ giới thiệu cho bạn bè về hệ thống tích Điểm Xanh nếu có hình thức này.' },
+      ]
+    },
+    {
+      id: 'GLI',
+      title: 'Ý ĐỊNH THỰC HIỆN HÀNH VI LOGISTICS XANH (GLI)',
+      questions: [
+        { id: 'GLI1', text: 'Tôi có ý định tham gia vào các hành vi logistics xanh để bảo vệ môi trường.' },
+        { id: 'GLI2', text: 'Trong thời gian tới, tôi có ý định hạn chế những hành vi gây lãng phí trong quá trình giao hàng khi mua sắm trực tuyến (như bao bì, thời gian và chi phí vận chuyển).' },
+        { id: 'GLI3', text: 'Tôi có ý định giảm thiểu lượng rác thải phát sinh từ các hoạt động mua sắm trực tuyến và giao hàng trong những tháng tới.' },
+      ]
+    }
+  ];
+
+  // Mỗi cột radio rộng 56px × 5 cột = 280px — dùng nhất quán ở header lẫn rows
+  const COL_W = 56;
+  const TOTAL_W = COL_W * 5;
+
+  const handleSelect = (questionId: string, value: string) => {
+    // AC1 và AC2 không ghi vào sheet — chỉ lưu local để validate
+    const isAttentionCheck = questionId === 'AC1' || questionId === 'AC2';
+    if (!isAttentionCheck) {
+      const isLastQuestion = questionId === 'GLI3';
+      dataService.logSurvey2Response(userEmail, questionId, value, isLastQuestion);
+      if (isLastQuestion) localStorage.removeItem('tn_nc2_start');
+    }
+    setAnswers(prev => {
+      const next = { ...prev, [questionId]: value };
+      localStorage.setItem('eco_s2_answers', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  // Tổng câu = tất cả câu trong sections + 2 attention check
+  const isComplete = () => {
+    const totalSurveyQ = sections.reduce((acc, s) => acc + s.questions.length, 0);
+    const totalQ = totalSurveyQ + 2; // +AC1 +AC2
+    return Object.keys(answers).filter(k => answers[k] !== '').length >= totalQ;
+  };
+
+  const handleSubmit = () => {
+    if (!isComplete()) {
+      setShowValidationErrors(true);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const firstError = document.querySelector('.bg-red-50');
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }));
+      return;
+    }
+    localStorage.setItem('eco_completed', 'true');
+    localStorage.removeItem('eco_s2_answers');
+    setCurrentStep('thank_you');
+  };
+
+  const handleBack = () => {
+    setCurrentStep(lastSimulationStep || 'success');
+  };
+
+  // ── Attention Check Card ────────────────────────────────────────────────────
+  // AC1: Instructed Response Item — đáp án đúng = 1 (Rất không đồng ý)
+  // AC2: Factual Check — hỏi tính năng KHÔNG có trong mô phỏng, đáp án đúng = "Không"
+  const AC_CONFIG = {
+    AC1: {
+      label: 'KIỂM TRA ĐỌC HIỂU',
+      text: 'Nếu bạn đang đọc câu này, vui lòng chọn "Rất không đồng ý" (số 1).',
+      type: 'likert' as const,
+    },
+    AC2: {
+      label: 'KIỂM TRA TRẢI NGHIỆM',
+      text: 'Trong phần mô phỏng mua sắm Điểm Xanh vừa rồi, hệ thống có hiển thị mục BẢO HÀNH SẢN PHẨM không?',
+      type: 'yesno' as const,
+      options: ['Có', 'Không'],
+    },
+  };
+
+  const AttentionCheckCard = ({ qId }: { qId: 'AC1' | 'AC2' }) => {
+    const cfg = AC_CONFIG[qId];
+    const isInvalid = showValidationErrors && !answers[qId];
+    return (
+      <div className={`bg-white rounded-xl border-2 shadow-sm mb-4 overflow-hidden transition-all ${isInvalid ? 'border-red-500' : 'border-slate-200'}`}>
+        <div className="px-6 pt-5 pb-3 border-b border-slate-100 bg-slate-50/30 flex items-center gap-2">
+          <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-slate-200 text-slate-500">
+            {cfg.label}
+          </span>
+          <span className="text-red-500 text-sm">*</span>
+        </div>
+        <div className={`px-6 py-5 transition-all ${isInvalid ? 'bg-red-50' : 'bg-white'}`}>
+          <p className="text-sm font-medium text-slate-700 leading-relaxed mb-4">
+            {cfg.text}
+            {isInvalid && <span className="block text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">Vui lòng chọn</span>}
+          </p>
+
+          {cfg.type === 'likert' && (
+            <>
+              {/* Desktop */}
+              <div className="hidden md:flex items-center">
+                <div className="flex-1 pr-4" />
+                <div className="flex shrink-0" style={{ width: TOTAL_W }}>
+                  {[1,2,3,4,5].map((num, i) => (
+                    <div key={num} className="flex flex-col items-center" style={{ width: COL_W }}>
+                      <span className="text-sm font-bold text-slate-500">{num}</span>
+                      {i === 0 && <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">Rất không<br/>đồng ý</span>}
+                      {i === 4 && <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">Rất<br/>đồng ý</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="hidden md:flex items-center mt-1">
+                <div className="flex-1 pr-4" />
+                <RadioGroup qId={qId} />
+              </div>
+              {/* Mobile */}
+              <div className="md:hidden bg-slate-50 p-3 rounded-lg">
+                <div className="flex justify-between w-full text-[10px] font-bold text-emerald-700 uppercase tracking-tighter mb-2 px-1">
+                  <span>Rất không đồng ý</span>
+                  <span>Rất đồng ý</span>
+                </div>
+                <RadioGroup qId={qId} isMobile />
+              </div>
+            </>
+          )}
+
+          {cfg.type === 'yesno' && (
+            <div className="flex gap-4 mt-2">
+              {cfg.options!.map(opt => (
+                <label key={opt} className="flex items-center gap-2 cursor-pointer group">
+                  <div className="relative flex items-center justify-center">
+                    <input
+                      type="radio"
+                      name={qId}
+                      value={opt}
+                      checked={answers[qId] === opt}
+                      onChange={() => handleSelect(qId, opt)}
+                      className="appearance-none w-5 h-5 border-2 border-slate-300 rounded-full checked:border-emerald-500 transition-all cursor-pointer"
+                    />
+                    {answers[qId] === opt && <div className="absolute w-2.5 h-2.5 bg-emerald-500 rounded-full" />}
+                  </div>
+                  <span className="text-sm font-medium text-slate-700 group-hover:text-emerald-600 transition-colors">{opt}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     );
-  },
+  };
 
-  exportData: (): void => {
-    const data = localStorage.getItem(STORAGE_KEY_RECORDS);
-    if (!data) return;
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `survey_data_${new Date().toISOString()}.json`;
-    link.click();
-  },
+  const RadioGroup = ({ qId, isMobile }: { qId: string, isMobile?: boolean }) => (
+    <div className={`flex ${isMobile ? 'w-full justify-between' : 'shrink-0'}`} style={isMobile ? {} : { width: TOTAL_W }}>
+      {[1, 2, 3, 4, 5].map(num => (
+        <div key={num} className="flex flex-col items-center" style={isMobile ? { flex: 1 } : { width: COL_W }}>
+          {/* Số — chỉ hiện trên mobile */}
+          <span className="md:hidden text-xs font-bold text-slate-400 mb-1">{num}</span>
+          <label className="relative flex items-center justify-center cursor-pointer group w-8 h-8">
+            <input
+              type="radio"
+              name={qId}
+              value={num.toString()}
+              checked={answers[qId] === num.toString()}
+              onChange={() => handleSelect(qId, num.toString())}
+              className="appearance-none w-7 h-7 border-2 border-slate-300 rounded-full checked:border-emerald-500 transition-all cursor-pointer"
+            />
+            {answers[qId] === num.toString() && (
+              <div className="absolute w-3.5 h-3.5 bg-emerald-500 rounded-full pointer-events-none" />
+            )}
+            <div className="absolute inset-0 rounded-full group-hover:bg-emerald-50 transition-colors -z-10" />
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderSection = (section: any) => (
+    <div key={section.id} className="bg-white rounded-xl border border-slate-200 shadow-sm mb-4 overflow-hidden">
+
+      {/* Header */}
+      <div className="px-6 pt-6 pb-4 border-b border-slate-100 bg-slate-50/30">
+        <h3 className="text-base font-black text-slate-800 uppercase tracking-tight">
+          {section.title} <span className="text-red-500">*</span>
+        </h3>
+        {section.description && (
+          <div className="mt-2 border-l-2 border-emerald-500 pl-3 space-y-1">
+            <p className="text-[10px] font-black text-emerald-700 uppercase tracking-widest mb-1">Định nghĩa</p>
+            {(Array.isArray(section.description) ? section.description : [section.description]).map((line: string, i: number) => (
+              <p key={i} className="text-xs text-slate-600 leading-relaxed italic flex gap-1.5">
+                <span className="text-emerald-500 mt-0.5 shrink-0">•</span>
+                <span>{line}</span>
+              </p>
+            ))}
+          </div>
+        )}
+
+        {/* Desktop column headers — khớp chính xác với RadioGroup */}
+        <div className="mt-4 hidden md:flex items-start">
+          <div className="flex-1 text-sm font-semibold text-slate-400 pr-4">Nội dung</div>
+          <div className="flex shrink-0" style={{ width: TOTAL_W }}>
+            {[1, 2, 3, 4, 5].map((n, i) => (
+              <div key={n} className="flex flex-col items-center" style={{ width: COL_W }}>
+                <span className="text-sm font-bold text-slate-500">{n}</span>
+                {i === 0 && (
+                  <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">
+                    Hoàn toàn không<br />đồng ý
+                  </span>
+                )}
+                {i === 4 && (
+                  <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">
+                    Hoàn toàn<br />đồng ý
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Rows */}
+      <div>
+        {section.questions.map((q, idx) => {
+          const isInvalid = showValidationErrors && !answers[q.id];
+          return (
+            <div
+              key={q.id}
+              className={`px-6 py-5 border-b border-slate-100 last:border-0 transition-all ${isInvalid ? 'bg-red-50 border-l-4 border-red-500' : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/40')}`}
+            >
+              {/* Desktop: text + radio nằm ngang */}
+              <div className="hidden md:flex items-center">
+                <div className="flex-1 text-sm font-medium text-slate-700 leading-relaxed pr-4">
+                  <span className="font-bold">{q.id}.</span> {q.text}
+                  {isInvalid && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">Vui lòng chọn</p>}
+                </div>
+                <RadioGroup qId={q.id} />
+              </div>
+
+              {/* Mobile: text trên, radio dưới */}
+              <div className="md:hidden">
+                <p className="text-sm font-medium text-slate-700 leading-relaxed mb-4">
+                  <span className="font-bold">{q.id}.</span> {q.text}
+                  {isInvalid && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">Vui lòng chọn</p>}
+                </p>
+                <div className="bg-slate-50 p-3 rounded-lg">
+                  <div className="flex justify-between w-full text-[10px] font-bold text-emerald-700 uppercase tracking-tighter mb-2 px-1">
+                    <span>Hoàn toàn không đồng ý</span>
+                    <span>Hoàn toàn đồng ý</span>
+                  </div>
+                  <RadioGroup qId={q.id} isMobile />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-[#F0F4F8] py-8 px-4 flex flex-col items-center overflow-y-auto">
+
+      {/* Page Header */}
+      <div className="w-full max-w-3xl mb-6">
+        <div className="h-3 w-full bg-emerald-600 rounded-t-xl" />
+        <div className="bg-white p-8 rounded-b-xl border-x border-b border-slate-200 shadow-sm text-justify">
+          <h1 className="text-2xl md:text-3xl font-black text-slate-900 mb-4 uppercase tracking-tight leading-tight">
+            NGHIÊN CỨU 2 - NGHIÊN CỨU DỮ LIỆU ĐIỀU TRA
+          </h1>
+          <p className="text-sm text-slate-600 leading-relaxed italic">
+            Anh/Chị vui lòng đánh giá mức độ đồng ý của mình dựa trên trải nghiệm tại hệ thống Điểm Xanh vừa rồi.
+          </p>
+          <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-black text-slate-400 uppercase tracking-[0.2em]">
+            <span>Nghiên cứu 2</span>
+            <span className="text-red-500">* Bắt buộc</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Sections */}
+      <div className="w-full max-w-3xl">
+        {(() => {
+          // Render sections xen kẽ với attention check cards
+          const items: React.ReactNode[] = [];
+          sections.forEach((section, idx) => {
+            // Chèn AC1 trước section có index = acPositions.ac1
+            if (idx === acPositions.ac1) items.push(<AttentionCheckCard key="AC1" qId="AC1" />);
+            // Chèn AC2 trước section có index = acPositions.ac2
+            if (idx === acPositions.ac2) items.push(<AttentionCheckCard key="AC2" qId="AC2" />);
+            items.push(renderSection(section));
+          });
+          return items;
+        })()}
+
+        {/* Actions */}
+        <div className="flex justify-between items-center mt-10 mb-20 px-2">
+          <button onClick={handleBack} className="px-4 md:px-8 py-3 text-emerald-600 font-black text-sm md:text-base uppercase tracking-[0.1em] md:tracking-[0.2em] hover:bg-emerald-50 rounded-xl transition-all">← Quay lại</button>
+          <button
+            onClick={handleSubmit}
+            className={`px-6 md:px-12 py-4 rounded-xl font-black uppercase text-sm md:text-base tracking-[0.1em] md:tracking-[0.2em] transition-all shadow-xl
+              ${isComplete()
+                ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95'
+                : 'bg-slate-200 text-slate-400 shadow-none'}`}
+          >
+            Gửi
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
+
+export default PostSurvey;
