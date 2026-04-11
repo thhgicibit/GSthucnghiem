@@ -71,7 +71,7 @@ const Survey: React.FC = () => {
     setShowValidationErrors(false);
     // Nếu người dùng chưa từng biết gamification → dừng khảo sát
     // Các câu A1–A6 đã được ghi thời gian thực qua updateAnswer() rồi
-    // Chỉ cần gửi thêm nc1_endTime để ghi thời gian làm
+    // Chỉ cần gửi thêm end time để ghi cột thời gian làm
     if (currentPage === 1 && answers.gamificationExp === 'Chưa từng') {
       dataService.logSurvey1End(userEmail);
       localStorage.setItem('eco_completed', 'true');
@@ -352,8 +352,8 @@ const Survey: React.FC = () => {
             ])}
 
             {renderLikertSection('Câu hỏi kiến thức môi trường', [
-              { field: 'know_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả của các phương tiện xanh trong giao hàng chặng cuối' },
-              { field: 'know_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giảm khí thải) của phương tiện xanh trong giao hàng chặng cuối' },
+              { field: 'know_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả (dùng ít năng lượng hơn) của các phương tiện xanh dùng trong giao hàng chặng cuối' },
+              { field: 'know_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải) của phương tiện xanh trong giao hàng chặng cuối' },
               { field: 'know_q3', text: 'Q3. Tôi nhận thức được những tác động của biến đổi khí hậu đối với môi trường và con người' },
               { field: 'know_q4', text: 'Q4. Khi đọc mô tả sản phẩm, tôi có thể hiểu được liệu sản phẩm đó có gây hại cho môi trường hay không' },
               { field: 'know_q5', text: 'Q5. Tôi dễ dàng nhận biết được sản phẩm thân thiện với môi trường' }
