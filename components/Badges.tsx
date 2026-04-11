@@ -8,7 +8,7 @@ const Badges: React.FC = () => {
   return (
     <section className="space-y-4">
       <h3 className="font-black text-slate-800 text-lg flex items-center px-1">
-        <span className="mr-2">🏷️</span> Danh hiệu Green Identity
+        <span className="mr-2">🏷️</span> DANH HIỆU
       </h3>
       <div className="flex space-x-3 overflow-x-auto pb-4 px-1 scrollbar-hide">
         {BADGES.map(badge => {
