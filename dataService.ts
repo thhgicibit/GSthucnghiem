@@ -42,6 +42,26 @@ export const dataService = {
   //
   // Ghi TỪNG CÂU ngay khi người dùng click — gọi từ Survey.tsx → updateAnswer()
   // ───────────────────────────────────────────────────────────────────────────
+  // ───────────────────────────────────────────────────────────────────────────
+  // Ghi nc1_endTime khi dừng sớm (chọn "Chưa từng" ở A6)
+  // Không ghi đè dữ liệu câu hỏi, chỉ cập nhật cột thời gian làm
+  // ───────────────────────────────────────────────────────────────────────────
+  logSurvey1End: async (userEmail: string): Promise<void> => {
+    const startTime = localStorage.getItem('tn_nc1_start') || undefined;
+    const endTime = new Date().toISOString();
+    console.log('[NC1] Kết thúc sớm — ghi thời gian làm');
+    await postToSheet({
+      type: 'nghien_cuu_1',
+      timestamp: endTime,
+      userEmail,
+      questionId: 'nc1_duration_marker', // questionId không có trong colMap → Apps Script bỏ qua, nhưng vẫn ghi duration
+      value: '',
+      ...(startTime && { nc1_startTime: startTime }),
+      nc1_endTime: endTime,
+    });
+    localStorage.removeItem('tn_nc1_start');
+  },
+
   logSurvey1Response: async (
     userEmail: string,
     questionId: string,
