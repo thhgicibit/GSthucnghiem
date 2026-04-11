@@ -49,7 +49,9 @@ const Survey: React.FC = () => {
 
   const isPageValid = () => {
     if (currentPage === 1) {
-      return !!(answers.gender && answers.age && answers.education && answers.job && answers.income && answers.gamificationExp && answers.knownGame);
+      const baseValid = !!(answers.gender && answers.age && answers.education && answers.job && answers.income && answers.gamificationExp);
+      if (answers.gamificationExp === 'Chưa từng') return baseValid;
+      return baseValid && !!answers.knownGame;
     }
     if (currentPage === 2) {
       return !!(
@@ -67,6 +69,14 @@ const Survey: React.FC = () => {
       return;
     }
     setShowValidationErrors(false);
+    // Nếu người dùng chưa từng biết gamification → dừng khảo sát, chuyển sang cảm ơn
+    if (currentPage === 1 && answers.gamificationExp === 'Chưa từng') {
+      localStorage.setItem('eco_completed', 'true');
+      localStorage.removeItem('eco_s1_answers');
+      localStorage.removeItem('eco_s1_page');
+      setCurrentStep('thank_you');
+      return;
+    }
     if (currentPage < 2) {
       setCurrentPage(prev => { const n = prev + 1; localStorage.setItem('eco_s1_page', String(n)); return n; });
       window.scrollTo(0, 0);
