@@ -26,9 +26,9 @@ const GIFT_ITEMS = [
   {
     id: 'certificate',
     name: 'Giấy chứng nhận Công dân Xanh',
-    points: 50,
+    points: 150,
     icon: '📜',
-    description: 'Giấy chứng nhận điện tử vinh danh bạn là Công dân Xanh, có thể lưu và chia sẻ.'
+    description: 'Giấy chứng nhận điện tử vinh danh bạn là Công dân Xanh — thành tích cao nhất dành cho những người nỗ lực nhất.'
   },
   {
     id: 'voucher_green',
@@ -37,34 +37,13 @@ const GIFT_ITEMS = [
     icon: '🎟️',
     description: 'Mã giảm giá 10% cho lần mua tiếp theo khi chọn sản phẩm thân thiện môi trường.'
   },
-  {
-    id: 'tote',
-    name: 'Túi vải Canvas Quà Tặng Xanh',
-    points: 100,
-    icon: '🛍️',
-    description: 'Túi vải canvas 100% cotton, bền chắc, thân thiện môi trường.'
-  },
-  {
-    id: 'bottle',
-    name: 'Bình nước bã mía tái chế',
-    points: 150,
-    icon: '🥤',
-    description: 'Bình nước sinh học làm từ phụ phẩm nông nghiệp, phân hủy tự nhiên.'
-  },
-  {
-    id: 'seed_kit',
-    name: 'Bộ hạt giống rau sạch tại gia',
-    points: 120,
-    icon: '🌱',
-    description: 'Bộ 5 gói hạt giống rau ăn lá hữu cơ, phù hợp trồng tại nhà hoặc ban công.'
-  },
-  {
-    id: 'notebook',
-    name: 'Sổ tay giấy tái chế cao cấp',
-    points: 90,
-    icon: '📓',
-    description: 'Sổ tay làm từ 100% giấy tái chế, bìa da thực vật, 120 trang không tẩy trắng.'
-  }
+];
+
+const OTHER_GIFT_ITEMS = [
+  { id: 'tote',     name: 'Túi vải Canvas',          points: 60,  icon: '🛍️', description: 'Túi vải canvas 100% cotton, bền chắc, thân thiện môi trường.' },
+  { id: 'bottle',   name: 'Bình nước bã mía',         points: 70,  icon: '🥤', description: 'Bình nước sinh học từ phụ phẩm nông nghiệp, phân hủy tự nhiên.' },
+  { id: 'seed_kit', name: 'Bộ hạt giống rau sạch',   points: 55,  icon: '🌱', description: 'Bộ 5 gói hạt giống rau ăn lá hữu cơ, phù hợp trồng tại nhà.' },
+  { id: 'notebook', name: 'Sổ tay giấy tái chế',      points: 50,  icon: '📓', description: 'Sổ tay 120 trang giấy tái chế, bìa da thực vật cao cấp.' },
 ];
 
 const RedeemStore: React.FC = () => {
@@ -134,29 +113,55 @@ const RedeemStore: React.FC = () => {
           <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-xl shadow-sm">🎁</div>
           <h2 className="text-base font-black text-amber-900 uppercase tracking-widest underline">Đổi quà khuyến khích xanh</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1 & 2: Chứng nhận + Voucher */}
           {GIFT_ITEMS.map(gift => {
             const canRedeem = greenScore >= gift.points;
             return (
               <div key={gift.id} className={`bg-white p-6 rounded-[2.5rem] border shadow-sm transition-all group flex flex-col ${canRedeem ? 'border-amber-100 hover:shadow-md' : 'border-slate-100 opacity-60'}`}>
                 <div className="flex justify-between mb-4">
-                  <div className="text-4xl bg-amber-50 w-16 h-16 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform">{gift.icon}</div>
-                  <div className="text-right">
-                    <span className={`font-black text-sm ${canRedeem ? 'text-amber-600' : 'text-slate-400'}`}>{gift.points} 💧</span>
-                  </div>
+                  <div className="text-4xl bg-amber-50 w-14 h-14 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform">{gift.icon}</div>
+                  <span className={`font-black text-sm self-start mt-1 ${canRedeem ? 'text-amber-600' : 'text-slate-400'}`}>{gift.points} 💧</span>
                 </div>
-                <h3 className="font-black text-slate-800 text-sm mb-2 uppercase leading-snug">{gift.name}</h3>
-                <p className="text-[11px] text-slate-500 mb-6 leading-relaxed flex-1">{gift.description}</p>
+                <h3 className="font-black text-slate-800 text-xs mb-1 uppercase leading-snug">{gift.name}</h3>
+                <p className="text-[10px] text-slate-500 mb-5 leading-relaxed flex-1">{gift.description}</p>
                 <button
                   onClick={() => handleRedeem(gift, 'gift')}
                   disabled={!canRedeem}
-                  className={`w-full py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all active:scale-95 ${canRedeem ? 'bg-amber-500 hover:bg-amber-600 text-white' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}
+                  className={`w-full py-3 rounded-2xl font-black uppercase text-[9px] tracking-widest transition-all active:scale-95 ${canRedeem ? 'bg-amber-500 hover:bg-amber-600 text-white' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}
                 >
                   {canRedeem ? 'Đổi ngay' : `Cần thêm ${gift.points - greenScore} 💧`}
                 </button>
               </div>
             );
           })}
+          {/* Card 3: Quà tặng khác — danh sách chọn */}
+          <div className="bg-white p-6 rounded-[2.5rem] border border-amber-100 shadow-sm flex flex-col">
+            <div className="flex justify-between mb-4">
+              <div className="text-4xl bg-amber-50 w-14 h-14 rounded-3xl flex items-center justify-center">🎀</div>
+              <span className="text-[10px] font-black text-amber-600 self-start mt-1 uppercase tracking-widest">Quà tặng</span>
+            </div>
+            <h3 className="font-black text-slate-800 text-xs mb-3 uppercase">Quà tặng khuyến khích</h3>
+            <div className="flex-1 space-y-2 mb-4">
+              {OTHER_GIFT_ITEMS.map(item => {
+                const canRedeem = greenScore >= item.points;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleRedeem(item, 'gift')}
+                    disabled={!canRedeem}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-all border ${canRedeem ? 'border-amber-100 hover:bg-amber-50 hover:border-amber-300' : 'border-slate-100 opacity-50 cursor-not-allowed'}`}
+                  >
+                    <span className="flex items-center space-x-2">
+                      <span className="text-base">{item.icon}</span>
+                      <span className="text-[10px] font-bold text-slate-700 leading-tight">{item.name}</span>
+                    </span>
+                    <span className={`text-[10px] font-black shrink-0 ml-2 ${canRedeem ? 'text-amber-500' : 'text-slate-300'}`}>{item.points} 💧</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
       <div className="space-y-6">
