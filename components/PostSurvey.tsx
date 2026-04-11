@@ -121,13 +121,10 @@ const PostSurvey: React.FC = () => {
   const TOTAL_W = COL_W * 5;
 
   const handleSelect = (questionId: string, value: string) => {
-    // AC1 và AC2 không ghi vào sheet — chỉ lưu local để validate
-    const isAttentionCheck = questionId === 'AC1' || questionId === 'AC2';
-    if (!isAttentionCheck) {
-      const isLastQuestion = questionId === 'GLI3';
-      dataService.logSurvey2Response(userEmail, questionId, value, isLastQuestion);
-      if (isLastQuestion) localStorage.removeItem('tn_nc2_start');
-    }
+    // AC1 và AC2 ghi vào sheet như câu hỏi thường để phục vụ lọc mẫu khi phân tích
+    const isLastQuestion = questionId === 'GLI3';
+    dataService.logSurvey2Response(userEmail, questionId, value, isLastQuestion);
+    if (isLastQuestion) localStorage.removeItem('tn_nc2_start');
     setAnswers(prev => {
       const next = { ...prev, [questionId]: value };
       localStorage.setItem('eco_s2_answers', JSON.stringify(next));
@@ -165,12 +162,12 @@ const PostSurvey: React.FC = () => {
   // AC2: Factual Check — hỏi tính năng KHÔNG có trong mô phỏng, đáp án đúng = "Không"
   const AC_CONFIG = {
     AC1: {
-      label: 'KIỂM TRA ĐỌC HIỂU',
+      label: '',
       text: 'Nếu bạn đang đọc câu này, vui lòng chọn "Rất không đồng ý" (số 1).',
       type: 'likert' as const,
     },
     AC2: {
-      label: 'KIỂM TRA TRẢI NGHIỆM',
+      label: '',
       text: 'Trong phần mô phỏng mua sắm Điểm Xanh vừa rồi, hệ thống có hiển thị mục BẢO HÀNH SẢN PHẨM không?',
       type: 'yesno' as const,
       options: ['Có', 'Không'],
@@ -182,12 +179,14 @@ const PostSurvey: React.FC = () => {
     const isInvalid = showValidationErrors && !answers[qId];
     return (
       <div className={`bg-white rounded-xl border-2 shadow-sm mb-4 overflow-hidden transition-all ${isInvalid ? 'border-red-500' : 'border-slate-200'}`}>
-        <div className="px-6 pt-5 pb-3 border-b border-slate-100 bg-slate-50/30 flex items-center gap-2">
-          <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-slate-200 text-slate-500">
-            {cfg.label}
-          </span>
-          <span className="text-red-500 text-sm">*</span>
-        </div>
+        {cfg.label && (
+          <div className="px-6 pt-5 pb-3 border-b border-slate-100 bg-slate-50/30 flex items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-slate-200 text-slate-500">
+              {cfg.label}
+            </span>
+            <span className="text-red-500 text-sm">*</span>
+          </div>
+        )}
         <div className={`px-6 py-5 transition-all ${isInvalid ? 'bg-red-50' : 'bg-white'}`}>
           <p className="text-sm font-medium text-slate-700 leading-relaxed mb-4">
             {cfg.text}
