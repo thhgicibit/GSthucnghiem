@@ -146,6 +146,7 @@ const MainContent: React.FC = () => {
           <div className="pt-6 flex flex-col md:flex-row items-center justify-center gap-4">
             <button onClick={() => setCurrentStep('post_survey')} className="w-full md:w-auto px-10 py-5 bg-emerald-600 text-white rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-emerald-700 active:scale-95 transition-all shadow-lg shadow-emerald-100">Khảo sát & Hoàn tất</button>
             <button onClick={() => setCurrentStep('social')} className="w-full md:w-auto px-10 py-5 bg-white border border-slate-200 text-slate-700 rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-slate-50 active:scale-95 transition-all shadow-sm">BXH & Cộng đồng</button>
+            <button onClick={resetFlow} className="w-full md:w-auto px-10 py-5 bg-white border border-emerald-200 text-emerald-700 rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-emerald-50 active:scale-95 transition-all shadow-sm">🛒 Tiếp tục mua sắm</button>
           </div>
         </div>
       );
@@ -236,7 +237,8 @@ const MainContent: React.FC = () => {
           {renderContent()}
         </div>
       </div>
-      <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50">
+      <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 flex flex-col gap-3">
+        <button onClick={() => setCurrentStep('social')} className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-xl flex items-center justify-center text-xl md:text-2xl transition-all hover:scale-110 active:scale-90 ${currentStep === 'social' ? 'bg-emerald-600 text-white ring-4 ring-emerald-100' : 'bg-white text-emerald-600 border border-slate-100'}`} title="Trò chuyện cộng đồng">💬</button>
         <button onClick={() => setCurrentStep('social')} className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-xl flex items-center justify-center text-xl md:text-2xl transition-all hover:scale-110 active:scale-90 ${currentStep === 'social' ? 'bg-emerald-600 text-white ring-4 ring-emerald-100' : 'bg-white text-emerald-600 border border-slate-100'}`} title="Xem Bảng xếp hạng">🏆</button>
       </div>
       <footer className="py-2 px-4 md:px-8 text-[8px] text-slate-300 flex justify-end">
