@@ -18,6 +18,12 @@ const PostSurvey: React.FC = () => {
   });
   const [showValidationErrors, setShowValidationErrors] = useState(false);
 
+  // ── Attention check questions ──────────────────────────────────────────────
+  // AC1 (Instructed Response) → sau PE  [index 6], trước GCI
+  // AC2 (Factual Check)       → sau ACH [index 1], trước INT
+  // Thứ tự render: COM → ACH → AC2 → INT → SEE → PEOU → PU → PE → AC1 → GCI → GLI
+  const acPositions = { ac1: 7, ac2: 2 };
+
   const sections = [
     {
       id: 'COM',
@@ -38,21 +44,21 @@ const PostSurvey: React.FC = () => {
       ]
     },
     {
-      id: 'SEE',
-      title: 'KHẢ NĂNG GỢI MỞ TỰ THỂ HIỆN (SEE)',
-      questions: [
-        { id: 'SEE1', text: 'Tôi có thể thể hiện bản sắc cá nhân (thông qua hình đại diện, biệt danh, slogan,...) trên hệ thống tích Điểm Xanh.' },
-        { id: 'SEE2', text: 'Tôi được thể hiện bản thân theo cách tôi muốn trên Điểm Xanh.' },
-        { id: 'SEE3', text: 'Tôi có thể tạo sự khác biệt giữa bản thân và những người khác trên Điểm Xanh.' },
-      ]
-    },
-    {
       id: 'INT',
       title: 'KHẢ NĂNG GỢI MỞ TƯƠNG TÁC (INT)',
       questions: [
         { id: 'INT1', text: 'Điểm Xanh hỗ trợ tôi trong việc tương tác với bạn bè.' },
         { id: 'INT2', text: 'Điểm Xanh mang đến cho tôi cơ hội giao lưu với những người tham gia khác.' },
         { id: 'INT3', text: 'Điểm Xanh cung cấp cho tôi một hình thức để thúc đẩy sự tương tác và đối thoại với bạn bè.' },
+      ]
+    },
+    {
+      id: 'SEE',
+      title: 'KHẢ NĂNG GỢI MỞ TỰ THỂ HIỆN (SEE)',
+      questions: [
+        { id: 'SEE1', text: 'Tôi có thể thể hiện bản sắc cá nhân (thông qua hình đại diện, biệt danh, slogan,...) trên hệ thống tích Điểm Xanh.' },
+        { id: 'SEE2', text: 'Tôi được thể hiện bản thân theo cách tôi muốn trên Điểm Xanh.' },
+        { id: 'SEE3', text: 'Tôi có thể tạo sự khác biệt giữa bản thân và những người khác trên Điểm Xanh.' },
       ]
     },
     {
@@ -115,9 +121,13 @@ const PostSurvey: React.FC = () => {
   const TOTAL_W = COL_W * 5;
 
   const handleSelect = (questionId: string, value: string) => {
-    const isLastQuestion = questionId === 'GLI3';
-    dataService.logSurvey2Response(userEmail, questionId, value, isLastQuestion);
-    if (isLastQuestion) localStorage.removeItem('tn_nc2_start');
+    // AC1 và AC2 không ghi vào sheet — chỉ lưu local để validate
+    const isAttentionCheck = questionId === 'AC1' || questionId === 'AC2';
+    if (!isAttentionCheck) {
+      const isLastQuestion = questionId === 'GLI3';
+      dataService.logSurvey2Response(userEmail, questionId, value, isLastQuestion);
+      if (isLastQuestion) localStorage.removeItem('tn_nc2_start');
+    }
     setAnswers(prev => {
       const next = { ...prev, [questionId]: value };
       localStorage.setItem('eco_s2_answers', JSON.stringify(next));
@@ -125,9 +135,11 @@ const PostSurvey: React.FC = () => {
     });
   };
 
+  // Tổng câu = tất cả câu trong sections + 2 attention check
   const isComplete = () => {
-    const totalQuestions = sections.reduce((acc, s) => acc + s.questions.length, 0);
-    return Object.keys(answers).length === totalQuestions;
+    const totalSurveyQ = sections.reduce((acc, s) => acc + s.questions.length, 0);
+    const totalQ = totalSurveyQ + 2; // +AC1 +AC2
+    return Object.keys(answers).filter(k => answers[k] !== '').length >= totalQ;
   };
 
   const handleSubmit = () => {
@@ -146,6 +158,95 @@ const PostSurvey: React.FC = () => {
 
   const handleBack = () => {
     setCurrentStep(lastSimulationStep || 'success');
+  };
+
+  // ── Attention Check Card ────────────────────────────────────────────────────
+  // AC1: Instructed Response Item — đáp án đúng = 1 (Rất không đồng ý)
+  // AC2: Factual Check — hỏi tính năng KHÔNG có trong mô phỏng, đáp án đúng = "Không"
+  const AC_CONFIG = {
+    AC1: {
+      label: 'KIỂM TRA ĐỌC HIỂU',
+      text: 'Nếu bạn đang đọc câu này, vui lòng chọn "Rất không đồng ý" (số 1).',
+      type: 'likert' as const,
+    },
+    AC2: {
+      label: 'KIỂM TRA TRẢI NGHIỆM',
+      text: 'Trong phần mô phỏng mua sắm Điểm Xanh vừa rồi, hệ thống có hiển thị mục BẢO HÀNH SẢN PHẨM không?',
+      type: 'yesno' as const,
+      options: ['Có', 'Không'],
+    },
+  };
+
+  const AttentionCheckCard = ({ qId }: { qId: 'AC1' | 'AC2' }) => {
+    const cfg = AC_CONFIG[qId];
+    const isInvalid = showValidationErrors && !answers[qId];
+    return (
+      <div className={`bg-white rounded-xl border-2 shadow-sm mb-4 overflow-hidden transition-all ${isInvalid ? 'border-red-500' : 'border-slate-200'}`}>
+        <div className="px-6 pt-5 pb-3 border-b border-slate-100 bg-slate-50/30 flex items-center gap-2">
+          <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-slate-200 text-slate-500">
+            {cfg.label}
+          </span>
+          <span className="text-red-500 text-sm">*</span>
+        </div>
+        <div className={`px-6 py-5 transition-all ${isInvalid ? 'bg-red-50' : 'bg-white'}`}>
+          <p className="text-sm font-medium text-slate-700 leading-relaxed mb-4">
+            {cfg.text}
+            {isInvalid && <span className="block text-red-500 text-[10px] font-bold mt-1 uppercase tracking-wider">Vui lòng chọn</span>}
+          </p>
+
+          {cfg.type === 'likert' && (
+            <>
+              {/* Desktop */}
+              <div className="hidden md:flex items-center">
+                <div className="flex-1 pr-4" />
+                <div className="flex shrink-0" style={{ width: TOTAL_W }}>
+                  {[1,2,3,4,5].map((num, i) => (
+                    <div key={num} className="flex flex-col items-center" style={{ width: COL_W }}>
+                      <span className="text-sm font-bold text-slate-500">{num}</span>
+                      {i === 0 && <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">Rất không<br/>đồng ý</span>}
+                      {i === 4 && <span className="text-[10px] font-semibold text-emerald-700 text-center leading-tight mt-0.5">Rất<br/>đồng ý</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="hidden md:flex items-center mt-1">
+                <div className="flex-1 pr-4" />
+                <RadioGroup qId={qId} />
+              </div>
+              {/* Mobile */}
+              <div className="md:hidden bg-slate-50 p-3 rounded-lg">
+                <div className="flex justify-between w-full text-[10px] font-bold text-emerald-700 uppercase tracking-tighter mb-2 px-1">
+                  <span>Rất không đồng ý</span>
+                  <span>Rất đồng ý</span>
+                </div>
+                <RadioGroup qId={qId} isMobile />
+              </div>
+            </>
+          )}
+
+          {cfg.type === 'yesno' && (
+            <div className="flex gap-4 mt-2">
+              {cfg.options!.map(opt => (
+                <label key={opt} className="flex items-center gap-2 cursor-pointer group">
+                  <div className="relative flex items-center justify-center">
+                    <input
+                      type="radio"
+                      name={qId}
+                      value={opt}
+                      checked={answers[qId] === opt}
+                      onChange={() => handleSelect(qId, opt)}
+                      className="appearance-none w-5 h-5 border-2 border-slate-300 rounded-full checked:border-emerald-500 transition-all cursor-pointer"
+                    />
+                    {answers[qId] === opt && <div className="absolute w-2.5 h-2.5 bg-emerald-500 rounded-full" />}
+                  </div>
+                  <span className="text-sm font-medium text-slate-700 group-hover:text-emerald-600 transition-colors">{opt}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   const RadioGroup = ({ qId, isMobile }: { qId: string, isMobile?: boolean }) => (
@@ -277,7 +378,18 @@ const PostSurvey: React.FC = () => {
 
       {/* Sections */}
       <div className="w-full max-w-3xl">
-        {sections.map(section => renderSection(section))}
+        {(() => {
+          // Render sections xen kẽ với attention check cards
+          const items: React.ReactNode[] = [];
+          sections.forEach((section, idx) => {
+            // AC2 xuất hiện trước section index 2 (INT) — sau ACH
+            if (idx === acPositions.ac2) items.push(<AttentionCheckCard key="AC2" qId="AC2" />);
+            // AC1 xuất hiện trước section index 7 (GCI) — sau PE
+            if (idx === acPositions.ac1) items.push(<AttentionCheckCard key="AC1" qId="AC1" />);
+            items.push(renderSection(section));
+          });
+          return items;
+        })()}
 
         {/* Actions */}
         <div className="flex justify-between items-center mt-10 mb-20 px-2">
