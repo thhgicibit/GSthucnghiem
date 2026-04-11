@@ -24,6 +24,20 @@ const DONATION_PROJECTS = [
 
 const GIFT_ITEMS = [
   {
+    id: 'certificate',
+    name: 'Giấy chứng nhận Công dân Xanh',
+    points: 50,
+    icon: '📜',
+    description: 'Giấy chứng nhận điện tử vinh danh bạn là Công dân Xanh, có thể lưu và chia sẻ.'
+  },
+  {
+    id: 'voucher_green',
+    name: 'Voucher giảm 10% sản phẩm xanh',
+    points: 80,
+    icon: '🎟️',
+    description: 'Mã giảm giá 10% cho lần mua tiếp theo khi chọn sản phẩm thân thiện môi trường.'
+  },
+  {
     id: 'tote',
     name: 'Túi vải Canvas Quà Tặng Xanh',
     points: 100,
@@ -36,6 +50,20 @@ const GIFT_ITEMS = [
     points: 150,
     icon: '🥤',
     description: 'Bình nước sinh học làm từ phụ phẩm nông nghiệp, phân hủy tự nhiên.'
+  },
+  {
+    id: 'seed_kit',
+    name: 'Bộ hạt giống rau sạch tại gia',
+    points: 120,
+    icon: '🌱',
+    description: 'Bộ 5 gói hạt giống rau ăn lá hữu cơ, phù hợp trồng tại nhà hoặc ban công.'
+  },
+  {
+    id: 'notebook',
+    name: 'Sổ tay giấy tái chế cao cấp',
+    points: 90,
+    icon: '📓',
+    description: 'Sổ tay làm từ 100% giấy tái chế, bìa da thực vật, 120 trang không tẩy trắng.'
   }
 ];
 
@@ -45,6 +73,8 @@ const RedeemStore: React.FC = () => {
   const [showDonateModal, setShowDonateModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [donateAmount, setDonateAmount] = useState('10');
+  const [showRedeemModal, setShowRedeemModal] = useState(false);
+  const [selectedGift, setSelectedGift] = useState<any>(null);
 
   const handleRedeem = (item: any, type: 'gift' | 'donation') => {
     if (type === 'donation') {
@@ -56,8 +86,16 @@ const RedeemStore: React.FC = () => {
       alert('Bạn không đủ Điểm Xanh để đổi quà này.');
       return;
     }
-    subtractPoints(item.points);
-    setSuccessMsg(`Chúc mừng! Bạn đã đổi thành công: ${item.name}`);
+    setSelectedGift(item);
+    setShowRedeemModal(true);
+  };
+
+  const confirmRedeem = () => {
+    if (!selectedGift) return;
+    subtractPoints(selectedGift.points);
+    setSuccessMsg(`Chúc mừng! Bạn đã đổi thành công: ${selectedGift.name}`);
+    setShowRedeemModal(false);
+    setSelectedGift(null);
     setTimeout(() => setSuccessMsg(''), 5000);
   };
 
@@ -93,6 +131,36 @@ const RedeemStore: React.FC = () => {
       )}
       <div className="space-y-6">
         <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-xl shadow-sm">🎁</div>
+          <h2 className="text-base font-black text-amber-900 uppercase tracking-widest underline">Đổi quà khuyến khích xanh</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {GIFT_ITEMS.map(gift => {
+            const canRedeem = greenScore >= gift.points;
+            return (
+              <div key={gift.id} className={`bg-white p-6 rounded-[2.5rem] border shadow-sm transition-all group flex flex-col ${canRedeem ? 'border-amber-100 hover:shadow-md' : 'border-slate-100 opacity-60'}`}>
+                <div className="flex justify-between mb-4">
+                  <div className="text-4xl bg-amber-50 w-16 h-16 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform">{gift.icon}</div>
+                  <div className="text-right">
+                    <span className={`font-black text-sm ${canRedeem ? 'text-amber-600' : 'text-slate-400'}`}>{gift.points} 💧</span>
+                  </div>
+                </div>
+                <h3 className="font-black text-slate-800 text-sm mb-2 uppercase leading-snug">{gift.name}</h3>
+                <p className="text-[11px] text-slate-500 mb-6 leading-relaxed flex-1">{gift.description}</p>
+                <button
+                  onClick={() => handleRedeem(gift, 'gift')}
+                  disabled={!canRedeem}
+                  className={`w-full py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all active:scale-95 ${canRedeem ? 'bg-amber-500 hover:bg-amber-600 text-white' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}
+                >
+                  {canRedeem ? 'Đổi ngay' : `Cần thêm ${gift.points - greenScore} 💧`}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="space-y-6">
+        <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-sm">🌍</div>
           <h2 className="text-base font-black text-emerald-900 uppercase tracking-widest underline">Chương trình đóng góp</h2>
         </div>
@@ -117,6 +185,31 @@ const RedeemStore: React.FC = () => {
           ))}
         </div>
       </div>
+      {showRedeemModal && selectedGift && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl overflow-hidden">
+            <div className="bg-amber-500 p-8 text-center text-white relative">
+              <button onClick={() => setShowRedeemModal(false)} className="absolute top-6 right-6 text-white/50 hover:text-white">✕</button>
+              <div className="text-5xl mb-4">{selectedGift.icon}</div>
+              <h3 className="text-lg font-black uppercase">{selectedGift.name}</h3>
+            </div>
+            <div className="p-8 space-y-4 text-center">
+              <p className="text-sm text-slate-600 leading-relaxed">{selectedGift.description}</p>
+              <div className="bg-amber-50 border border-amber-100 rounded-2xl py-3 px-4">
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Chi phí đổi quà</p>
+                <p className="text-3xl font-black text-amber-600">{selectedGift.points} 💧</p>
+                <p className="text-[10px] text-slate-400 mt-1">Số dư sau khi đổi: {greenScore - selectedGift.points} 💧</p>
+              </div>
+              <button
+                onClick={confirmRedeem}
+                className="w-full bg-amber-500 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-amber-600 active:scale-95 transition-all uppercase tracking-widest text-xs"
+              >
+                Xác nhận đổi quà
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {showDonateModal && selectedProject && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl overflow-hidden">
