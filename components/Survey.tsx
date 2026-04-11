@@ -266,7 +266,7 @@ const Survey: React.FC = () => {
               'Học sinh, Sinh viên', 'Nhân viên văn phòng', 'Quản lý cấp trung (Quản lý, trưởng nhóm)',
               'Quản lý cấp cao (Giám đốc, phó giám đốc,...)', 'Freelancer (Lao động tự do)', 'Nội trợ/ chưa đi làm', 'Mục khác'
             ])}
-            {renderRadioGroup('income', 'A5. Thu nhập cá nhân trung bình hàng tháng của Anh/Chị là:', ['Dưới 5 triệu VNĐ', 'Từ 5 – 10 triệu VNĐ', 'Từ 10 – 20 triệu VNĐ', 'Trên 20 triệu VNĐ'])}
+            {renderRadioGroup('income', 'A5. Thu nhập cá nhân trung bình hàng tháng của Anh/Chị là:', ['Dưới 5 triệu VNĐ', 'Từ 5 – 10 triệu VNĐ', 'Từ 11 – 20 triệu VNĐ', 'Trên 20 triệu VNĐ'])}
 
             <div className={`bg-white p-6 rounded-lg border shadow-sm transition-all ${isInvalidGamification ? 'border-red-500 bg-red-50' : 'border-slate-200'}`}>
               <label className="text-base font-medium text-slate-800 block mb-2">
@@ -343,8 +343,8 @@ const Survey: React.FC = () => {
             </div>
 
             {renderLikertSection('Câu hỏi tình cảm môi trường', [
-              { field: 'sent_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả (dùng ít năng lượng hơn) của các phương tiện xanh dùng trong giao hàng chặng cuối' },
-              { field: 'sent_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải, ít gây ô nhiễm hơn,...) trong các phương tiện xanh dùng cho chặng giao hàng cuối cùng' },
+              { field: 'sent_q1', text: 'Q1. Tôi coi trọng việc sử dụng các sản phẩm không gây hại đến môi trường' },
+              { field: 'sent_q2', text: 'Q2. Thói quen mua sắm của tôi đã thay đổi kể từ khi tôi quan tâm hơn đến môi trường' },
               { field: 'sent_q3', text: 'Q3. Tôi lo ngại về việc lãng phí các nguồn tài nguyên của trái đất' },
               { field: 'sent_q4', text: 'Q4. Tôi cân nhắc đến những tác động tiềm ẩn đối với môi trường từ hành động của mình khi đưa ra các quyết định' },
               { field: 'sent_q5', text: 'Q5. Khi có sự lựa chọn giữa hai sản phẩm tương đương, tôi chọn sản phẩm ít gây hại hơn cho con người và môi trường' },
@@ -353,7 +353,7 @@ const Survey: React.FC = () => {
 
             {renderLikertSection('Câu hỏi kiến thức môi trường', [
               { field: 'know_q1', text: 'Q1. Tôi hiểu ý nghĩa của việc tiết kiệm năng lượng hiệu quả (dùng ít năng lượng hơn) của các phương tiện xanh dùng trong giao hàng chặng cuối' },
-              { field: 'know_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải) của phương tiện xanh trong giao hàng chặng cuối' },
+              { field: 'know_q2', text: 'Q2. Tôi hiểu ý nghĩa của tính thân thiện với môi trường (giúp giảm khí thải, ít gây ô nhiễm hơn,...) trong các phương tiện xanh dùng cho chặng giao hàng cuối cùng' },
               { field: 'know_q3', text: 'Q3. Tôi nhận thức được những tác động của biến đổi khí hậu đối với môi trường và con người' },
               { field: 'know_q4', text: 'Q4. Khi đọc mô tả sản phẩm, tôi có thể hiểu được liệu sản phẩm đó có gây hại cho môi trường hay không' },
               { field: 'know_q5', text: 'Q5. Tôi dễ dàng nhận biết được sản phẩm thân thiện với môi trường' }
