@@ -17,7 +17,7 @@ const Chat: React.FC = () => {
 
   return (
     <section className="space-y-3">
-      <h3 className="font-bold text-slate-800 text-sm uppercase tracking-tight px-1">Eco-Chat Community</h3>
+      <h3 className="font-bold text-slate-800 text-sm uppercase tracking-tight px-1">KHUNG CHAT CỘNG ĐỒNG</h3>
       <div className="bg-white rounded-sm shadow-sm flex flex-col h-64 border border-slate-50">
         <div className="flex-1 p-3 overflow-y-auto space-y-3 bg-slate-50/30">
           {messages.map(msg => (
