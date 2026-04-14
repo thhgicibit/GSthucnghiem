@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useAppContext } from '../AppContext';
 import { UserDemographics } from '../types';
-import { dataService, markSurveyStart } from '../dataService';
+import { dataService, markSurveyStart, debounce } from '../dataService';
 
 const Survey: React.FC = () => {
   const { setUserDemographics, setCurrentStep, userEmail } = useAppContext();
@@ -33,10 +33,20 @@ const Survey: React.FC = () => {
       localStorage.setItem('eco_s1_answers', JSON.stringify(next));
       return next;
     });
-    dataService.logSurvey1Response(userEmail, field, value, isLastQuestion);
-    // Nếu là câu cuối, xóa key start để không tái sử dụng nếu làm lại
+    // Text field (knownGame) dùng debounce riêng — không gọi postToSheet ở đây
+    if (field !== 'knownGame') {
+      dataService.logSurvey1Response(userEmail, field, value, isLastQuestion);
+    }
     if (isLastQuestion) localStorage.removeItem('tn_nc1_start');
   };
+
+  // Debounce 600ms cho A7 — chỉ gửi sau khi ngừng gõ, tránh spam request
+  const debouncedSendKnownGame = useMemo(
+    () => debounce((email: string, value: string) => {
+      dataService.logSurvey1Response(email, 'knownGame', value, false);
+    }, 600),
+    []
+  );
 
   const scrollToFirstError = () => {
     requestAnimationFrame(() => {
@@ -303,7 +313,18 @@ const Survey: React.FC = () => {
                 type="text"
                 placeholder="Câu trả lời của bạn"
                 value={answers.knownGame}
-                onChange={(e) => updateAnswer('knownGame', e.target.value)}
+                onChange={(e) => {
+                  // Cập nhật state + localStorage ngay lập tức (UI responsive)
+                  updateAnswer('knownGame', e.target.value);
+                  // Gửi lên sheet sau khi ngừng gõ 600ms
+                  debouncedSendKnownGame(userEmail, e.target.value);
+                }}
+                onBlur={(e) => {
+                  // Đảm bảo gửi giá trị cuối cùng khi rời khỏi ô (click Next, v.v.)
+                  if (e.target.value) {
+                    dataService.logSurvey1Response(userEmail, 'knownGame', e.target.value, false);
+                  }
+                }}
                 className={`w-full border-b-2 outline-none py-2 text-base transition-all ${isInvalidKnownGame ? 'border-red-400' : 'border-slate-200 focus:border-emerald-500'}`}
               />
             </div>
