@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 import { UserDemographics } from '../types';
-import { dataService, markSurveyStart, debounce } from '../dataService';
+import { dataService, markSurveyStart, flushQueue } from '../dataService';
 
 const Survey: React.FC = () => {
   const { setUserDemographics, setCurrentStep, userEmail } = useAppContext();
@@ -26,27 +26,17 @@ const Survey: React.FC = () => {
     };
   });
 
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Chỉ lưu localStorage — KHÔNG gửi sheet ngay
+  // Việc gửi sheet xảy ra khi bấm "Tiếp theo" qua batchLogSurvey1()
   const updateAnswer = (field: keyof UserDemographics, value: string) => {
-    const isLastQuestion = field === 'know_q5';
     setAnswers(prev => {
       const next = { ...prev, [field]: value };
       localStorage.setItem('eco_s1_answers', JSON.stringify(next));
       return next;
     });
-    // Text field (knownGame) dùng debounce riêng — không gọi postToSheet ở đây
-    if (field !== 'knownGame') {
-      dataService.logSurvey1Response(userEmail, field, value, isLastQuestion);
-    }
-    if (isLastQuestion) localStorage.removeItem('tn_nc1_start');
   };
-
-  // Debounce 600ms cho A7 — chỉ gửi sau khi ngừng gõ, tránh spam request
-  const debouncedSendKnownGame = useMemo(
-    () => debounce((email: string, value: string) => {
-      dataService.logSurvey1Response(email, 'knownGame', value, false);
-    }, 600),
-    []
-  );
 
   const scrollToFirstError = () => {
     requestAnimationFrame(() => {
@@ -72,28 +62,37 @@ const Survey: React.FC = () => {
     return false;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!isPageValid()) {
       setShowValidationErrors(true);
       scrollToFirstError();
       return;
     }
     setShowValidationErrors(false);
-    // Nếu người dùng chưa từng biết gamification → dừng khảo sát
-    // Các câu A1–A6 đã được ghi thời gian thực qua updateAnswer() rồi
-    // Chỉ cần gửi thêm end time để ghi cột thời gian làm
+
     if (currentPage === 1 && answers.gamificationExp === 'Chưa từng') {
-      dataService.logSurvey1End(userEmail);
+      setIsSyncing(true);
+      dataService.logSurvey1End(userEmail, answers as Record<string, string>);
+      await flushQueue();
+      setIsSyncing(false);
       localStorage.setItem('eco_completed', 'true');
       localStorage.removeItem('eco_s1_answers');
       localStorage.removeItem('eco_s1_page');
       setCurrentStep('thank_you');
       return;
     }
+
     if (currentPage < 2) {
+      // Batch gửi trang 1, không cần chờ flush — chuyển trang ngay
+      dataService.batchLogSurvey1(userEmail, answers as Record<string, string>, false);
       setCurrentPage(prev => { const n = prev + 1; localStorage.setItem('eco_s1_page', String(n)); return n; });
       window.scrollTo(0, 0);
     } else {
+      // Trang cuối — batch gửi + chờ flush xong mới chuyển
+      setIsSyncing(true);
+      dataService.batchLogSurvey1(userEmail, answers as Record<string, string>, true);
+      await flushQueue();
+      setIsSyncing(false);
       setUserDemographics(answers as UserDemographics);
       localStorage.removeItem('eco_s1_answers');
       localStorage.removeItem('eco_s1_page');
@@ -313,18 +312,7 @@ const Survey: React.FC = () => {
                 type="text"
                 placeholder="Câu trả lời của bạn"
                 value={answers.knownGame}
-                onChange={(e) => {
-                  // Cập nhật state + localStorage ngay lập tức (UI responsive)
-                  updateAnswer('knownGame', e.target.value);
-                  // Gửi lên sheet sau khi ngừng gõ 600ms
-                  debouncedSendKnownGame(userEmail, e.target.value);
-                }}
-                onBlur={(e) => {
-                  // Đảm bảo gửi giá trị cuối cùng khi rời khỏi ô (click Next, v.v.)
-                  if (e.target.value) {
-                    dataService.logSurvey1Response(userEmail, 'knownGame', e.target.value, false);
-                  }
-                }}
+                onChange={(e) => updateAnswer('knownGame', e.target.value)}
                 className={`w-full border-b-2 outline-none py-2 text-base transition-all ${isInvalidKnownGame ? 'border-red-400' : 'border-slate-200 focus:border-emerald-500'}`}
               />
             </div>
@@ -386,12 +374,18 @@ const Survey: React.FC = () => {
           <button onClick={handleBack} className="px-4 md:px-8 py-3 text-emerald-600 font-black text-sm md:text-base uppercase tracking-[0.1em] md:tracking-[0.2em] hover:bg-emerald-50 rounded-xl transition-all">← Quay lại</button>
           <button
             onClick={handleNext}
-            disabled={!isPageValid()}
-            className={`px-6 md:px-12 py-4 rounded-xl font-black uppercase text-sm md:text-base tracking-[0.1em] md:tracking-[0.2em] transition-all shadow-xl ${
-              isPageValid() ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95' : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+            disabled={!isPageValid() || isSyncing}
+            className={`px-6 md:px-12 py-4 rounded-xl font-black uppercase text-sm md:text-base tracking-[0.1em] md:tracking-[0.2em] transition-all shadow-xl flex items-center gap-2 ${
+              isPageValid() && !isSyncing ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95' : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
             }`}
           >
-            {currentPage === 2 ? 'Tiếp tục' : 'Tiếp theo →'}
+            {isSyncing && (
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+              </svg>
+            )}
+            {isSyncing ? 'Đang lưu...' : (currentPage === 2 ? 'Tiếp tục' : 'Tiếp theo →')}
           </button>
         </div>
       </div>
