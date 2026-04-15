@@ -1,16 +1,26 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 import { UserDemographics } from '../types';
-import { dataService, markSurveyStart } from '../dataService';
+import { dataService, markSurveyStart, debounce, flushPendingQueue } from '../dataService';
 
 const Survey: React.FC = () => {
   const { setUserDemographics, setCurrentStep, userEmail } = useAppContext();
   // Ghi nhận thời điểm bắt đầu làm NC1 (chỉ ghi lần đầu, không ghi đè)
+  // [FIX 2] Flush các request tồn đọng từ lần load trang trước
   React.useEffect(() => {
+    flushPendingQueue();
     if (!localStorage.getItem('tn_nc1_start')) {
       markSurveyStart('tn_nc1_start');
     }
   }, []);
+
+  // [FIX 3] Debounce riêng cho trường text knownGame — chỉ gửi sau 500ms dừng gõ
+  const debouncedLogKnownGame = React.useMemo(
+    () => debounce((email: string, value: string) => {
+      dataService.logSurvey1Response(email, 'knownGame', value, false);
+    }, 500),
+    []
+  );
 
   const [currentPage, setCurrentPage] = useState(() => {
     return Number(localStorage.getItem('eco_s1_page') || '1');
@@ -33,7 +43,10 @@ const Survey: React.FC = () => {
       localStorage.setItem('eco_s1_answers', JSON.stringify(next));
       return next;
     });
-    dataService.logSurvey1Response(userEmail, field, value, isLastQuestion);
+    // [FIX 3] knownGame dùng debounced log riêng để tránh gửi mỗi keystroke
+    if (field !== 'knownGame') {
+      dataService.logSurvey1Response(userEmail, field, value, isLastQuestion);
+    }
     // Nếu là câu cuối, xóa key start để không tái sử dụng nếu làm lại
     if (isLastQuestion) localStorage.removeItem('tn_nc1_start');
   };
@@ -303,7 +316,10 @@ const Survey: React.FC = () => {
                 type="text"
                 placeholder="Câu trả lời của bạn"
                 value={answers.knownGame}
-                onChange={(e) => updateAnswer('knownGame', e.target.value)}
+                onChange={(e) => {
+                  updateAnswer('knownGame', e.target.value);
+                  debouncedLogKnownGame(userEmail, e.target.value);
+                }}
                 className={`w-full border-b-2 outline-none py-2 text-base transition-all ${isInvalidKnownGame ? 'border-red-400' : 'border-slate-200 focus:border-emerald-500'}`}
               />
             </div>
