@@ -5,7 +5,7 @@ const STORAGE_KEY_RECORDS     = 'greenscore_survey_records';
 const STORAGE_KEY_LEADERBOARD = 'greenscore_leaderboard';
 const STORAGE_KEY_PENDING     = 'greenscore_pending_queue'; // [FIX 2] queue bền vững
 const GOOGLE_SHEET_WEBAPP_URL: string =
-  'https://script.google.com/macros/s/AKfycbyoFngpKQnTCMAm8GFeh1oF_J3Qu52ZJcZV1pIKiIXSwWsX7Po9CCOsjgX4WqnQKEM8/exec';
+  'https://script.google.com/macros/s/AKfycbxTwblF3OT66TUFn1weHa25rRKSlIQLVJ_00iDrI8mLJDb010wG9IlDFltkZWioSf2x/exec';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // [FIX 2] Pending queue bền vững — lưu vào localStorage trước khi gửi,
