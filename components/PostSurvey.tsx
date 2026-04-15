@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
-import { dataService, markSurveyStart } from '../dataService';
+import { dataService, markSurveyStart, flushQueue } from '../dataService';
 
 const PostSurvey: React.FC = () => {
   const { setCurrentStep, lastSimulationStep, userEmail } = useAppContext();
@@ -120,11 +120,10 @@ const PostSurvey: React.FC = () => {
   const COL_W = 56;
   const TOTAL_W = COL_W * 5;
 
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Chỉ lưu localStorage — KHÔNG gửi sheet ngay
   const handleSelect = (questionId: string, value: string) => {
-    // AC1 và AC2 ghi vào sheet như câu hỏi thường để phục vụ lọc mẫu khi phân tích
-    const isLastQuestion = questionId === 'GLI3';
-    dataService.logSurvey2Response(userEmail, questionId, value, isLastQuestion);
-    if (isLastQuestion) localStorage.removeItem('tn_nc2_start');
     setAnswers(prev => {
       const next = { ...prev, [questionId]: value };
       localStorage.setItem('eco_s2_answers', JSON.stringify(next));
@@ -132,14 +131,13 @@ const PostSurvey: React.FC = () => {
     });
   };
 
-  // Tổng câu = tất cả câu trong sections + 2 attention check
   const isComplete = () => {
     const totalSurveyQ = sections.reduce((acc, s) => acc + s.questions.length, 0);
-    const totalQ = totalSurveyQ + 2; // +AC1 +AC2
+    const totalQ = totalSurveyQ + 2;
     return Object.keys(answers).filter(k => answers[k] !== '').length >= totalQ;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!isComplete()) {
       setShowValidationErrors(true);
       requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -148,6 +146,11 @@ const PostSurvey: React.FC = () => {
       }));
       return;
     }
+    // Batch gửi toàn bộ answers + chờ flush xong mới chuyển trang
+    setIsSyncing(true);
+    dataService.batchLogSurvey2(userEmail, answers);
+    await flushQueue();
+    setIsSyncing(false);
     localStorage.setItem('eco_completed', 'true');
     localStorage.removeItem('eco_s2_answers');
     setCurrentStep('thank_you');
@@ -395,12 +398,19 @@ const PostSurvey: React.FC = () => {
           <button onClick={handleBack} className="px-4 md:px-8 py-3 text-emerald-600 font-black text-sm md:text-base uppercase tracking-[0.1em] md:tracking-[0.2em] hover:bg-emerald-50 rounded-xl transition-all">← Quay lại</button>
           <button
             onClick={handleSubmit}
-            className={`px-6 md:px-12 py-4 rounded-xl font-black uppercase text-sm md:text-base tracking-[0.1em] md:tracking-[0.2em] transition-all shadow-xl
-              ${isComplete()
+            disabled={isSyncing}
+            className={`px-6 md:px-12 py-4 rounded-xl font-black uppercase text-sm md:text-base tracking-[0.1em] md:tracking-[0.2em] transition-all shadow-xl flex items-center gap-2
+              ${isComplete() && !isSyncing
                 ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95'
-                : 'bg-slate-200 text-slate-400 shadow-none'}`}
+                : 'bg-slate-200 text-slate-400 shadow-none cursor-not-allowed'}`}
           >
-            Gửi
+            {isSyncing && (
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+              </svg>
+            )}
+            {isSyncing ? 'Đang lưu...' : 'Gửi'}
           </button>
         </div>
       </div>
