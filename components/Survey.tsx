@@ -274,7 +274,7 @@ const Survey: React.FC = () => {
           <div className="animate-slideUp space-y-4">
             {renderRadioGroup('gender', 'A1. Giới tính của Anh/Chị là:', ['Nam', 'Nữ'])}
             {renderRadioGroup('age', 'A2. Độ tuổi của Anh/Chị là:', ['18 – 24', '25 – 30', '31 – 35', '36 – 40', 'Trên 40'])}
-            {renderRadioGroup('education', 'A3. Trình độ học vấn cao nhất của Anh/Chị là:', ['Dưới trung học phổ thông', 'Cao đẳng/ Đại học', 'Sau đại học'])}
+            {renderRadioGroup('education', 'A3. Trình độ học vấn cao nhất của Anh/Chị là:', ['Từ trung học phổ thông trở xuống', 'Cao đẳng/ Đại học', 'Sau đại học'])}
             {renderRadioGroup('job', 'A4. Loại hình nghề nghiệp/ Vị trí công việc hiện tại của Anh/Chị là:', [
               'Học sinh, Sinh viên', 'Nhân viên văn phòng', 'Quản lý cấp trung (Quản lý, trưởng nhóm)',
               'Quản lý cấp cao (Giám đốc, phó giám đốc,...)', 'Freelancer (Lao động tự do)', 'Nội trợ/ chưa đi làm', 'Mục khác'
@@ -309,7 +309,7 @@ const Survey: React.FC = () => {
 
             <div className={`bg-white p-6 rounded-lg border shadow-sm transition-all ${isInvalidKnownGame ? 'border-red-500 bg-red-50' : 'border-slate-200'}`}>
               <label className="text-base font-medium text-slate-800 block mb-4">
-                A7. Hãy kể tên một game mà bạn đã từng chơi/biết hoặc đã từng thấy: <span className="text-red-500">*</span>
+                A7. Hãy kể tên một game tích hợp trong các ứng dụng mua sắm/học tập/sức khỏe/... mà bạn đã từng chơi/biết hoặc đã từng thấy: <span className="text-red-500">*</span>
               </label>
               {isInvalidKnownGame && <p className="text-red-500 text-xs font-bold mb-2 uppercase tracking-wider">Vui lòng nhập câu trả lời</p>}
               <input
