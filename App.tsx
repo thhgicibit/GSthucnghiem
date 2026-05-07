@@ -75,6 +75,7 @@ const MainContent: React.FC = () => {
                 <span className="inline-block bg-emerald-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase mt-2 shadow-sm">+10 💧</span>
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed">Sử dụng hộp giấy tái chế và băng keo sinh học. Giảm ~{activeProduct?.packagingWasteSaved || 50}g rác thải nhựa đóng gói.</p>
+              <p className="text-sm font-black text-emerald-600">+3.000đ</p>
             </div>
             <div onClick={() => setSelectedPackaging('standard')} className={`p-6 border-2 rounded-3xl cursor-pointer transition-all flex flex-col items-center text-center space-y-4 ${selectedPackaging === 'standard' ? 'border-slate-800 bg-slate-50 shadow-lg scale-105' : 'border-slate-100 hover:border-slate-200 bg-white'}`}>
               <div className="text-5xl">📦</div>
