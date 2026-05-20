@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAppContext } from '../AppContext';
 import { dataService } from '../dataService';
@@ -94,6 +93,10 @@ const Checkout: React.FC = () => {
     if (selectedLogistics === 'standard') return 22000;
     if (selectedLogistics === 'fast') return 35000;
     return 0;
+  };
+
+  const getPackagingFee = () => {
+    return selectedPackaging === 'green' ? 3000 : 0;
   };
 
   const formatPrice = (amount: number) => {
@@ -201,9 +204,15 @@ const Checkout: React.FC = () => {
           <span className="text-slate-800 font-bold">{formatPrice(activeProduct?.price || 0)}</span>
           <span className="text-slate-400 font-bold uppercase text-[9px] md:text-[10px] tracking-widest self-center">Phí ship:</span>
           <span className="text-slate-800 font-bold">{formatPrice(getShippingFee())}</span>
+          {selectedPackaging === 'green' && (
+            <>
+              <span className="text-slate-400 font-bold uppercase text-[9px] md:text-[10px] tracking-widest self-center">Bao bì xanh:</span>
+              <span className="text-slate-800 font-bold">{formatPrice(getPackagingFee())}</span>
+            </>
+          )}
           <div className="col-span-2 border-t border-slate-100 my-1 md:my-2"></div>
           <span className="text-slate-800 font-black text-base md:text-lg uppercase tracking-tighter self-center">Tổng:</span>
-          <span className="text-2xl md:text-3xl text-emerald-600 font-black tracking-tighter">{formatPrice((activeProduct?.price || 0) + getShippingFee())}</span>
+          <span className="text-2xl md:text-3xl text-emerald-600 font-black tracking-tighter">{formatPrice((activeProduct?.price || 0) + getShippingFee() + getPackagingFee())}</span>
         </div>
         <div className="flex flex-row space-x-4 w-full justify-center md:justify-end">
           <button onClick={() => { setActiveProduct(null); setCurrentStep('shop'); }} className="px-4 md:px-8 py-4 text-slate-400 font-black uppercase text-[9px] md:text-[10px] tracking-widest hover:text-slate-600">Hủy</button>
