@@ -2,23 +2,23 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 import { dataService } from './dataService';
 import { UserDemographics } from './types';
 
-// Danh hiệu có thể chọn
+// Selectable titles
 export const AVAILABLE_TITLES = [
-  { id: 'eco_warrior',   label: '🌿 Chiến binh xanh' },
-  { id: 'earth_lover',   label: '🌍 Người yêu trái đất' },
-  { id: 'green_buyer',   label: '🛒 Người mua sắm xanh' },
-  { id: 'eco_pioneer',   label: '🚀 Tiên phong xanh' },
-  { id: 'nature_guard',  label: '🦋 Người bảo vệ thiên nhiên' },
-  { id: 'zero_waste',    label: '♻️ Sống không rác' },
-  { id: 'green_rookie',  label: '🌱 Tân binh xanh' },
-  { id: 'eco_legend',    label: '👑 Huyền thoại xanh' },
+  { id: 'eco_warrior',   label: '🌿 Green Warrior' },
+  { id: 'earth_lover',   label: '🌍 Earth Lover' },
+  { id: 'green_buyer',   label: '🛒 Green Shopper' },
+  { id: 'eco_pioneer',   label: '🚀 Green Pioneer' },
+  { id: 'nature_guard',  label: '🦋 Nature Guardian' },
+  { id: 'zero_waste',    label: '♻️ Zero Waste Living' },
+  { id: 'green_rookie',  label: '🌱 Green Rookie' },
+  { id: 'eco_legend',    label: '👑 Green Legend' },
 ];
 
-// Nhãn mô tả bản thân
+// Self-description tags
 export const AVAILABLE_TAGS = [
-  '🌱 Mới bắt đầu', '♻️ Tái chế mỗi ngày', '🚴 Di chuyển xanh',
-  '🥦 Ăn thuần chay', '💡 Tiết kiệm năng lượng', '🧴 Không nhựa dùng 1 lần',
-  '🌳 Trồng cây', '🛍️ Mua sắm có ý thức', '🐾 Bảo vệ động vật',
+  '🌱 Just Getting Started', '♻️ Recycling Daily', '🚴 Green Commuting',
+  '🥦 Plant-Based Diet', '💡 Saving Energy', '🧴 No Single-Use Plastic',
+  '🌳 Planting Trees', '🛍️ Mindful Shopping', '🐾 Protecting Animals',
 ];
 
 interface UserProfile {
@@ -52,7 +52,7 @@ interface AppContextType {
   wateringCount: number;
   leaderboard: any[];
   refreshLeaderboard: () => void;
-  // Profile tự thể hiện
+  // Self-expression profile
   userProfile: UserProfile;
   setUserProfile: (profile: UserProfile) => void;
 }

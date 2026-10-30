@@ -3,13 +3,13 @@ import { SurveyRecord } from './types';
 
 const STORAGE_KEY_RECORDS     = 'greenscore_survey_records';
 const STORAGE_KEY_LEADERBOARD = 'greenscore_leaderboard';
-const STORAGE_KEY_PENDING     = 'greenscore_pending_queue'; // [FIX 2] queue bền vững
+const STORAGE_KEY_PENDING     = 'greenscore_pending_queue'; // [FIX 2] persistent queue
 const GOOGLE_SHEET_WEBAPP_URL: string =
   'https://script.google.com/macros/s/AKfycbxTwblF3OT66TUFn1weHa25rRKSlIQLVJ_00iDrI8mLJDb010wG9IlDFltkZWioSf2x/exec';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// [FIX 2] Pending queue bền vững — lưu vào localStorage trước khi gửi,
-// xóa sau khi gửi thành công. Khi trang load lại, flush lại phần còn tồn đọng.
+// [FIX 2] Persistent pending queue — saved to localStorage before sending,
+// removed after a successful send. On page reload, any leftover items are flushed again.
 // ─────────────────────────────────────────────────────────────────────────────
 function getPendingQueue(): { id: string; payload: object }[] {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY_PENDING) || '[]'); } catch { return []; }
@@ -27,12 +27,12 @@ function removePending(id: string) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Queue tuần tự in-memory — đảm bảo mỗi request chờ request trước hoàn thành.
+// Sequential in-memory queue — ensures each request waits for the previous one to complete.
 // ─────────────────────────────────────────────────────────────────────────────
 let _sendQueue: Promise<void> = Promise.resolve();
 
-// [FIX 1] Chuyển sang mode: 'cors' để có thể đọc response và phát hiện lỗi.
-// [FIX 1] Thêm retry tối đa 3 lần với backoff khi thất bại.
+// [FIX 1] Switched to mode: 'cors' so the response can be read and errors detected.
+// [FIX 1] Added up to 3 retries with backoff on failure.
 const sendWithRetry = async (url: string, retries = 3): Promise<void> => {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -40,13 +40,13 @@ const sendWithRetry = async (url: string, retries = 3): Promise<void> => {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       if (json.status !== 'ok') throw new Error(json.message || 'status not ok');
-      return; // thành công
+      return; // success
     } catch (err) {
-      console.warn(`[dataService] Lần thử ${attempt}/${retries} thất bại:`, err);
+      console.warn(`[dataService] Attempt ${attempt}/${retries} failed:`, err);
       if (attempt < retries) {
-        await new Promise(r => setTimeout(r, 500 * attempt)); // backoff 0.5s, 1s, 1.5s
+        await new Promise(r => setTimeout(r, 500 * attempt)); // backoff: 0.5 s, 1 s, 1.5 s
       } else {
-        throw err; // đã hết retry, ném lỗi để caller xử lý
+        throw err; // retries exhausted; rethrow so the caller can handle it
       }
     }
   }
@@ -54,38 +54,38 @@ const sendWithRetry = async (url: string, retries = 3): Promise<void> => {
 
 const postToSheet = (payload: object): Promise<void> => {
   const id = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-  addPending(id, payload); // [FIX 2] lưu trước khi gửi
+  addPending(id, payload); // [FIX 2] save before sending
 
   _sendQueue = _sendQueue.then(async () => {
     if (!GOOGLE_SHEET_WEBAPP_URL) { removePending(id); return; }
     const url = GOOGLE_SHEET_WEBAPP_URL + '?data=' + encodeURIComponent(JSON.stringify(payload));
     try {
       await sendWithRetry(url);
-      removePending(id); // [FIX 2] xóa sau khi gửi thành công
+      removePending(id); // [FIX 2] remove after a successful send
     } catch (err) {
-      console.error('[dataService] Gửi thất bại sau tất cả retry, giữ lại trong pending:', err);
-      // payload vẫn còn trong localStorage để flush khi load lại trang
+      console.error('[dataService] Send failed after all retries; keeping in pending queue:', err);
+      // payload remains in localStorage to be flushed on the next page load
     }
   });
   return _sendQueue;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// [FIX 2] Flush pending queue khi trang được load lại
-// Gọi hàm này một lần khi app khởi động (trong index.tsx hoặc App.tsx)
+// [FIX 2] Flush the pending queue when the page is reloaded
+// Call this once at app start-up (in index.tsx or App.tsx)
 // ─────────────────────────────────────────────────────────────────────────────
 export const flushPendingQueue = (): void => {
   const pending = getPendingQueue();
   if (pending.length === 0) return;
-  console.log(`[dataService] Phát hiện ${pending.length} request tồn đọng, đang gửi lại...`);
+  console.log(`[dataService] Found ${pending.length} pending request(s); resending...`);
   for (const item of pending) {
-    postToSheet(item.payload); // postToSheet sẽ add lại vào pending rồi tự xóa khi thành công
-    removePending(item.id);    // xóa bản ghi cũ (postToSheet tạo id mới)
+    postToSheet(item.payload); // postToSheet re-adds it to pending and removes it itself on success
+    removePending(item.id);    // remove the old record (postToSheet creates a new id)
   }
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// [FIX 3] Debounce helper — dùng cho trường text (knownGame)
+// [FIX 3] Debounce helper — used for the free-text field (knownGame)
 // ─────────────────────────────────────────────────────────────────────────────
 export function debounce<T extends (...args: Parameters<T>) => void>(fn: T, delay: number): T {
   let timer: ReturnType<typeof setTimeout>;
@@ -95,7 +95,7 @@ export function debounce<T extends (...args: Parameters<T>) => void>(fn: T, dela
   }) as T;
 }
 
-// ─── Ghi nhận thời điểm bắt đầu làm từng phần ───────────────────────────────
+// ─── Record the start time of each section ───────────────────────────────
 export const markSurveyStart = (key: string) => {
   localStorage.setItem(key, new Date().toISOString());
 };
@@ -107,12 +107,12 @@ export const getSurveyStart = (key: string): string | null => {
 export const dataService = {
 
   // ───────────────────────────────────────────────────────────────────────────
-  // NGHIÊN CỨU 1
+  // STUDY 1
   // ───────────────────────────────────────────────────────────────────────────
   logSurvey1End: async (userEmail: string): Promise<void> => {
     const startTime = localStorage.getItem('tn_nc1_start') || undefined;
     const endTime = new Date().toISOString();
-    console.log('[NC1] Kết thúc sớm — ghi thời gian làm');
+    console.log('[S1] Early termination — logging completion time');
     await postToSheet({
       type: 'nghien_cuu_1',
       timestamp: endTime,
@@ -131,10 +131,10 @@ export const dataService = {
     value: string,
     isLast = false
   ): Promise<void> => {
-    // [FIX 4] Chỉ đính kèm startTime/endTime ở request cuối cùng
+    // [FIX 4] Attach startTime/endTime only to the final request
     const startTime = isLast ? (localStorage.getItem('tn_nc1_start') || undefined) : undefined;
     const endTime   = isLast ? new Date().toISOString() : undefined;
-    console.log(`[NC1] ${questionId}: ${value}`);
+    console.log(`[S1] ${questionId}: ${value}`);
     await postToSheet({
       type:      'nghien_cuu_1',
       timestamp: new Date().toISOString(),
@@ -147,7 +147,7 @@ export const dataService = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // MÔ PHỎNG
+  // SIMULATION
   // ───────────────────────────────────────────────────────────────────────────
   logSimulationOrder: async (
     userEmail: string,
@@ -177,7 +177,7 @@ export const dataService = {
       standard: 'Đóng gói tiêu chuẩn',
     };
 
-    console.log(`[MPS] Đặt hàng: ${productId} | ${logisticsType} | ${packagingType}`);
+    console.log(`[SIM] Order placed: ${productId} | ${logisticsType} | ${packagingType}`);
     await postToSheet({
       type: 'mo_phong',
       timestamp: new Date().toISOString(),
@@ -193,7 +193,7 @@ export const dataService = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // NGHIÊN CỨU 2
+  // STUDY 2
   // ───────────────────────────────────────────────────────────────────────────
   logSurvey2Response: async (
     userEmail: string,
@@ -201,10 +201,10 @@ export const dataService = {
     value: string,
     isLast = false
   ): Promise<void> => {
-    // [FIX 4] Chỉ đính kèm startTime/endTime ở request cuối cùng
+    // [FIX 4] Attach startTime/endTime only to the final request
     const startTime = isLast ? (localStorage.getItem('tn_nc2_start') || undefined) : undefined;
     const endTime   = isLast ? new Date().toISOString() : undefined;
-    console.log(`[NC2] ${questionId}: ${value}`);
+    console.log(`[S2] ${questionId}: ${value}`);
     await postToSheet({
       type:      'nghien_cuu_2',
       timestamp: new Date().toISOString(),
@@ -217,7 +217,7 @@ export const dataService = {
   },
 
   // ───────────────────────────────────────────────────────────────────────────
-  // Lưu trữ local
+  // Local storage
   // ───────────────────────────────────────────────────────────────────────────
   saveChoice: async (record: SurveyRecord, finalScore: number): Promise<void> => {
     const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS) || '[]');

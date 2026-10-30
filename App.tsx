@@ -40,10 +40,10 @@ const MainContent: React.FC = () => {
       return (
         <div className="space-y-6 animate-slideUp">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-4 gap-2">
-            <h1 className="text-xl font-bold text-slate-800">Cộng Đồng ĐIỂM XANH</h1>
+            <h1 className="text-xl font-bold text-slate-800">GREEN SCORE Community</h1>
             <div className="flex space-x-4">
-              <button onClick={() => setCurrentStep('shop')} className="text-emerald-600 font-bold text-sm hover:underline">Quay lại mua sắm →</button>
-              <button onClick={() => setCurrentStep('post_survey')} className="bg-emerald-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all">Khảo sát & Hoàn tất</button>
+              <button onClick={() => setCurrentStep('shop')} className="text-emerald-600 font-bold text-sm hover:underline">Back to shopping →</button>
+              <button onClick={() => setCurrentStep('post_survey')} className="bg-emerald-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all">Survey & Finish</button>
             </div>
           </div>
           <Leaderboard />
@@ -62,32 +62,32 @@ const MainContent: React.FC = () => {
     if (currentStep === 'packaging') {
       return (
         <div className="bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-slate-100 animate-slideUp">
-          <button onClick={() => setCurrentStep('shop')} className="mb-6 text-emerald-600 text-sm font-bold flex items-center hover:translate-x-[-4px] transition-all">← Trở lại sản phẩm</button>
+          <button onClick={() => setCurrentStep('shop')} className="mb-6 text-emerald-600 text-sm font-bold flex items-center hover:translate-x-[-4px] transition-all">← Back to products</button>
           <div className="text-center mb-10">
-            <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Chọn Hình Thức Đóng Gói</h2>
-            <p className="text-sm text-slate-400 mt-2">Góp phần bảo vệ môi trường từ bước đóng gói</p>
+            <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Choose Packaging Option</h2>
+            <p className="text-sm text-slate-400 mt-2">Help protect the environment starting from packaging</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             <div onClick={() => setSelectedPackaging('green')} className={`p-6 border-2 rounded-3xl cursor-pointer transition-all flex flex-col items-center text-center space-y-4 ${selectedPackaging === 'green' ? 'border-emerald-500 bg-emerald-50 shadow-lg scale-105' : 'border-slate-100 hover:border-emerald-200 bg-white'}`}>
               <div className="text-5xl">📦🍃</div>
               <div>
-                <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest">Bao bì xanh</h3>
+                <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest">Green packaging</h3>
                 <span className="inline-block bg-emerald-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase mt-2 shadow-sm">+10 💧</span>
               </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed">Sử dụng hộp giấy tái chế và băng keo sinh học. Giảm ~{activeProduct?.packagingWasteSaved || 50}g rác thải nhựa đóng gói.</p>
-              <p className="text-sm font-black text-emerald-600">+3.000đ</p>
+              <p className="text-[11px] text-slate-500 leading-relaxed">Uses recycled paper boxes and biodegradable tape. Reduces ~{activeProduct?.packagingWasteSaved || 50}g of plastic packaging waste.</p>
+              <p className="text-sm font-black text-emerald-600">+₫3,000</p>
             </div>
             <div onClick={() => setSelectedPackaging('standard')} className={`p-6 border-2 rounded-3xl cursor-pointer transition-all flex flex-col items-center text-center space-y-4 ${selectedPackaging === 'standard' ? 'border-slate-800 bg-slate-50 shadow-lg scale-105' : 'border-slate-100 hover:border-slate-200 bg-white'}`}>
               <div className="text-5xl">📦</div>
               <div>
-                <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest">Đóng gói tiêu chuẩn</h3>
+                <h3 className="font-black text-slate-800 text-sm uppercase tracking-widest">Standard packaging</h3>
                 <span className="inline-block bg-slate-200 text-slate-500 text-[9px] font-black px-3 py-1 rounded-full uppercase mt-2">0 💧</span>
               </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed">Đóng gói theo quy trình thông thường bằng hộp carton và màng bọc plastic.</p>
+              <p className="text-[11px] text-slate-500 leading-relaxed">Packed using the usual process with cardboard boxes and plastic wrap.</p>
             </div>
           </div>
           <div className="mt-12 flex justify-center">
-            <button onClick={() => setCurrentStep('checkout')} disabled={!selectedPackaging} className={`px-16 py-4 rounded-xl font-black uppercase text-xs tracking-[0.2em] shadow-xl transition-all ${selectedPackaging ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}>Tiếp tục thanh toán</button>
+            <button onClick={() => setCurrentStep('checkout')} disabled={!selectedPackaging} className={`px-16 py-4 rounded-xl font-black uppercase text-xs tracking-[0.2em] shadow-xl transition-all ${selectedPackaging ? 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-95' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}>Continue to checkout</button>
           </div>
         </div>
       );
@@ -109,45 +109,45 @@ const MainContent: React.FC = () => {
             <span className="text-5xl">💧</span>
           </div>
           <div className="space-y-4">
-            <h1 className="text-2xl font-black text-slate-800 tracking-tight uppercase">Chúc mừng bạn!</h1>
+            <h1 className="text-2xl font-black text-slate-800 tracking-tight uppercase">Congratulations!</h1>
             
             <div className="bg-emerald-50/50 p-6 rounded-3xl border border-emerald-100 text-left space-y-4">
               <p className="text-sm md:text-base text-slate-700 leading-relaxed">
-                Với hoạt động mua sắm xanh của bạn hôm nay đã tích lũy thêm <span className="font-black text-emerald-600">{totalEarned} điểm xanh</span>. 
+                Your green shopping today has earned you an additional <span className="font-black text-emerald-600">{totalEarned} green points</span>. 
               </p>
               <ul className="space-y-2 text-[13px] md:text-sm text-slate-600 font-medium">
                 {mainWasteSaved > 0 && (
                   <li className="flex items-center space-x-2">
                     <span className="text-emerald-500">✔</span>
-                    <span>Bạn đã góp phần làm giảm được <span className="text-emerald-600 font-bold">{mainWasteSaved}g rác thải {activeProduct?.wasteType}</span>.</span>
+                    <span>You helped reduce <span className="text-emerald-600 font-bold">{mainWasteSaved}g of {activeProduct?.wasteType} waste</span>.</span>
                   </li>
                 )}
                 {selectedPackaging === 'green' && (
                   <li className="flex items-center space-x-2">
                     <span className="text-emerald-500">✔</span>
-                    <span>Giảm <span className="text-emerald-600 font-bold">{packagingWasteSaved}g nhựa</span> từ bao bì thân thiện môi trường.</span>
+                    <span>Reduced <span className="text-emerald-600 font-bold">{packagingWasteSaved}g of plastic</span> through eco-friendly packaging.</span>
                   </li>
                 )}
                 {fuelSaved > 0 && (
                   <li className="flex items-center space-x-2">
                     <span className="text-emerald-500">✔</span>
-                    <span>Giảm tiêu thụ <span className="text-emerald-600 font-bold">{fuelSaved.toFixed(2)} lít nhiên liệu hóa thạch</span> cho Trái Đất.</span>
+                    <span>Reduced consumption of <span className="text-emerald-600 font-bold">{fuelSaved.toFixed(2)} liters of fossil fuel</span> for the Earth.</span>
                   </li>
                 )}
                 <li className="flex items-center space-x-2">
                   <span className="text-emerald-500">✔</span>
-                  <span>Bạn đã góp thêm <span className="text-emerald-600 font-bold">{totalEarned} giọt nước</span> vào dự án trồng rừng.</span>
+                  <span>You contributed an additional <span className="text-emerald-600 font-bold">{totalEarned} water drops</span> to the reforestation project.</span>
                 </li>
               </ul>
             </div>
             
-            <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">Hành động của bạn đang trực tiếp tạo nên một tương lai bền vững hơn!</p>
+            <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">Your actions are directly helping to build a more sustainable future!</p>
           </div>
 
           <div className="pt-6 flex flex-col md:flex-row items-center justify-center gap-4">
-            <button onClick={() => setCurrentStep('post_survey')} className="w-full md:w-auto px-10 py-5 bg-emerald-600 text-white rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-emerald-700 active:scale-95 transition-all shadow-lg shadow-emerald-100">Khảo sát & Hoàn tất</button>
-            <button onClick={() => setCurrentStep('social')} className="w-full md:w-auto px-10 py-5 bg-white border border-slate-200 text-slate-700 rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-slate-50 active:scale-95 transition-all shadow-sm">BXH & Cộng đồng</button>
-            <button onClick={resetFlow} className="w-full md:w-auto px-10 py-5 bg-white border border-emerald-200 text-emerald-700 rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-emerald-50 active:scale-95 transition-all shadow-sm">🛒 Tiếp tục mua sắm</button>
+            <button onClick={() => setCurrentStep('post_survey')} className="w-full md:w-auto px-10 py-5 bg-emerald-600 text-white rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-emerald-700 active:scale-95 transition-all shadow-lg shadow-emerald-100">Survey & Finish</button>
+            <button onClick={() => setCurrentStep('social')} className="w-full md:w-auto px-10 py-5 bg-white border border-slate-200 text-slate-700 rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-slate-50 active:scale-95 transition-all shadow-sm">Leaderboard & Community</button>
+            <button onClick={resetFlow} className="w-full md:w-auto px-10 py-5 bg-white border border-emerald-200 text-emerald-700 rounded-2xl font-black text-[12px] uppercase tracking-widest hover:bg-emerald-50 active:scale-95 transition-all shadow-sm">🛒 Continue shopping</button>
           </div>
         </div>
       );
@@ -160,7 +160,7 @@ const MainContent: React.FC = () => {
     if (activeProduct) {
       return (
         <div className="animate-slideUp">
-           <button onClick={() => setActiveProduct(null)} className="mb-4 text-emerald-600 text-sm font-bold flex items-center hover:translate-x-[-4px] transition-transform">← Quay lại danh sách</button>
+           <button onClick={() => setActiveProduct(null)} className="mb-4 text-emerald-600 text-sm font-bold flex items-center hover:translate-x-[-4px] transition-transform">← Back to list</button>
            <div className="bg-white p-4 md:p-8 rounded-xl shadow-sm border border-slate-100">
               <div className="flex flex-col md:flex-row gap-6 md:gap-12">
                 <div className="w-full md:w-1/2"><img src={activeProduct.image} className="w-full aspect-square object-cover rounded-xl shadow-inner border border-slate-100" alt={activeProduct.name} /></div>
@@ -168,28 +168,28 @@ const MainContent: React.FC = () => {
                   <div className="flex items-center space-x-3"><span className="text-sm font-bold text-slate-400">{activeProduct.shopName}</span></div>
                   <h1 className="text-2xl font-bold text-slate-800 leading-tight">{activeProduct.name}</h1>
                   <div className="bg-slate-50 p-4 md:p-6 rounded-xl flex items-center justify-between">
-                     <span className="text-slate-800 text-2xl md:text-3xl font-black">₫{activeProduct.price.toLocaleString('vi-VN')}</span>
+                     <span className="text-slate-800 text-2xl md:text-3xl font-black">₫{activeProduct.price.toLocaleString('en-US')}</span>
                      {activeProduct.isGreen && (
                         <div className="text-right">
                            <p className="text-emerald-600 font-black text-xl">+{activeProduct.greenPoints} 💧</p>
-                           <p className="text-[9px] text-emerald-700 uppercase font-black tracking-tighter">Thưởng lựa chọn xanh</p>
+                           <p className="text-[9px] text-emerald-700 uppercase font-black tracking-tighter">Green choice bonus</p>
                         </div>
                      )}
                   </div>
                   <div className="space-y-4 pt-4">
                     <div className="flex justify-between items-center text-sm pb-4 border-b border-slate-50">
-                      <span className="text-slate-400">Chất liệu cấu tạo</span>
+                      <span className="text-slate-400">Material</span>
                       <span className={`font-bold ${activeProduct.isGreen ? 'text-emerald-600' : 'text-slate-700'}`}>{activeProduct.material}</span>
                     </div>
                     {activeProduct.isGreen && (
                       <div className="bg-emerald-50 p-3 rounded-lg flex items-start space-x-2">
                         <span className="text-lg">🍃</span>
-                        <p className="text-[11px] text-emerald-800 leading-tight">Giúp giảm trực tiếp <span className="font-bold">{activeProduct.wasteSaved}g</span> rác thải {activeProduct.wasteType} khi sử dụng sản phẩm này.</p>
+                        <p className="text-[11px] text-emerald-800 leading-tight">Directly helps reduce <span className="font-bold">{activeProduct.wasteSaved}g</span> of {activeProduct.wasteType} waste when you use this product.</p>
                       </div>
                     )}
-                    <div className="text-sm leading-relaxed text-slate-500">{activeProduct.isGreen ? 'Sản phẩm đáp ứng tiêu chuẩn bền vững, ưu tiên nguyên liệu tái chế và giảm thiểu rác thải.' : 'Sản phẩm sản xuất theo quy trình công nghiệp tiêu chuẩn.'}</div>
+                    <div className="text-sm leading-relaxed text-slate-500">{activeProduct.isGreen ? 'Product meets sustainability standards, prioritizing recycled materials and waste reduction.' : 'Product manufactured using standard industrial processes.'}</div>
                     <div className="flex space-x-4 pt-6">
-                      <button onClick={() => setCurrentStep('packaging')} className="flex-1 bg-emerald-600 text-white py-4 font-bold rounded-xl shadow-lg hover:bg-emerald-700 active:scale-95 transition-all uppercase text-xs tracking-widest">Mua Ngay</button>
+                      <button onClick={() => setCurrentStep('packaging')} className="flex-1 bg-emerald-600 text-white py-4 font-bold rounded-xl shadow-lg hover:bg-emerald-700 active:scale-95 transition-all uppercase text-xs tracking-widest">Buy Now</button>
                     </div>
                   </div>
                 </div>
@@ -230,7 +230,7 @@ const MainContent: React.FC = () => {
                  <span className="text-2xl">💧</span>
                  <div>
                    <p className="font-black text-sm">+{showPointToast} 💧!</p>
-                   <p className="text-[9px] opacity-80 uppercase font-black">Bạn đã đóng góp một hành động xanh</p>
+                   <p className="text-[9px] opacity-80 uppercase font-black">You have made a green contribution</p>
                  </div>
                </div>
             </div>
@@ -239,8 +239,8 @@ const MainContent: React.FC = () => {
         </div>
       </div>
       <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 flex flex-col gap-3">
-        <button onClick={() => setCurrentStep('social')} className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-xl flex items-center justify-center text-xl md:text-2xl transition-all hover:scale-110 active:scale-90 ${currentStep === 'social' ? 'bg-emerald-600 text-white ring-4 ring-emerald-100' : 'bg-white text-emerald-600 border border-slate-100'}`} title="Trò chuyện cộng đồng">💬</button>
-        <button onClick={() => setCurrentStep('social')} className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-xl flex items-center justify-center text-xl md:text-2xl transition-all hover:scale-110 active:scale-90 ${currentStep === 'social' ? 'bg-emerald-600 text-white ring-4 ring-emerald-100' : 'bg-white text-emerald-600 border border-slate-100'}`} title="Xem Bảng xếp hạng">🏆</button>
+        <button onClick={() => setCurrentStep('social')} className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-xl flex items-center justify-center text-xl md:text-2xl transition-all hover:scale-110 active:scale-90 ${currentStep === 'social' ? 'bg-emerald-600 text-white ring-4 ring-emerald-100' : 'bg-white text-emerald-600 border border-slate-100'}`} title="Community chat">💬</button>
+        <button onClick={() => setCurrentStep('social')} className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-xl flex items-center justify-center text-xl md:text-2xl transition-all hover:scale-110 active:scale-90 ${currentStep === 'social' ? 'bg-emerald-600 text-white ring-4 ring-emerald-100' : 'bg-white text-emerald-600 border border-slate-100'}`} title="View leaderboard">🏆</button>
       </div>
       <footer className="py-2 px-4 md:px-8 text-[8px] text-slate-300 flex justify-end">
         <button onClick={() => dataService.exportData()} className="hover:text-slate-500 underline uppercase tracking-widest">Export Survey Data</button>

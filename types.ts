@@ -17,7 +17,7 @@ export interface Product {
   greenPoints: number;
   description: string;
   wasteSaved: number;
-  wasteType: 'nhựa' | 'giấy tái chế' | 'túi nilon';
+  wasteType: 'plastic' | 'paper' | 'plastic bag';
   packagingWasteSaved: number;
   logisticsFuelSaved: number;
 }
@@ -30,14 +30,14 @@ export interface UserDemographics {
   income: string;
   gamificationExp: string;
   knownGame: string;
-  // Tình cảm môi trường (1-5)
+  // Environmental affect (1-5)
   sent_q1: string;
   sent_q2: string;
   sent_q3: string;
   sent_q4: string;
   sent_q5: string;
   sent_q6: string;
-  // Kiến thức môi trường (1-5)
+  // Environmental knowledge (1-5)
   know_q1: string;
   know_q2: string;
   know_q3: string;
