@@ -7,7 +7,7 @@ const Leaderboard: React.FC = () => {
   return (
     <section className="space-y-3">
       <div className="flex justify-between items-center">
-        <h3 className="font-bold text-slate-800 text-sm uppercase tracking-tight">XẾP HẠNG CỘNG ĐỒNG</h3>
+        <h3 className="font-bold text-slate-800 text-sm uppercase tracking-tight">COMMUNITY LEADERBOARD</h3>
       </div>
       <div className="bg-white rounded-sm shadow-sm overflow-hidden border border-slate-100">
         {leaderboard.map((user, index) => (
@@ -24,12 +24,12 @@ const Leaderboard: React.FC = () => {
                 {index === 0 && <span className="absolute -top-2 -right-1 text-[10px]">👑</span>}
               </div>
               <span className={`text-[10px] font-medium truncate max-w-[150px] ${user.name === userEmail ? 'text-emerald-600 font-bold' : 'text-slate-700'}`}>
-                {user.name === userEmail ? `${user.name} (Bạn)` : user.name}
+                {user.name === userEmail ? `${user.name} (You)` : user.name}
               </span>
             </div>
             <div className="text-right">
               <p className="font-bold text-slate-800 text-sm">{user.score} 💧</p>
-              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Điểm Xanh</p>
+              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Green Score</p>
             </div>
           </div>
         ))}

@@ -4,46 +4,46 @@ import { useAppContext } from '../AppContext';
 const DONATION_PROJECTS = [
   {
     id: 'donation_tre',
-    name: 'Dự án Tre Chống Lũ (TreeBank)',
+    name: 'Flood-Control Bamboo Project (TreeBank)',
     points: 1, 
     icon: '🎋',
-    participants: '1.240',
+    participants: '1,240',
     progress: 0,
-    description: 'Trồng tre bảo vệ các dải đất ven sông, giúp ngăn chặn sạt lở và lũ quét tại miền Trung.'
+    description: 'Planting bamboo to protect riverbanks, helping prevent landslides and flash floods in Central Vietnam.'
   },
   {
     id: 'donation_panasonic',
-    name: 'Sống khỏe - Góp xanh (Panasonic)',
+    name: 'Live Healthy - Go Green (Panasonic)',
     points: 1,
     icon: '🍃',
     participants: '850',
     progress: 0,
-    description: 'Chương trình trồng cây gây rừng tại các khu bảo tồn thiên nhiên quốc gia cùng Panasonic.'
+    description: 'A reforestation program in national nature reserves together with Panasonic.'
   }
 ];
 
 const GIFT_ITEMS = [
   {
     id: 'certificate',
-    name: 'Giấy chứng nhận Công dân Xanh',
+    name: 'Green Citizen Certificate',
     points: 150,
     icon: '📜',
-    description: 'Giấy chứng nhận điện tử vinh danh bạn là Công dân Xanh — thành tích cao nhất dành cho những người nỗ lực nhất.'
+    description: 'An electronic certificate honoring you as a Green Citizen — the highest achievement for the most dedicated participants.'
   },
   {
     id: 'voucher_green',
-    name: 'Voucher giảm 10% sản phẩm xanh',
+    name: '10% Off Green Products Voucher',
     points: 80,
     icon: '🎟️',
-    description: 'Mã giảm giá 10% cho lần mua tiếp theo khi chọn sản phẩm thân thiện môi trường.'
+    description: 'A 10% discount code for your next purchase of an environmentally friendly product.'
   },
 ];
 
 const OTHER_GIFT_ITEMS = [
-  { id: 'tote',     name: 'Túi vải Canvas',          points: 60,  icon: '🛍️', description: 'Túi vải canvas 100% cotton, bền chắc, thân thiện môi trường.' },
-  { id: 'bottle',   name: 'Bình nước bã mía',         points: 70,  icon: '🥤', description: 'Bình nước sinh học từ phụ phẩm nông nghiệp, phân hủy tự nhiên.' },
-  { id: 'seed_kit', name: 'Bộ hạt giống rau sạch',   points: 55,  icon: '🌱', description: 'Bộ 5 gói hạt giống rau ăn lá hữu cơ, phù hợp trồng tại nhà.' },
-  { id: 'notebook', name: 'Sổ tay giấy tái chế',      points: 50,  icon: '📓', description: 'Sổ tay 120 trang giấy tái chế, bìa da thực vật cao cấp.' },
+  { id: 'tote',     name: 'Canvas Tote Bag',          points: 60,  icon: '🛍️', description: 'Durable 100% cotton canvas bag, environmentally friendly.' },
+  { id: 'bottle',   name: 'Bagasse Water Bottle',         points: 70,  icon: '🥤', description: 'Bio-based bottle made from agricultural by-products, naturally biodegradable.' },
+  { id: 'seed_kit', name: 'Organic Vegetable Seed Kit',   points: 55,  icon: '🌱', description: 'A set of 5 packs of organic leafy-vegetable seeds, suitable for home growing.' },
+  { id: 'notebook', name: 'Recycled Paper Notebook',      points: 50,  icon: '📓', description: '120-page recycled paper notebook with a premium plant-based leather cover.' },
 ];
 
 const RedeemStore: React.FC = () => {
@@ -62,7 +62,7 @@ const RedeemStore: React.FC = () => {
       return;
     }
     if (greenScore < item.points) {
-      alert('Bạn không đủ Điểm Xanh để đổi quà này.');
+      alert('You do not have enough green points to redeem this gift.');
       return;
     }
     setSelectedGift(item);
@@ -72,7 +72,7 @@ const RedeemStore: React.FC = () => {
   const confirmRedeem = () => {
     if (!selectedGift) return;
     subtractPoints(selectedGift.points);
-    setSuccessMsg(`Chúc mừng! Bạn đã đổi thành công: ${selectedGift.name}`);
+    setSuccessMsg(`Congratulations! You have successfully redeemed: ${selectedGift.name}`);
     setShowRedeemModal(false);
     setSelectedGift(null);
     setTimeout(() => setSuccessMsg(''), 5000);
@@ -81,11 +81,11 @@ const RedeemStore: React.FC = () => {
   const confirmDonation = () => {
     const pts = parseInt(donateAmount);
     if (isNaN(pts) || pts <= 0 || pts > greenScore) {
-      alert('Số điểm không hợp lệ hoặc không đủ số dư.');
+      alert('Invalid number of points or insufficient balance.');
       return;
     }
     subtractPoints(pts);
-    setSuccessMsg(`Cảm ơn bạn! Đã đóng góp thành công ${pts} điểm.`);
+    setSuccessMsg(`Thank you! You have successfully donated ${pts} points.`);
     setShowDonateModal(false);
     setTimeout(() => setSuccessMsg(''), 5000);
   };
@@ -94,12 +94,12 @@ const RedeemStore: React.FC = () => {
     <div className="space-y-12 animate-slideUp pb-24">
       <div className="flex justify-between items-center border-b border-slate-100 pb-6">
         <div>
-          <h1 className="text-2xl font-black text-slate-800 uppercase tracking-tighter italic">TRUNG TÂM ĐỔI ĐIỂM</h1>
-          <p className="text-xs text-slate-400 font-bold uppercase mt-1">Sử dụng giọt nước 💧 của bạn để tạo ra giá trị</p>
+          <h1 className="text-2xl font-black text-slate-800 uppercase tracking-tighter italic">REWARDS CENTER</h1>
+          <p className="text-xs text-slate-400 font-bold uppercase mt-1">Use your water drops 💧 to create value</p>
         </div>
         <div className="flex items-center space-x-4">
-          <button onClick={() => setCurrentStep('shop')} className="text-emerald-600 font-black text-xs uppercase underline tracking-widest">Quay lại</button>
-          <button onClick={() => setCurrentStep('post_survey')} className="bg-emerald-600 text-white px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-md">Khảo sát & Hoàn tất</button>
+          <button onClick={() => setCurrentStep('shop')} className="text-emerald-600 font-black text-xs uppercase underline tracking-widest">Back</button>
+          <button onClick={() => setCurrentStep('post_survey')} className="bg-emerald-600 text-white px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-md">Survey & Finish</button>
         </div>
       </div>
       {successMsg && (
@@ -111,10 +111,10 @@ const RedeemStore: React.FC = () => {
       <div className="space-y-6">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-xl shadow-sm">🎁</div>
-          <h2 className="text-base font-black text-amber-900 uppercase tracking-widest underline">Đổi quà khuyến khích xanh</h2>
+          <h2 className="text-base font-black text-amber-900 uppercase tracking-widest underline">Redeem green incentive gifts</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1 & 2: Chứng nhận + Voucher */}
+          {/* Cards 1 & 2: Certificate + Voucher */}
           {GIFT_ITEMS.map(gift => {
             const canRedeem = greenScore >= gift.points;
             return (
@@ -130,18 +130,18 @@ const RedeemStore: React.FC = () => {
                   disabled={!canRedeem}
                   className={`w-full py-3 rounded-2xl font-black uppercase text-[9px] tracking-widest transition-all active:scale-95 ${canRedeem ? 'bg-amber-500 hover:bg-amber-600 text-white' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}
                 >
-                  {canRedeem ? 'Đổi ngay' : `Cần thêm ${gift.points - greenScore} 💧`}
+                  {canRedeem ? 'Redeem now' : `${gift.points - greenScore} more 💧 needed`}
                 </button>
               </div>
             );
           })}
-          {/* Card 3: Quà tặng khác — danh sách chọn */}
+          {/* Card 3: Other gifts — selectable list */}
           <div className="bg-white p-6 rounded-[2.5rem] border border-amber-100 shadow-sm flex flex-col">
             <div className="flex justify-between mb-4">
               <div className="text-4xl bg-amber-50 w-14 h-14 rounded-3xl flex items-center justify-center">🎀</div>
-              <span className="text-[10px] font-black text-amber-600 self-start mt-1 uppercase tracking-widest">Quà tặng</span>
+              <span className="text-[10px] font-black text-amber-600 self-start mt-1 uppercase tracking-widest">Gifts</span>
             </div>
-            <h3 className="font-black text-slate-800 text-xs mb-3 uppercase">Quà tặng khuyến khích</h3>
+            <h3 className="font-black text-slate-800 text-xs mb-3 uppercase">Incentive gifts</h3>
             <div className="flex-1 space-y-2 mb-4">
               {OTHER_GIFT_ITEMS.map(item => {
                 const canRedeem = greenScore >= item.points;
@@ -167,7 +167,7 @@ const RedeemStore: React.FC = () => {
       <div className="space-y-6">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-sm">🌍</div>
-          <h2 className="text-base font-black text-emerald-900 uppercase tracking-widest underline">Chương trình đóng góp</h2>
+          <h2 className="text-base font-black text-emerald-900 uppercase tracking-widest underline">Donation programs</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {DONATION_PROJECTS.map(proj => (
@@ -175,7 +175,7 @@ const RedeemStore: React.FC = () => {
               <div className="flex justify-between mb-4">
                 <div className="text-4xl bg-emerald-50 w-16 h-16 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform">{proj.icon}</div>
                 <div className="text-right">
-                  <span className="text-emerald-600 font-black text-xs uppercase">1 💧 = 5.000đ</span>
+                  <span className="text-emerald-600 font-black text-xs uppercase">1 💧 = ₫5,000</span>
                 </div>
               </div>
               <h3 className="font-black text-slate-800 text-base mb-2 uppercase">{proj.name}</h3>
@@ -184,7 +184,7 @@ const RedeemStore: React.FC = () => {
                 onClick={() => handleRedeem(proj, 'donation')}
                 className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all active:scale-95"
               >
-                Đóng góp ngay
+                Donate now
               </button>
             </div>
           ))}
@@ -201,15 +201,15 @@ const RedeemStore: React.FC = () => {
             <div className="p-8 space-y-4 text-center">
               <p className="text-sm text-slate-600 leading-relaxed">{selectedGift.description}</p>
               <div className="bg-amber-50 border border-amber-100 rounded-2xl py-3 px-4">
-                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Chi phí đổi quà</p>
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Redemption cost</p>
                 <p className="text-3xl font-black text-amber-600">{selectedGift.points} 💧</p>
-                <p className="text-[10px] text-slate-400 mt-1">Số dư sau khi đổi: {greenScore - selectedGift.points} 💧</p>
+                <p className="text-[10px] text-slate-400 mt-1">Balance after redemption: {greenScore - selectedGift.points} 💧</p>
               </div>
               <button
                 onClick={confirmRedeem}
                 className="w-full bg-amber-500 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-amber-600 active:scale-95 transition-all uppercase tracking-widest text-xs"
               >
-                Xác nhận đổi quà
+                Confirm redemption
               </button>
             </div>
           </div>
@@ -224,7 +224,7 @@ const RedeemStore: React.FC = () => {
               <h3 className="text-lg font-black uppercase">{selectedProject.name}</h3>
             </div>
             <div className="p-8 space-y-6 text-center">
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Góp bao nhiêu điểm?</p>
+              <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">How many points to donate?</p>
               <input 
                 type="number"
                 value={donateAmount}
@@ -237,7 +237,7 @@ const RedeemStore: React.FC = () => {
                 onClick={confirmDonation}
                 className="w-full bg-emerald-600 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-emerald-700 active:scale-95 transition-all uppercase tracking-widest text-xs"
               >
-                Xác nhận
+                Confirm
               </button>
             </div>
           </div>

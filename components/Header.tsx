@@ -21,7 +21,7 @@ const Header: React.FC = () => {
           >
             <div className="flex items-center">
                <span className="text-2xl md:text-3xl mr-2">🌿</span>
-               <span className="text-xl md:text-2xl font-black tracking-tighter text-emerald-600">ĐIỂM XANH</span>
+               <span className="text-xl md:text-2xl font-black tracking-tighter text-emerald-600">GREEN SCORE</span>
             </div>
           </div>
           
@@ -31,7 +31,7 @@ const Header: React.FC = () => {
               className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all flex items-center space-x-1"
             >
               <span>🎥</span>
-              <span>Xem hướng dẫn</span>
+              <span>View instructions</span>
             </button>
           )}
         </div>
@@ -39,9 +39,9 @@ const Header: React.FC = () => {
           <div className="bg-slate-100 p-1 rounded-lg flex items-center">
             <input 
               type="text" 
-              placeholder="Tìm kiếm sản phẩm..." 
+              placeholder="Search products..." 
               className="flex-1 px-4 py-2 bg-transparent outline-none text-xs md:text-sm text-slate-600 min-w-0"
-              defaultValue="combo sổ bút thân thiện môi trường"
+              defaultValue="eco-friendly notebook and pen combo"
             />
             <button className="bg-emerald-600 px-4 md:px-6 py-2 text-white rounded-md hover:bg-emerald-700 transition-colors">
               🔍

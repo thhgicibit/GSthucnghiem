@@ -4,25 +4,25 @@ import { useAppContext } from '../AppContext';
 const Chat: React.FC = () => {
   const { userEmail } = useAppContext();
   const [messages, setMessages] = useState([
-    { id: '1', name: 'minh.tuan@email.com', text: 'Mua vận chuyển xanh được tặng nhiều điểm GS lắm mọi người ơi!', time: '10:30' },
-    { id: '2', name: 'thanh.ha@email.com', text: 'Badge Đại Sứ Xanh nhìn xịn thật sự.', time: '11:05' }
+    { id: '1', name: 'minh.tuan@email.com', text: 'Choosing green delivery gives you lots of GS points, everyone!', time: '10:30' },
+    { id: '2', name: 'thanh.ha@email.com', text: 'The Green Ambassador badge looks really cool.', time: '11:05' }
   ]);
   const [input, setInput] = useState('');
 
   const sendMessage = () => {
     if (!input.trim()) return;
-    setMessages([...messages, { id: Date.now().toString(), name: userEmail, text: input, time: 'Vừa xong' }]);
+    setMessages([...messages, { id: Date.now().toString(), name: userEmail, text: input, time: 'Just now' }]);
     setInput('');
   };
 
   return (
     <section className="space-y-3">
-      <h3 className="font-bold text-slate-800 text-sm uppercase tracking-tight px-1">KHUNG CHAT CỘNG ĐỒNG</h3>
+      <h3 className="font-bold text-slate-800 text-sm uppercase tracking-tight px-1">COMMUNITY CHAT</h3>
       <div className="bg-white rounded-sm shadow-sm flex flex-col h-64 border border-slate-50">
         <div className="flex-1 p-3 overflow-y-auto space-y-3 bg-slate-50/30">
           {messages.map(msg => (
             <div key={msg.id} className={`flex flex-col ${msg.name === userEmail ? 'items-end' : 'items-start'}`}>
-              <span className="text-[8px] font-bold text-slate-400 mb-1 truncate max-w-[150px]">{msg.name === userEmail ? 'Bạn' : msg.name}</span>
+              <span className="text-[8px] font-bold text-slate-400 mb-1 truncate max-w-[150px]">{msg.name === userEmail ? 'You' : msg.name}</span>
               <div className={`max-w-[85%] px-3 py-2 rounded-lg text-[11px] leading-snug shadow-sm ${msg.name === userEmail ? 'bg-emerald-600 text-white' : 'bg-white text-slate-700 border border-slate-100'}`}>
                 {msg.text}
               </div>
@@ -34,7 +34,7 @@ const Chat: React.FC = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-            placeholder="Nhập nội dung chat..." 
+            placeholder="Type a message..." 
             className="flex-1 bg-slate-50 rounded-sm px-3 py-2 text-[12px] focus:outline-none focus:bg-slate-100 transition-colors"
           />
           <button onClick={sendMessage} className="text-emerald-600 px-2 text-lg">➤</button>

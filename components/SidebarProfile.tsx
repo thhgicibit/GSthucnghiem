@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAppContext, AVAILABLE_TITLES, AVAILABLE_TAGS } from '../AppContext';
 import { BADGES } from '../constants';
 
-// Avatar mặc định có thể chọn nhanh
+// Preset avatars for quick selection
 const PRESET_AVATARS = [
   'https://api.dicebear.com/7.x/bottts/svg?seed=eco1&backgroundColor=b6e3f4',
   'https://api.dicebear.com/7.x/bottts/svg?seed=eco2&backgroundColor=c0aede',
@@ -23,7 +23,7 @@ const SidebarProfile: React.FC = () => {
   const currentTitle = AVAILABLE_TITLES.find(t => t.id === userProfile.titleId);
   const avatarSrc = userProfile.avatarUrl ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(userEmail || 'User')}&background=ffffff&color=059669&bold=true`;
-  const displayName = userProfile.nickname || userEmail || 'Người tham gia';
+  const displayName = userProfile.nickname || userEmail || 'Participant';
 
   const handleOpenEdit = () => { setDraft(userProfile); setIsEditing(true); };
   const handleSave = () => { setUserProfile(draft); setIsEditing(false); };
@@ -39,29 +39,29 @@ const SidebarProfile: React.FC = () => {
   return (
     <div className="w-full md:w-[280px] flex-shrink-0 space-y-4 relative">
 
-      {/* ── MODAL CHỈNH SỬA — chỉ thêm, không ảnh hưởng layout ── */}
+      {/* ── EDIT MODAL — additive only, does not affect layout ── */}
       {isEditing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
             <div className="bg-emerald-600 px-6 py-5 text-white">
-              <h2 className="font-black text-base uppercase tracking-widest">✏️ Tùy chỉnh hồ sơ</h2>
-              <p className="text-[11px] opacity-70 mt-1">Thể hiện cá tính xanh của bạn</p>
+              <h2 className="font-black text-base uppercase tracking-widest">✏️ Customize Profile</h2>
+              <p className="text-[11px] opacity-70 mt-1">Express your green personality</p>
             </div>
             <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
               {/* Nickname */}
               <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Biệt danh</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Nickname</label>
                 <input
                   type="text" maxLength={20}
-                  placeholder={userEmail?.split('@')[0] || 'Nhập biệt danh...'}
+                  placeholder={userEmail?.split('@')[0] || 'Enter a nickname...'}
                   value={draft.nickname}
                   onChange={e => setDraft(prev => ({ ...prev, nickname: e.target.value }))}
                   className="w-full border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-800 focus:border-emerald-400 outline-none transition-all"
                 />
               </div>
-              {/* Danh hiệu */}
+              {/* Title */}
               <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Danh hiệu</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Title</label>
                 <div className="grid grid-cols-2 gap-2">
                   {AVAILABLE_TITLES.map(t => (
                     <button key={t.id} onClick={() => setDraft(prev => ({ ...prev, titleId: t.id }))}
@@ -73,10 +73,10 @@ const SidebarProfile: React.FC = () => {
                   ))}
                 </div>
               </div>
-              {/* Nhãn */}
+              {/* Tags */}
               <div>
                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">
-                  Nhãn mô tả <span className="text-slate-300 normal-case font-normal">(tối đa 3)</span>
+                  Description tags <span className="text-slate-300 normal-case font-normal">(max 3)</span>
                 </label>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {AVAILABLE_TAGS.map(tag => (
@@ -91,9 +91,9 @@ const SidebarProfile: React.FC = () => {
               </div>
               {/* Slogan */}
               <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Slogan cá nhân</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Personal slogan</label>
                 <textarea maxLength={60} rows={2}
-                  placeholder="VD: Mỗi lựa chọn nhỏ tạo nên sự khác biệt lớn..."
+                  placeholder="E.g., Every small choice makes a big difference..."
                   value={draft.slogan}
                   onChange={e => setDraft(prev => ({ ...prev, slogan: e.target.value }))}
                   className="w-full border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:border-emerald-400 outline-none transition-all resize-none"
@@ -103,7 +103,7 @@ const SidebarProfile: React.FC = () => {
 
               {/* Avatar */}
               <div>
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Ảnh đại diện</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Profile picture</label>
                 {/* Preview */}
                 <div className="flex justify-center mb-3">
                   <img
@@ -119,13 +119,13 @@ const SidebarProfile: React.FC = () => {
                     onClick={() => setAvatarInputMode('preset')}
                     className={`flex-1 py-1.5 text-[10px] font-black uppercase tracking-wider transition-all ${avatarInputMode === 'preset' ? 'bg-emerald-600 text-white' : 'bg-slate-50 text-slate-400'}`}
                   >
-                    Chọn sẵn
+                    Presets
                   </button>
                   <button
                     onClick={() => setAvatarInputMode('url')}
                     className={`flex-1 py-1.5 text-[10px] font-black uppercase tracking-wider transition-all ${avatarInputMode === 'url' ? 'bg-emerald-600 text-white' : 'bg-slate-50 text-slate-400'}`}
                   >
-                    Nhập URL
+                    Enter URL
                   </button>
                 </div>
                 {/* Preset grid */}
@@ -140,11 +140,11 @@ const SidebarProfile: React.FC = () => {
                         <img src={url} alt={`avatar ${i+1}`} className="w-full h-full object-cover aspect-square bg-slate-50" />
                       </button>
                     ))}
-                    {/* Xóa avatar tùy chỉnh, về mặc định */}
+                    {/* Remove custom avatar, revert to default */}
                     <button
                       onClick={() => setDraft(prev => ({ ...prev, avatarUrl: '' }))}
                       className={`rounded-xl border-2 flex items-center justify-center aspect-square transition-all ${draft.avatarUrl === '' ? 'border-emerald-500 bg-emerald-50' : 'border-slate-100 bg-slate-50 hover:border-slate-200'}`}
-                      title="Dùng avatar mặc định"
+                      title="Use default avatar"
                     >
                       <span className="text-lg">👤</span>
                     </button>
@@ -160,7 +160,7 @@ const SidebarProfile: React.FC = () => {
                       onChange={e => setDraft(prev => ({ ...prev, avatarUrl: e.target.value }))}
                       className="w-full border-2 border-slate-100 rounded-xl px-4 py-2.5 text-xs text-slate-700 focus:border-emerald-400 outline-none transition-all"
                     />
-                    <p className="text-[9px] text-slate-300 mt-1">Dán link ảnh trực tiếp (jpg, png, svg...)</p>
+                    <p className="text-[9px] text-slate-300 mt-1">Paste a direct image link (jpg, png, svg...)</p>
                   </div>
                 )}
               </div>
@@ -168,29 +168,29 @@ const SidebarProfile: React.FC = () => {
             <div className="px-6 pb-6 flex gap-3">
               <button onClick={() => setIsEditing(false)}
                 className="flex-1 py-3 rounded-xl border-2 border-slate-100 text-slate-500 font-black text-xs uppercase tracking-wider hover:bg-slate-50 transition-all">
-                Hủy
+                Cancel
               </button>
               <button onClick={handleSave}
                 className="flex-1 py-3 rounded-xl bg-emerald-600 text-white font-black text-xs uppercase tracking-wider hover:bg-emerald-700 active:scale-95 transition-all">
-                Lưu
+                Save
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ── PROFILE CARD — GIỮ NGUYÊN 100% GIAO DIỆN GỐC, CHỈ THÊM VÀO ── */}
+      {/* ── PROFILE CARD — ORIGINAL UI PRESERVED 100%, ADDITIONS ONLY ── */}
       <div className="bg-white rounded-[2.5rem] shadow-sm overflow-hidden border border-slate-100">
         <div className="bg-emerald-600 p-8 text-center relative">
 
-          {/* Nút ✏️ — absolute, không chiếm không gian, không xê dịch layout gốc */}
+          {/* ✏️ button — absolute, takes no space, does not shift the original layout */}
           <button onClick={handleOpenEdit}
             className="absolute top-3 right-3 w-7 h-7 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-all"
-            title="Tùy chỉnh hồ sơ">
+            title="Customize profile">
             <span className="text-white text-xs">✏️</span>
           </button>
 
-          {/* Avatar — GỐC */}
+          {/* Avatar — ORIGINAL */}
           <div className="relative inline-block mb-3">
             <img
               src={avatarSrc}
@@ -200,19 +200,19 @@ const SidebarProfile: React.FC = () => {
             />
           </div>
 
-          {/* Tên — GỐC, chỉ thêm nickname nếu có */}
+          {/* Name — ORIGINAL, nickname added only if set */}
           <h3 className="font-bold text-white tracking-tight truncate px-2 text-sm">
             {displayName}
           </h3>
 
-          {/* Danh hiệu — THÊM VÀO bên dưới tên, nếu đã set */}
+          {/* Title — ADDED below the name, if set */}
           {currentTitle && (
             <div className="mt-1 inline-block bg-white/20 text-white/90 text-[9px] font-black px-2.5 py-0.5 rounded-full tracking-wider">
               {currentTitle.label}
             </div>
           )}
 
-          {/* Nhãn tags — THÊM VÀO */}
+          {/* Tags — ADDED */}
           {userProfile.tags.length > 0 && (
             <div className="flex flex-wrap justify-center gap-1 mt-1.5">
               {userProfile.tags.map(tag => (
@@ -223,27 +223,27 @@ const SidebarProfile: React.FC = () => {
             </div>
           )}
 
-          {/* Slogan — THÊM VÀO */}
+          {/* Slogan — ADDED */}
           {userProfile.slogan && (
             <p className="mt-1.5 text-white/60 text-[9px] italic leading-tight px-2">
               "{userProfile.slogan}"
             </p>
           )}
 
-          {/* Điểm xanh — GỐC */}
+          {/* Green points — ORIGINAL */}
           <div className="mt-3 text-center">
-            <p className="text-[10px] font-black text-white/60 uppercase tracking-widest mb-1">Điểm Xanh Hiện Có</p>
+            <p className="text-[10px] font-black text-white/60 uppercase tracking-widest mb-1">Current Green Points</p>
             <h1 className="text-5xl font-black text-white tracking-tighter">{greenScore} 💧</h1>
           </div>
         </div>
 
-        {/* Lộ trình thăng cấp — GỐC NGUYÊN VẸN */}
+        {/* Level-up path — ORIGINAL, UNCHANGED */}
         <div className="p-6 border-b border-slate-50 bg-slate-50/50">
           <div className="mb-5 px-1">
             <p className="text-[11px] font-black text-emerald-800 uppercase tracking-widest flex items-center">
-              <span className="mr-2">🏆</span> Lộ trình thăng cấp
+              <span className="mr-2">🏆</span> Level-Up Path
             </p>
-            <p className="text-[9px] text-slate-400 font-bold uppercase mt-1 tracking-tight">Tích lũy điểm để đạt danh hiệu mới</p>
+            <p className="text-[9px] text-slate-400 font-bold uppercase mt-1 tracking-tight">Accumulate points to earn new badges</p>
           </div>
           <div className="grid grid-cols-4 gap-2">
             {BADGES.map((badge, index) => {
@@ -270,7 +270,7 @@ const SidebarProfile: React.FC = () => {
           </div>
           <div className="mt-6 px-1">
             <div className="flex justify-between text-[9px] font-black uppercase text-slate-400 mb-1.5">
-               <span>Tiến độ thăng hạng</span>
+               <span>Level-up progress</span>
                <span className="text-emerald-600">{greenScore} 💧</span>
             </div>
             <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden shadow-inner">
@@ -282,26 +282,26 @@ const SidebarProfile: React.FC = () => {
           </div>
         </div>
 
-        {/* Đổi quà — GỐC NGUYÊN VẸN */}
+        {/* Redeem — ORIGINAL, UNCHANGED */}
         <div className="p-4 bg-white">
           <button
             onClick={() => setCurrentStep('redeem')}
             className="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 py-3 rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all flex items-center justify-center space-x-2"
           >
             <span>🎁</span>
-            <span>Đổi quà & Quyên góp</span>
+            <span>Redeem & Donate</span>
           </button>
         </div>
       </div>
 
-      {/* Bảng xếp hạng tuần — GỐC NGUYÊN VẸN */}
+      {/* Weekly leaderboard — ORIGINAL, UNCHANGED */}
       <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100">
-        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-5 px-1">Bảng xếp hạng tuần</h4>
+        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-5 px-1">Weekly Leaderboard</h4>
         <div className="space-y-4">
           {[
             { name: 'Minh Tuấn', score: 450 },
             { name: 'Thanh Hà', score: 320 },
-            { name: userEmail || 'Bạn', score: greenScore, isMe: true }
+            { name: userEmail || 'You', score: greenScore, isMe: true }
           ].sort((a,b) => b.score - a.score).map((user, idx) => (
             <div key={user.name} className={`flex justify-between items-center text-[10px] ${user.isMe ? 'bg-emerald-50 -mx-4 px-4 py-2 rounded-xl text-emerald-700 font-bold' : 'text-slate-600'}`}>
               <div className="flex items-center space-x-3">

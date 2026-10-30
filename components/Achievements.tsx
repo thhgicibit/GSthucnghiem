@@ -8,7 +8,7 @@ const Achievements: React.FC = () => {
   return (
     <section className="space-y-4">
       <h3 className="font-black text-slate-800 text-lg flex items-center px-1">
-        <span className="mr-2">🥇</span> Huy chương thành tích
+        <span className="mr-2">🥇</span> Achievement medals
       </h3>
       <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 grid grid-cols-3 gap-2">
         {MEDALS.map(medal => {

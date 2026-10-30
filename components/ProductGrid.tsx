@@ -12,7 +12,7 @@ const ProductGrid: React.FC = () => {
         <section key={category} className="space-y-6">
           <div className="flex items-center space-x-4">
             <div className="h-px flex-1 bg-slate-100"></div>
-            <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 px-4 whitespace-nowrap">Danh mục: {category}</h2>
+            <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 px-4 whitespace-nowrap">Category: {category}</h2>
             <div className="h-px flex-1 bg-slate-100"></div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-10 max-w-4xl mx-auto">
@@ -31,7 +31,7 @@ const ProductGrid: React.FC = () => {
                     </div>
                   ) : (
                     <div className="absolute top-4 right-4 bg-slate-800 text-white text-[10px] px-3 py-1.5 font-black rounded-full shadow-lg z-10">
-                       TIÊU CHUẨN
+                       STANDARD
                     </div>
                   )}
                 </div>
@@ -41,11 +41,11 @@ const ProductGrid: React.FC = () => {
                   </h3>
                   <div className="flex flex-col mt-auto pt-4 border-t border-slate-50">
                     <div className="flex justify-between items-baseline">
-                      <span className="text-slate-800 text-xl font-black tracking-tighter">₫{product.price.toLocaleString()}</span>
+                      <span className="text-slate-800 text-xl font-black tracking-tighter">₫{product.price.toLocaleString('en-US')}</span>
                       <div className="text-[10px] text-slate-400 font-bold">⭐ {product.sellerRating}</div>
                     </div>
                     <div className="mt-3 flex items-center text-[9px] uppercase tracking-widest font-black text-slate-400">
-                      <span>Phân loại: </span>
+                      <span>Type: </span>
                       <span className={`ml-2 truncate ${product.isGreen ? 'text-emerald-600' : 'text-slate-600'}`}>
                         {product.material}
                       </span>
