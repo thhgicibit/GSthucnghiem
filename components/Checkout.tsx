@@ -3,25 +3,45 @@ import { useAppContext } from '../AppContext';
 import { dataService } from '../dataService';
 import { SurveyRecord } from '../types';
 
-// Sub-component for smooth image loading
+// Sub-component for smooth image loading (with error fallback so the skeleton never gets stuck)
 const ShipperImage: React.FC<{ src: string, alt: string }> = ({ src, alt }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const imgRef = React.useRef<HTMLImageElement>(null);
+
+  // Handle images already loaded from cache before React attached the onLoad handler
+  React.useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete) {
+      if (img.naturalWidth > 0) setIsLoaded(true);
+      else setHasError(true);
+    }
+  }, [src]);
 
   return (
     <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden bg-emerald-50 flex-shrink-0">
       {/* Skeleton loading state */}
-      {!isLoaded && (
+      {!isLoaded && !hasError && (
         <div className="absolute inset-0 bg-emerald-100 animate-pulse flex items-center justify-center">
           <span className="text-xs text-emerald-300 font-black uppercase tracking-tighter">Loading</span>
         </div>
       )}
-      <img 
-        src={src} 
-        alt={alt} 
-        onLoad={() => setIsLoaded(true)}
-        loading="eager"
-        className={`w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
-      />
+      {/* Fallback if the image cannot be loaded */}
+      {hasError && (
+        <div className="absolute inset-0 bg-emerald-50 flex items-center justify-center text-3xl">🚚</div>
+      )}
+      {!hasError && (
+        <img
+          ref={imgRef}
+          src={src}
+          alt={alt}
+          referrerPolicy="no-referrer"
+          onLoad={() => setIsLoaded(true)}
+          onError={() => setHasError(true)}
+          loading="eager"
+          className={`w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+        />
+      )}
     </div>
   );
 };
