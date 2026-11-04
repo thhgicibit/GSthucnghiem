@@ -29,7 +29,7 @@ const Leaderboard: React.FC = () => {
             </div>
             <div className="text-right">
               <p className="font-bold text-slate-800 text-sm">{user.score} 💧</p>
-              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Green Score</p>
+              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Green Points</p>
             </div>
           </div>
         ))}

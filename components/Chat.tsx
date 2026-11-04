@@ -4,7 +4,7 @@ import { useAppContext } from '../AppContext';
 const Chat: React.FC = () => {
   const { userEmail } = useAppContext();
   const [messages, setMessages] = useState([
-    { id: '1', name: 'minh.tuan@email.com', text: 'Choosing green delivery gives you lots of GS points, everyone!', time: '10:30' },
+    { id: '1', name: 'minh.tuan@email.com', text: 'Choosing green delivery gives you lots of green points, everyone!', time: '10:30' },
     { id: '2', name: 'thanh.ha@email.com', text: 'The Green Ambassador badge looks really cool.', time: '11:05' }
   ]);
   const [input, setInput] = useState('');

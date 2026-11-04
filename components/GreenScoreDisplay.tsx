@@ -17,7 +17,7 @@ const GreenScoreDisplay: React.FC = () => {
           </div>
           <div className="mt-2 flex items-baseline space-x-1">
             <h1 className="text-3xl font-black">{greenScore}</h1>
-            <span className="text-xs opacity-80">Green Score points</span>
+            <span className="text-xs opacity-80">Green Points</span>
           </div>
         </div>
         <div className="text-right">
@@ -27,7 +27,7 @@ const GreenScoreDisplay: React.FC = () => {
       <div className="px-4 py-3 bg-white">
         <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase mb-1">
           <span>Tier progress</span>
-          <span className="text-green-600">{greenScore} / {nextLevelScore} GS</span>
+          <span className="text-green-600">{greenScore} / {nextLevelScore} GP</span>
         </div>
         <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
           <div 
